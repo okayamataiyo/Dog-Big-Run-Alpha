@@ -24,23 +24,7 @@ void Player::Initialize()
 
 void Player::Update()
 {
-    if (Input::IsKey(DIK_W))
-    {
-        Trans_P.position_.z += 0.2;
-    }
-    if (Input::IsKey(DIK_S))
-    {
-        Trans_P.position_.z -= 0.2;
-    }
-
-    if (Input::IsKey(DIK_D))
-    {
-        Trans_P.position_.x += 0.2;
-    }
-    if (Input::IsKey(DIK_A))
-    {
-        Trans_P.position_.x -= 0.2;
-    }
+    PlayerMove();
 
     Camera::SetTarget(Trans_P.position_);
     XMFLOAT3 camPos = Trans_P.position_;
@@ -61,4 +45,21 @@ void Player::Release()
 
 void Player::PlayerMove()
 {
+    if (Input::IsKey(DIK_W))
+    {
+        Trans_P.position_.z += 0.2;
+    }
+    if (Input::IsKey(DIK_S))
+    {
+        Trans_P.position_.z -= 0.2;
+    }
+
+    if (Input::IsKey(DIK_D))
+    {
+        Trans_P.position_.x += 0.2;
+    }
+    if (Input::IsKey(DIK_A))
+    {
+        Trans_P.position_.x -= 0.2;
+    }
 }

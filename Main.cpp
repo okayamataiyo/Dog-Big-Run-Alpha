@@ -136,30 +136,32 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
 
 			if (Input::IsKeyUp(DIK_ESCAPE))
 			{
-				static int cnt = 0;
-				cnt++;
-				if (cnt >= 1) {
-					PostQuitMessage(0);
-				}
+				PostQuitMessage(0);
 			}
 
 			//▼ゲームの処理
-			//カメラの処理
-			Camera::Update();
+			for (int i = 0; i < 1; i++)
+			{
+				Direct3D::BeginDraw(i);
 
-			//入力の処理
-			Input::Update();
+				//カメラの処理
+				Camera::Update();
 
-			pRootjob->UpdateSub();
+				//入力の処理
+				Input::Update();
 
-			//▼描画
-			Direct3D::BeginDraw();
+				pRootjob->UpdateSub();
 
-			//ルートジョブから、すべてのオブジェクトのドローを呼ぶ
-			pRootjob->DrawSub();
+				////▼描画
+				//Direct3D::BeginDraw(0);
+				//Direct3D::BeginDraw(1);
 
-			Direct3D::EndDraw();
+				//ルートジョブから、すべてのオブジェクトのドローを呼ぶ
+				pRootjob->DrawSub();
 
+				Direct3D::EndDraw();
+
+			}
 		}
 	}
 

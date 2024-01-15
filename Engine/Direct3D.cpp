@@ -14,15 +14,15 @@ namespace Direct3D
 	IDXGISwapChain* pSwapChain_ = nullptr;		            //スワップチェイン
 	ID3D11RenderTargetView* pRenderTargetView_ = nullptr;	//レンダーターゲットビュー
 
-	ID3D11Texture2D* pDepthStencil;			//深度ステンシル
-	ID3D11DepthStencilView* pDepthStencilView;		//深度ステンシルビュー
+	ID3D11Texture2D* pDepthStencil;							//深度ステンシル
+	ID3D11DepthStencilView* pDepthStencilView;				//深度ステンシルビュー
 
 
-	ID3D11VertexShader* pVertexShader_ = nullptr;	//頂点シェーダー
-	ID3D11PixelShader* pPixelShader_ = nullptr;		//ピクセルシェーダー
-	ID3D11InputLayout* pVertexLayout_ = nullptr;	//頂点インプットレイアウト
-	ID3D11RasterizerState* pRasterizerState_ = nullptr;	//ラスタライザー
-
+	ID3D11VertexShader* pVertexShader_ = nullptr;			//頂点シェーダー
+	ID3D11PixelShader* pPixelShader_ = nullptr;				//ピクセルシェーダー
+	ID3D11InputLayout* pVertexLayout_ = nullptr;			//頂点インプットレイアウト
+	ID3D11RasterizerState* pRasterizerState_ = nullptr;		//ラスタライザー
+	D3D11_VIEWPORT vp[2];									//分割ビューポート、これをモデルの描画前に設定する
 	struct SHADER_BUNDLE
 	{
 		ID3D11VertexShader* pVertexShader_ = nullptr;	//頂点シェーダー
@@ -65,18 +65,18 @@ HRESULT Direct3D::Initialize(int winW, int winH, HWND hWnd)
 	////////////////上記設定をもとにデバイス、コンテキスト、スワップチェインを作成////////////////////////
 	D3D_FEATURE_LEVEL level;
 	hr = D3D11CreateDeviceAndSwapChain(
-		nullptr,				// どのビデオアダプタを使用するか？既定ならばnullptrで
+		nullptr,						// どのビデオアダプタを使用するか？既定ならばnullptrで
 		D3D_DRIVER_TYPE_HARDWARE,		// ドライバのタイプを渡す。ふつうはHARDWARE
-		nullptr,				// 上記をD3D_DRIVER_TYPE_SOFTWAREに設定しないかぎりnullptr
-		0,					// 何らかのフラグを指定する。（デバッグ時はD3D11_CREATE_DEVICE_DEBUG？）
-		nullptr,				// デバイス、コンテキストのレベルを設定。nullptrにしとけばOK
-		0,					// 上の引数でレベルを何個指定したか
-		D3D11_SDK_VERSION,			// SDKのバージョン。必ずこの値
-		&scDesc,				// 上でいろいろ設定した構造体
-		&pSwapChain_,				// 無事完成したSwapChainのアドレスが返ってくる
-		&pDevice_,				// 無事完成したDeviceアドレスが返ってくる
-		&level,					// 無事完成したDevice、Contextのレベルが返ってくる
-		&pContext_);				// 無事完成したContextのアドレスが返ってくる
+		nullptr,						// 上記をD3D_DRIVER_TYPE_SOFTWAREに設定しないかぎりnullptr
+		0,								// 何らかのフラグを指定する。（デバッグ時はD3D11_CREATE_DEVICE_DEBUG？）
+		nullptr,						// デバイス、コンテキストのレベルを設定。nullptrにしとけばOK
+		0,								// 上の引数でレベルを何個指定したか
+		D3D11_SDK_VERSION,				// SDKのバージョン。必ずこの値
+		&scDesc,						// 上でいろいろ設定した構造体
+		&pSwapChain_,					// 無事完成したSwapChainのアドレスが返ってくる
+		&pDevice_,						// 無事完成したDeviceアドレスが返ってくる
+		&level,							// 無事完成したDevice、Contextのレベルが返ってくる
+		&pContext_);					// 無事完成したContextのアドレスが返ってくる
 	if (FAILED(hr))
 	{
 		//エラー処理
@@ -107,14 +107,20 @@ HRESULT Direct3D::Initialize(int winW, int winH, HWND hWnd)
 
 	///////////////////////////ビューポート（描画範囲）設定///////////////////////////////
 	//レンダリング結果を表示する範囲
-	D3D11_VIEWPORT vp;
-	vp.Width = (float)winW;	//幅
-	vp.Height = (float)winW;//高さ
-	vp.MinDepth = 0.0f;	//手前
-	vp.MaxDepth = 1.0f;	//奥
-	vp.TopLeftX = 0;	//左
-	vp.TopLeftY = 0;	//上
+	vp[0].Width    = winW / 2;
+	vp[0].Height   = winH;
+	vp[0].TopLeftX = 0;			 //画面左上のx座標
+	vp[0].TopLeftY = 0;			 //画面左上のy座標
+	vp[0].MinDepth = 0.0f;		 //深度値の最小値
+	vp[0].MaxDepth = 1.0f;		 //深度値の最大値
 
+	vp[1].Width    = winW / 2;
+	vp[1].Height   = winH;
+	vp[1].TopLeftX = winW / 2;   //画面左上のx座標
+	vp[1].TopLeftY = 0;			 //画面左上のy座標
+	vp[1].MinDepth = 0.0f;	     //深度値の最小値
+	vp[1].MaxDepth = 1.0f;		 //深度値の最大値
+	
 	//深度ステンシルビューの作成
 	D3D11_TEXTURE2D_DESC descDepth;
 	descDepth.Width = winW;
@@ -133,8 +139,7 @@ HRESULT Direct3D::Initialize(int winW, int winH, HWND hWnd)
 
 	//データを画面に描画するための一通りの設定（パイプライン）
 	pContext_->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);  // データの入力種類を指定
-	pContext_->OMSetRenderTargets(1, &pRenderTargetView_, pDepthStencilView);            // 描画先を設定
-	pContext_->RSSetViewports(1, &vp);
+	pContext_->OMSetRenderTargets(1, &pRenderTargetView_, pDepthStencilView);            // 描画先を
 
 	//シェーダー準備
 	hr = InitShader();
@@ -503,15 +508,17 @@ void Direct3D::SetShader(SHADER_TYPE type)
 }
 
 //描画開始
-void Direct3D::BeginDraw()
+void Direct3D::BeginDraw(int vpType)
 {
+	pContext_->RSSetViewports(1, &vp[vpType]);
+
 	//背景の色
 	float clearColor[4] = { 0.0f, 0.5f, 0.5f, 1.0f };//R,G,B,A
 
+	Camera::Update();
+
 	//画面をクリア
 	pContext_->ClearRenderTargetView(pRenderTargetView_, clearColor);
-
-	Camera::Update();
 
 	//深度バッファクリア
 	pContext_->ClearDepthStencilView(pDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);

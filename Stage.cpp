@@ -54,6 +54,8 @@ void Stage::Initialize()
     hModel_[0] = Model::Load("Assets/Ground.fbx");
     assert(hModel_[0] >= 0);
 
+    Trans_G.position_.y = -1;
+
     IntConstantBuffer();
 }
 

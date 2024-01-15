@@ -40,7 +40,7 @@ namespace Direct3D
 	void SetShader(SHADER_TYPE type);
 
 	//•`‰æŠJŽn
-	void BeginDraw();
+	void BeginDraw(int vpType);
 
 
 
