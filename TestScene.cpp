@@ -2,7 +2,8 @@
 #include "Engine/SceneManager.h"
 #include "Engine/Sprite.h"
 #include "TestScene.h"
-#include"Stage.h"
+#include "Stage.h"
+#include "Player.h"
 
 
 TestScene::TestScene(GameObject* parent)
@@ -13,6 +14,7 @@ TestScene::TestScene(GameObject* parent)
 void TestScene::Initialize()
 {
 	Instantiate<Stage>(this);
+	Instantiate<Player>(this);
 	Sprite* spr;
 	spr = new Sprite;
 }
