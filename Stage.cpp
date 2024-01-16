@@ -64,7 +64,7 @@ void Stage::Update()
 {
     CBUFF_STAGESCENE cb;
     cb.lightPosition = lightSourcePosition_;
-    XMStoreFloat4(&cb.eyePos, Camera::GetEyePosition());
+    XMStoreFloat4(&cb.eyePos, Camera::GetEyePosition(0));
     Direct3D::pContext_->UpdateSubresource(pCBStageScene_,0, NULL,&cb,0,0); 
     Direct3D::pContext_->VSSetConstantBuffers(1, 1, &pCBStageScene_);//頂点シェーダー
     Direct3D::pContext_->PSSetConstantBuffers(1, 1, &pCBStageScene_);//ピクセルシェーダー
