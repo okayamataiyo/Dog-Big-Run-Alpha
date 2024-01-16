@@ -24,13 +24,14 @@ void Player::Initialize()
 
 void Player::Update()
 {
+    Camera* pCamera = new Camera;
     PlayerMove();
 
-    Camera::SetTarget(Trans_P.position_,0);
+    pCamera->SetTarget(Trans_P.position_,0);
     XMFLOAT3 camPos = Trans_P.position_;
     camPos.y += 5;
     camPos.z -= 10;
-    Camera::SetPosition(camPos,0);
+    pCamera->SetPosition(camPos,0);
 }
 
 void Player::Draw()

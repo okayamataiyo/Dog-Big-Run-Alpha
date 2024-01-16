@@ -514,8 +514,8 @@ void Direct3D::BeginDraw(int vpType)
 
 	//背景の色
 	float clearColor[4] = { 0.0f, 0.5f, 0.5f, 1.0f };//R,G,B,A
-
-	Camera::Update();
+	Camera* pCamera = new Camera;
+	pCamera->Update();
 
 	//画面をクリア
 	pContext_[0]->ClearRenderTargetView(pRenderTargetView_, clearColor);

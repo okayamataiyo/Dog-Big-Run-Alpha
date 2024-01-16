@@ -5,7 +5,6 @@
 #include "Texture.h"
 
 using namespace DirectX;
-using namespace Camera;
 
 const XMFLOAT4 LIGHT_DIRECTION{1,2,1,0};
 
@@ -277,6 +276,7 @@ void Fbx::Draw(Transform& transform)
 
     transform.Calclation();//トランスフォームを計算
 
+    Camera* pCamera = new Camera;
     for (int j = 0; j < 2; j++)
     {
 
@@ -285,7 +285,7 @@ void Fbx::Draw(Transform& transform)
 
             //コンスタントバッファに情報を渡す
             CONSTANT_BUFFER_MODEL cb;
-            cb.matWVP = XMMatrixTranspose(transform.GetWorldMatrix() * Camera::GetViewMatrix(0) * Camera::GetProjectionMatrix());
+            cb.matWVP = XMMatrixTranspose(transform.GetWorldMatrix() * pCamera->GetViewMatrix(0) * pCamera->GetProjectionMatrix());
             cb.matNormal = XMMatrixTranspose(transform.GetNormalMatrix());
             cb.matW = XMMatrixTranspose(transform.GetNormalMatrix());
             cb.diffuseColor = pMaterialList_[i].diffuse;

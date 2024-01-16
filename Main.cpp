@@ -13,6 +13,7 @@
 const char* WIN_CLASS_NAME = "SampleGame";  //ウィンドウクラス名
 
 Rootjob* pRootjob = nullptr;
+Camera* pCamera = new Camera;
 
 //プロトタイプ宣言
 LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
@@ -80,7 +81,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
 	}
 
 	//カメラの初期化
-	Camera::Initialize();
+	pCamera->Initialize();
 
 	//DirectInputの初期化
 	Input::Initialize(hWnd);
