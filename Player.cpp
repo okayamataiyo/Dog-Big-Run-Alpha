@@ -26,11 +26,11 @@ void Player::Update()
 {
     PlayerMove();
 
-    Camera::SetTarget(Trans_P.position_);
+    Camera::SetTarget(Trans_P.position_,0);
     XMFLOAT3 camPos = Trans_P.position_;
     camPos.y += 5;
     camPos.z -= 10;
-    Camera::SetPosition(camPos);
+    Camera::SetPosition(camPos,0);
 }
 
 void Player::Draw()
