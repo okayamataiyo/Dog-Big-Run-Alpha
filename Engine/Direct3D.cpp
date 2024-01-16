@@ -5,7 +5,6 @@
 #include "Direct3D.h"
 #include "Camera.h"
 
-
 //変数
 namespace Direct3D
 {
@@ -16,7 +15,6 @@ namespace Direct3D
 
 	ID3D11Texture2D* pDepthStencil;							//深度ステンシル
 	ID3D11DepthStencilView* pDepthStencilView;				//深度ステンシルビュー
-
 
 	ID3D11VertexShader* pVertexShader_ = nullptr;			//頂点シェーダー
 	ID3D11PixelShader* pPixelShader_ = nullptr;				//ピクセルシェーダー
@@ -32,8 +30,6 @@ namespace Direct3D
 	};
 	SHADER_BUNDLE shaderBundle[SHADER_MAX];
 }
-
-
 
 //初期化
 HRESULT Direct3D::Initialize(int winW, int winH, HWND hWnd)

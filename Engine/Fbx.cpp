@@ -366,6 +366,41 @@ void Fbx::Release()
 
 }
 
+void Fbx::RayCast(RayCastData* data)
+{
+    //全てのパーツと判定
+    for (int i = 0; i < parts_.size(); i++)
+    {
+        parts_[i]->RayCast(data);
+    }
+    data->hit = false;
+
+    //マテリアル毎
+    for (DWORD i = 0; i < materialCount_; i++)
+    {
+        //そのマテリアルのポリゴン毎
+        for (DWORD j = 0; j < polygonCount_; j++)
+        {
+            XMFLOAT3 ver[3];
+            ver[0] = pVertexData_[ppIndexData_[i][j * 3 + 0]].position;
+            ver[1] = pVertexData_[ppIndexData_[i][j * 3 + 1]].position;
+            ver[2] = pVertexData_[ppIndexData_[i][j * 3 + 2]].position;
+
+            BOOL  hit = FALSE;
+            float dist = 0.0f;
+
+            hit = Direct3D::Intersect(data->start, data->dir, ver[0], ver[1], ver[2], &dist);
+
+
+            if (hit && dist < data->dist)
+            {
+                data->hit = TRUE;
+                data->dist = dist;
+            }
+        }
+    }
+}
+
 
 
 

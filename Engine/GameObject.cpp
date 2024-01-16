@@ -8,14 +8,13 @@ GameObject::GameObject()
 }
 
 GameObject::GameObject(GameObject* parent, const std::string& name)
-	: pParent_(parent),Is_DeadFlag(false),objectName_(name),pCollider_(nullptr)
+	: pParent_(parent), Is_DeadFlag(false), objectName_(name), pCollider_(nullptr)
 {
 	if (pParent_ != nullptr) {
 		this->transform_.pParent_ = &(parent->transform_);
 	}
-	 
-}
 
+}
 //template <class T>
 
 void Instantiate(GameObject* parent)

@@ -10,7 +10,7 @@ struct CBUFF_STAGESCENE
 //Stageを管理するクラス
 class Stage : public GameObject
 {
-    int hModel_[4];    //モデル番号
+    int hModel_;    //モデル番号
     ID3D11Buffer* pCBStageScene_;
     XMFLOAT4 lightSourcePosition_;
 
@@ -42,4 +42,6 @@ public:
     //引数:x,z  調べる位置
     //戻り値:通れない=true/通れない=false
     //bool IsWall(int x, int z);
+
+    int GetModelHandle() { return hModel_; }
 };

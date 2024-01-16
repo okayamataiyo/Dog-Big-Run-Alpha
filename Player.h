@@ -4,9 +4,11 @@
 //プレイヤーを管理するクラス
 class Player : public GameObject
 {
+protected:
 	int hModel_;	//モデル番号
 	int camType_;	
 	XMFLOAT3 move_;
+	Transform Trans_P;
 public:
 	//コンストラクタ
 	Player(GameObject* parent);

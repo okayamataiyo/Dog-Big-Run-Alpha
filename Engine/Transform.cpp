@@ -1,6 +1,6 @@
 #include "Transform.h"
 
-Transform::Transform() :
+Transform::Transform(): pParent_(nullptr),
     matTranslate_(XMMatrixIdentity()),
     matRotate_(XMMatrixIdentity()),
     matScale_(XMMatrixIdentity()),
@@ -34,6 +34,7 @@ void Transform::Calclation()
 
 XMMATRIX Transform::GetWorldMatrix()
 {
+    Calclation();
     if (pParent_ != nullptr) {
 
         //e‚ª‚ ‚Á‚½‚çe‚ÌWorldMatrix‚ğ‚©‚¯‚é

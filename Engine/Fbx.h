@@ -13,6 +13,18 @@ using std::vector;
 
 class Texture;
 
+//レイキャスト構造体
+struct RayCastData
+{
+	XMFLOAT3 start;		//レイ発射位置
+	XMFLOAT3 dir;		//レイの向きベクトル
+	float	 dist;		//衝突点までの距離
+	BOOL	 hit;		//レイが当たったか
+	XMFLOAT3 normal;	//法線
+
+	RayCastData() { dist = 99999.0f; }
+};
+
 class Fbx
 {
 	//マテリアル
@@ -23,7 +35,7 @@ class Fbx
 		XMFLOAT4 ambient;
 		XMFLOAT4 specular;
 		float shineness;
-	};
+	}*pMaterial_;
 
 	//コンスタントバッファー
 	struct CONSTANT_BUFFER_MODEL {
@@ -53,6 +65,7 @@ class Fbx
 	ID3D11Buffer* pConstantBuffer_;	//コンスタントバッファ
 	MATERIAL* pMaterialList_;
 	vector<int> indexCount_;
+	vector<Fbx*> parts_;
 //	int* indexCount_;
 
 	void InitVertex(fbxsdk::FbxMesh* mesh);
@@ -63,6 +76,8 @@ class Fbx
 	XMFLOAT4 dColor_;
 	XMFLOAT4 lightSourcePosition_;
 	Texture* pToonTex_;
+	VERTEX* pVertexData_;
+	DWORD** ppIndexData_;
 
 public:
 	//メンバ関数
@@ -72,5 +87,11 @@ public:
 	void Draw(Transform& transform);
 	void DrawToon(Transform& transform);
 	void Release();
+	
+	/// <summary>
+	/// レイキャスト(レイを飛ばして当たり判定)
+	/// </summary>
+	/// <param name="data">必要なものをまとめたデータ</param>
+	void RayCast(RayCastData* data);
 };
 

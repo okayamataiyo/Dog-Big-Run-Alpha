@@ -70,3 +70,17 @@ void Model::Release()
 	modelList.clear();
 	
 }
+
+void Model::RayCast(int handle, RayCastData* data)
+{
+	XMFLOAT3 target = Transform::Float3Add(data->start, data->dir);
+	XMMATRIX matInv = XMMatrixInverse(nullptr, modelList[handle]->transform_.GetWorldMatrix());
+	XMVECTOR vecStart = XMVector3TransformCoord(XMLoadFloat3(&data->start), matInv);
+	XMVECTOR vecTarget = XMVector3TransformCoord(XMLoadFloat3(&target), matInv);
+	XMVECTOR vecDir = vecTarget - vecStart;
+
+	XMStoreFloat3(&data->start, vecStart);
+	XMStoreFloat3(&data->dir, vecDir);
+
+	modelList[handle]->pfbx_->RayCast(data);
+}

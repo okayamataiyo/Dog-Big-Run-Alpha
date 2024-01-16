@@ -33,7 +33,7 @@ void Stage::IntConstantBuffer()
 
 //コンストラクタ
 Stage::Stage(GameObject* parent)
-    :GameObject(parent, "Stage"),hModel_{-1, -1, -1,-1},lightSourcePosition_(DEF_LIGHT_POSITION)
+    :GameObject(parent, "Stage"),hModel_(-1), lightSourcePosition_(DEF_LIGHT_POSITION)
 {
 
 }
@@ -47,13 +47,13 @@ Stage::~Stage()
 //初期化
 void Stage::Initialize()
 {
-
     //モデルデータのロード
-    hModel_[0] = Model::Load("Assets/Ground.fbx");
-    assert(hModel_[0] >= 0);
+    hModel_ = Model::Load("Assets/Ground.fbx");
+    assert(hModel_ >= 0);
 
     Trans_G.position_.y = -1;
-    Trans_G.scale_ = { 40,2,40 };
+    Trans_G.rotate_.y = 90;
+    Trans_G.scale_ = { 1,0.5,1 };
 
     IntConstantBuffer();
 }
@@ -132,8 +132,8 @@ void Stage::Update()
 //描画
 void Stage::Draw()
 {
-    Model::SetTransform(hModel_[0], Trans_G);
-    Model::Draw(hModel_[0]);
+    Model::SetTransform(hModel_, Trans_G);
+    Model::Draw(hModel_);
 }
 
 //開放
