@@ -42,15 +42,23 @@ namespace Direct3D
 	//描画開始
 	void BeginDraw(int vpType);
 
-
-
 	//描画終了
 	void EndDraw();
 
-
-
 	//解放
 	void Release();
+
+	/// <summary>
+	/// 三角形と線分(レイ)の衝突判定(衝突判定に使用)
+	/// </summary>
+	/// <param name="_start">レイのスタート位置</param>
+	/// <param name="_direction">レイの方向</param>
+	/// <param name="_v0">三角形の各頂点位置</param>
+	/// <param name="_v1">三角形の各頂点位置</param>
+	/// <param name="_v2">三角形の各頂点位置</param>
+	/// <param name="_distance">衝突点までの距離を返す</param>
+	/// <returns>衝突したかどうか</returns>
+	bool Intersect(XMFLOAT3& _start, XMFLOAT3& _direction,XMFLOAT3& _v0,XMFLOAT3& _v1, XMFLOAT3& _v2, float* _distance);
 
 };
 

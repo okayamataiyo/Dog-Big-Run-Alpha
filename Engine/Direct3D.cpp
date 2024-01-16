@@ -550,3 +550,54 @@ void Direct3D::Release()
 
 
 }
+
+bool Direct3D::Intersect(XMFLOAT3& _start, XMFLOAT3& _direction, XMFLOAT3& _v0, XMFLOAT3& _v1, XMFLOAT3& _v2, float* _distance)
+{
+	//微小な定数([M?ller97]での値)
+	constexpr float kEpsilon = 1e-6f;
+
+	//三角形の２辺
+	XMVECTOR edge1 = XMVectorSet(_v1.x - _v0.x, _v1.y - _v0.y, _v1.z - _v0.z, 0.0f);
+	XMVECTOR edge2 = XMVectorSet(_v2.x - _v0.x, _v2.y - _v0.y, _v2.z - _v0.z, 0.0f);
+
+	XMVECTOR alpha = XMVector3Cross(XMLoadFloat3(&_direction), edge2);
+	float det = XMVector3Dot(edge1, alpha).m128_f32[0];
+
+	// 三角形に対して、レイが平行に入射するような場合 det = 0 となる。
+	// det が小さすぎると 1/det が大きくなりすぎて数値的に不安定になるので
+	// det ? 0 の場合は交差しないこととする。
+	if (-kEpsilon < det && det < kEpsilon)
+	{
+		return false;
+	}
+
+	float invDet = 1.0f / det;
+	XMFLOAT3 r = XMFLOAT3(_start.x - _v0.x, _start.y - _v0.y, _start.z - _v0.z);
+
+	// u が 0 <= u <= 1 を満たしているかを調べる。
+	float u = XMVector3Dot(alpha, XMLoadFloat3(&r)).m128_f32[0] * invDet;
+	if (u < 0.0f || u > 1.0f)
+	{
+		return false;
+	}
+
+	XMVECTOR beta = XMVector3Cross(XMLoadFloat3(&r), edge1);
+
+	// v が 0 <= v <= 1 かつ u + v <= 1 を満たすことを調べる。
+	// すなわち、v が 0 <= v <= 1 - u をみたしているかを調べればOK。
+	float v = XMVector3Dot(XMLoadFloat3(&_direction), beta).m128_f32[0] * invDet;
+	if (v < 0.0f || u + v > 1.0f)
+	{
+		return false;
+	}
+
+	// t が 0 <= t を満たすことを調べる。
+	float t = XMVector3Dot(edge2, beta).m128_f32[0] * invDet;
+	if (t < 0.0f)
+	{
+		return false;
+	}
+
+	*_distance = t;
+	return true;
+}

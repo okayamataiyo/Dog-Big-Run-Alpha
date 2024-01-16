@@ -11,7 +11,7 @@ const XMFLOAT4 LIGHT_DIRECTION{1,2,1,0};
 Fbx::Fbx()
     :vertexCount_(0),polygonCount_(0),materialCount_(0),
     pVertexBuffer_(nullptr),pIndexBuffer_(nullptr),pConstantBuffer_(nullptr),
-    pMaterialList_(nullptr)
+    pMaterialList_(nullptr),ppIndexData_(nullptr),pVertexData_(nullptr)
 {
 }
 
@@ -74,7 +74,7 @@ HRESULT Fbx::Load(std::string fileName)
 void Fbx::InitVertex(fbxsdk::FbxMesh* mesh)
 {
     //頂点情報を入れる配列
-    VERTEX* vertices = new VERTEX[vertexCount_];
+    pVertexData_ = new VERTEX[vertexCount_];
 
     //全ポリゴン
     for (DWORD poly = 0; poly < polygonCount_; poly++)
@@ -87,18 +87,18 @@ void Fbx::InitVertex(fbxsdk::FbxMesh* mesh)
 
             //頂点の位置
             FbxVector4 pos = mesh->GetControlPointAt(index);
-            vertices[index].position = XMVectorSet((float)pos[0], (float)pos[1], (float)pos[2], 0.0f);
+            pVertexData_[index].position = XMVectorSet((float)pos[0], (float)pos[1], (float)pos[2], 0.0f);
 
             //頂点のUV
             FbxLayerElementUV* pUV = mesh->GetLayer(0)->GetUVs();
             int uvIndex = mesh->GetTextureUVIndex(poly, vertex, FbxLayerElement::eTextureDiffuse);
             FbxVector2 uv = pUV->GetDirectArray().GetAt(uvIndex);
-            vertices[index].uv = XMVectorSet((float)uv.mData[0], (float)(1.0f - uv.mData[1]), 0.0f, 0.0f);
+            pVertexData_[index].uv = XMVectorSet((float)uv.mData[0], (float)(1.0f - uv.mData[1]), 0.0f, 0.0f);
 
             //頂点の法線
             FbxVector4 Normal;
             mesh->GetPolygonVertexNormal(poly, vertex, Normal);	    //i番目のポリゴンの、j番目の頂点の法線をゲット
-            vertices[index].normal = XMVectorSet((float)Normal[0], (float)Normal[1], (float)Normal[2], 0.0f);
+            pVertexData_[index].normal = XMVectorSet((float)Normal[0], (float)Normal[1], (float)Normal[2], 0.0f);
         }
     }
     // 頂点バッファ作成
@@ -111,7 +111,7 @@ void Fbx::InitVertex(fbxsdk::FbxMesh* mesh)
 	bd_vertex.MiscFlags = 0;
 	bd_vertex.StructureByteStride = 0;
 	D3D11_SUBRESOURCE_DATA data_vertex;
-	data_vertex.pSysMem = vertices;
+	data_vertex.pSysMem = pVertexData_;
 	hr = Direct3D::pDevice_->CreateBuffer(&bd_vertex, &data_vertex, &pVertexBuffer_);
 	if (FAILED(hr))
 	{
@@ -126,6 +126,7 @@ void Fbx::InitIndex(fbxsdk::FbxMesh* mesh)
 //  int count = 0;
     pIndexBuffer_ = new ID3D11Buffer * [materialCount_];
     indexCount_ = vector<int>(materialCount_);
+    ppIndexData_ = new DWORD * [materialCount_];
 //    indexCount_ = new int[materialCount_];
 
 //    for (DWORD poly = 0; poly < polygonCount_; poly++)
@@ -135,53 +136,55 @@ void Fbx::InitIndex(fbxsdk::FbxMesh* mesh)
 
     for (int i = 0; i < materialCount_; i++)
     {
-    //    //3頂点分
-    //    for (DWORD vertex = 0; vertex < 3; vertex++)
-    //    {
-    //        index[count] = mesh->GetPolygonVertex(poly, vertex);
-    //        count++;
-    //    }
-    //}
+        //    //3頂点分
+        //    for (DWORD vertex = 0; vertex < 3; vertex++)
+        //    {
+        //        index[count] = mesh->GetPolygonVertex(poly, vertex);
+        //        count++;
+        //    }
+        //}
 
-    int count = 0;
-    
-    //全ポリゴン
-    for (DWORD poly = 0; poly < polygonCount_; poly++)
-    {
-        //あるマテリアルを持ったポリゴンのリストをとってきて、頂点をリストアップ
-        FbxLayerElementMaterial* mtl = mesh->GetLayer(0)->GetMaterials();
-        int mtlId = mtl->GetIndexArray().GetAt(poly);
+        int count = 0;
 
-        if (mtlId == i)
+        //全ポリゴン
+        for (DWORD poly = 0; poly < polygonCount_; poly++)
         {
-            //3頂点分
-            for (DWORD vertex = 0; vertex < 3; vertex++)
+            //あるマテリアルを持ったポリゴンのリストをとってきて、頂点をリストアップ
+            FbxLayerElementMaterial* mtl = mesh->GetLayer(0)->GetMaterials();
+            int mtlId = mtl->GetIndexArray().GetAt(poly);
+
+            if (mtlId == i)
             {
-                index[count] = mesh->GetPolygonVertex(poly, vertex);
-                count++;
+                //3頂点分
+                for (DWORD vertex = 0; vertex < 3; vertex++)
+                {
+                    index[count] = mesh->GetPolygonVertex(poly, vertex);
+                    count++;
+                }
             }
         }
-    }
-    indexCount_[i] = count;
+        indexCount_[i] = count;
 
-    D3D11_BUFFER_DESC   bd;
-    bd.Usage = D3D11_USAGE_DEFAULT;
-    bd.ByteWidth = sizeof(int) * polygonCount_ * 3;
-    bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
-    bd.CPUAccessFlags = 0;
-    bd.MiscFlags = 0;
+        D3D11_BUFFER_DESC   bd;
+        bd.Usage = D3D11_USAGE_DEFAULT;
+        bd.ByteWidth = sizeof(int) * polygonCount_ * 3;
+        bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
+        bd.CPUAccessFlags = 0;
+        bd.MiscFlags = 0;
 
-    D3D11_SUBRESOURCE_DATA InitData;
-    InitData.pSysMem = index.data();
-    InitData.SysMemPitch = 0;
-    InitData.SysMemSlicePitch = 0;
+        D3D11_SUBRESOURCE_DATA InitData;
+        InitData.pSysMem = index.data();
+        InitData.SysMemPitch = 0;
+        InitData.SysMemSlicePitch = 0;
 
-    HRESULT hr;
-    hr = Direct3D::pDevice_->CreateBuffer(&bd, &InitData, &pIndexBuffer_[i]);
-    if (FAILED(hr))
-    {
-        MessageBox(NULL, "インデックスバッファの作成に失敗しました", "エラー", MB_OK);
-    }
+        HRESULT hr;
+        hr = Direct3D::pDevice_->CreateBuffer(&bd, &InitData, &pIndexBuffer_[i]);
+        if (FAILED(hr))
+        {
+            MessageBox(NULL, "インデックスバッファの作成に失敗しました", "エラー", MB_OK);
+        }
+        ppIndexData_[i] = new DWORD[count];
+        memcpy(ppIndexData_[i], index.data(), sizeof(DWORD) * count);
     }
 }
 
@@ -382,9 +385,9 @@ void Fbx::RayCast(RayCastData* data)
         for (DWORD j = 0; j < polygonCount_; j++)
         {
             XMFLOAT3 ver[3];
-            ver[0] = pVertexData_[ppIndexData_[i][j * 3 + 0]].position;
-            ver[1] = pVertexData_[ppIndexData_[i][j * 3 + 1]].position;
-            ver[2] = pVertexData_[ppIndexData_[i][j * 3 + 2]].position;
+            XMStoreFloat3(&ver[0], pVertexData_[ppIndexData_[i][j * 3 + 0]].position);
+            XMStoreFloat3(&ver[1], pVertexData_[ppIndexData_[i][j * 3 + 1]].position);
+            XMStoreFloat3(&ver[2], pVertexData_[ppIndexData_[i][j * 3 + 2]].position);
 
             BOOL  hit = FALSE;
             float dist = 0.0f;
