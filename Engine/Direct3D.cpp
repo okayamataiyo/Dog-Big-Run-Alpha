@@ -12,7 +12,7 @@ namespace Direct3D
 	ID3D11Device* pDevice_ = nullptr;		                //デバイス
 	ID3D11DeviceContext* pContext_ = nullptr;		        //デバイスコンテキスト
 	IDXGISwapChain* pSwapChain_ = nullptr;		            //スワップチェイン
-	ID3D11RenderTargetView* pRenderTargetView_ = nullptr;	//レンダーターゲットビュー
+	ID3D11RenderTargetView* pRenderTargetView_[2] = {};	//レンダーターゲットビュー
 
 	ID3D11Texture2D* pDepthStencil;							//深度ステンシル
 	ID3D11DepthStencilView* pDepthStencilView;				//深度ステンシルビュー
@@ -25,9 +25,9 @@ namespace Direct3D
 	D3D11_VIEWPORT vp[2];									//分割ビューポート、これをモデルの描画前に設定する
 	struct SHADER_BUNDLE
 	{
-		ID3D11VertexShader* pVertexShader_ = nullptr;	//頂点シェーダー
-		ID3D11PixelShader* pPixelShader_ = nullptr;		//ピクセルシェーダー
-		ID3D11InputLayout* pVertexLayout_ = nullptr;	//頂点インプットレイアウト
+		ID3D11VertexShader* pVertexShader_ = nullptr;		//頂点シェーダー
+		ID3D11PixelShader* pPixelShader_ = nullptr;			//ピクセルシェーダー
+		ID3D11InputLayout* pVertexLayout_ = nullptr;		//頂点インプットレイアウト
 		ID3D11RasterizerState* pRasterizerState_ = nullptr;	//ラスタライザー
 	};
 	SHADER_BUNDLE shaderBundle[SHADER_MAX];
@@ -95,7 +95,8 @@ HRESULT Direct3D::Initialize(int winW, int winH, HWND hWnd)
 	}
 
 	//レンダーターゲットビューを作成
-	hr = pDevice_->CreateRenderTargetView(pBackBuffer, NULL, &pRenderTargetView_);
+	hr = pDevice_->CreateRenderTargetView(pBackBuffer, NULL, &pRenderTargetView_[0]);
+	hr = pDevice_->CreateRenderTargetView(pBackBuffer, NULL, &pRenderTargetView_[1]);
 	if (FAILED(hr))
 	{
 		//エラー処理
@@ -138,8 +139,9 @@ HRESULT Direct3D::Initialize(int winW, int winH, HWND hWnd)
 	pDevice_->CreateDepthStencilView(pDepthStencil, NULL, &pDepthStencilView);
 
 	//データを画面に描画するための一通りの設定（パイプライン）
-	pContext_->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);  // データの入力種類を指定
-	pContext_->OMSetRenderTargets(1, &pRenderTargetView_, pDepthStencilView);            // 描画先を
+	pContext_->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);		// データの入力種類を指定
+	pContext_->OMSetRenderTargets(1, &pRenderTargetView_[0], pDepthStencilView);    // 描画先を
+	pContext_->OMSetRenderTargets(1, &pRenderTargetView_[1], pDepthStencilView);    // 描画先を
 
 	//シェーダー準備
 	hr = InitShader();
@@ -518,7 +520,10 @@ void Direct3D::BeginDraw(int vpType)
 	Camera::Update();
 
 	//画面をクリア
-	pContext_->ClearRenderTargetView(pRenderTargetView_, clearColor);
+	pContext_->ClearRenderTargetView(pRenderTargetView_[0], clearColor);
+
+	//画面をクリア
+	pContext_->ClearRenderTargetView(pRenderTargetView_[1], clearColor);
 
 	//深度バッファクリア
 	pContext_->ClearDepthStencilView(pDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
@@ -547,7 +552,8 @@ void Direct3D::Release()
 		SAFE_RELEASE(shaderBundle[i].pVertexShader_);
 	}
 
-	SAFE_RELEASE(pRenderTargetView_);
+	SAFE_RELEASE(pRenderTargetView_[0]);
+	SAFE_RELEASE(pRenderTargetView_[1]);
 	SAFE_RELEASE(pSwapChain_);
 	SAFE_RELEASE(pContext_);
 	SAFE_RELEASE(pDevice_);

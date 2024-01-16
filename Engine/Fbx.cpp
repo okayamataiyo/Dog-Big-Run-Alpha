@@ -102,7 +102,6 @@ void Fbx::InitVertex(fbxsdk::FbxMesh* mesh)
             vertices[index].normal = XMVectorSet((float)Normal[0], (float)Normal[1], (float)Normal[2], 0.0f);
         }
     }
-
     // 頂点バッファ作成
     HRESULT hr;
 	D3D11_BUFFER_DESC bd_vertex;
