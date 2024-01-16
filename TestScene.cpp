@@ -1,6 +1,5 @@
 #include "Engine/Input.h"
 #include "Engine/SceneManager.h"
-#include "Engine/Sprite.h"
 #include "TestScene.h"
 #include "Stage.h"
 #include "Player.h"
@@ -15,8 +14,6 @@ void TestScene::Initialize()
 {
 	Instantiate<Stage>(this);
 	Instantiate<Player>(this);
-	Sprite* spr;
-	spr = new Sprite;
 }
 
 void TestScene::Update()

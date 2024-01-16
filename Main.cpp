@@ -6,7 +6,6 @@
 #include "Engine/Input.h"
 #include "Engine/Rootjob.h"
 #include "Engine/Model.h"
-#include "Engine/Sprite.h"
 
 #pragma comment(lib, "winmm.lib")
 

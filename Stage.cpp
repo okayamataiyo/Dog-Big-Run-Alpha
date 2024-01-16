@@ -1,5 +1,4 @@
 #include "Engine/Model.h"
-#include "Engine/Sprite.h"
 #include "Engine/Camera.h"
 #include "Engine/Input.h"
 #include "Engine/Fbx.h"
@@ -36,7 +35,6 @@ void Stage::IntConstantBuffer()
 Stage::Stage(GameObject* parent)
     :GameObject(parent, "Stage"),hModel_{-1, -1, -1,-1},lightSourcePosition_(DEF_LIGHT_POSITION)
 {
-    Sprite* s;
 
 }
 
@@ -66,9 +64,9 @@ void Stage::Update()
     CBUFF_STAGESCENE cb;
     cb.lightPosition = lightSourcePosition_;
     XMStoreFloat4(&cb.eyePos, Camera::GetEyePosition(0));
-    Direct3D::pContext_->UpdateSubresource(pCBStageScene_,0, NULL,&cb,0,0); 
-    Direct3D::pContext_->VSSetConstantBuffers(1, 1, &pCBStageScene_);//頂点シェーダー
-    Direct3D::pContext_->PSSetConstantBuffers(1, 1, &pCBStageScene_);//ピクセルシェーダー
+    Direct3D::pContext_[0]->UpdateSubresource(pCBStageScene_,0, NULL,&cb,0,0);
+    Direct3D::pContext_[0]->VSSetConstantBuffers(1, 1, &pCBStageScene_);//頂点シェーダー
+    Direct3D::pContext_[0]->PSSetConstantBuffers(1, 1, &pCBStageScene_);//ピクセルシェーダー
 
     XMFLOAT4 LightPos = { 0,0,0,0 };
     XMFLOAT4 Margin   = { 0,0,0,0 };
