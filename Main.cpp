@@ -145,7 +145,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
 				Direct3D::BeginDraw(i);
 
 				//ƒJƒƒ‰‚Ìˆ—
-				Camera::Update();
+				//Camera::Update();
 
 				//“ü—Í‚Ìˆ—
 				Input::Update();

@@ -55,6 +55,7 @@ void Stage::Initialize()
     assert(hModel_[0] >= 0);
 
     Trans_G.position_.y = -1;
+    Trans_G.scale_ = { 40,2,40 };
 
     IntConstantBuffer();
 }
