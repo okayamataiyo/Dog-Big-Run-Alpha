@@ -140,12 +140,12 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
 			}
 
 			//▼ゲームの処理
-			for (int i = 0; i < 1; i++)
+			for (int i = 0; i <= 1; i++)
 			{
 				Direct3D::BeginDraw(i);
 
 				//カメラの処理
-				//Camera::Update();
+				//pCamera->Update();
 
 				//入力の処理
 				Input::Update();
@@ -153,8 +153,6 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
 				pRootjob->UpdateSub();
 
 				////▼描画
-				//Direct3D::BeginDraw(0);
-				//Direct3D::BeginDraw(1);
 
 				//ルートジョブから、すべてのオブジェクトのドローを呼ぶ
 				pRootjob->DrawSub();

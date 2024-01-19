@@ -509,15 +509,10 @@ void Direct3D::BeginDraw(int vpType)
 	pContext_[0]->RSSetViewports(1, &vp[vpType]);
 
 	//背景の色
-	float clearColor[4] = { 0.0f, 0.5f, 0.5f, 1.0f };//R,G,B,A
-	Camera* pCamera = new Camera;
-	pCamera->Update();
+	/*Camera* pCamera = new Camera;
+	pCamera->Update();*/
 
-	//画面をクリア
-	pContext_[0]->ClearRenderTargetView(pRenderTargetView_, clearColor);
 
-	//深度バッファクリア
-	pContext_[0]->ClearDepthStencilView(pDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
 }
 
 
@@ -525,6 +520,13 @@ void Direct3D::BeginDraw(int vpType)
 //描画終了
 void Direct3D::EndDraw()
 {
+	float clearColor[4] = { 0.0f, 0.5f, 0.5f, 1.0f };//R,G,B,A
+	//画面をクリア
+	pContext_[0]->ClearRenderTargetView(pRenderTargetView_, clearColor);
+
+	//深度バッファクリア
+	pContext_[0]->ClearDepthStencilView(pDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
+
 	//スワップ（バックバッファを表に表示する）
 	pSwapChain_->Present(0, 0);
 }

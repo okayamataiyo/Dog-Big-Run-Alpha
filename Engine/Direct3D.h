@@ -24,6 +24,7 @@ enum SHADER_TYPE
 
 namespace Direct3D
 {
+
 	extern ID3D11Device* pDevice_;		                //デバイス
 	extern ID3D11DeviceContext* pContext_[2];		        //デバイスコンテキスト
 
