@@ -24,7 +24,7 @@
     <ProjectGuid>{cbabd195-f59a-4ed0-8c1c-24c3f73397bc}</ProjectGuid>
     <RootNamespace>MyGameEngine</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
-    <ProjectName>MyGameEngine_ShaderTest</ProjectName>
+    <ProjectName>Dog Big Run</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

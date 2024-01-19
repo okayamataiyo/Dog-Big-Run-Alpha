@@ -105,7 +105,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
 		//メッセージなし
 		else
 		{
-			timeBeginPeriod(1);
+			//timeBeginPeriod(1);
 
 			static DWORD countFps = 0;
 
@@ -132,35 +132,50 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
 			countFps++;
 
 
-			timeEndPeriod(1);
+			//timeEndPeriod(1);
+
+			//▼ゲームの処理
+			Direct3D::BeginDraw(0);
+
+			//カメラの処理
+			pCamera->Update();
+
+			//入力の処理
+			Input::Update();
+
+			pRootjob->UpdateSub();
+
+			////▼描画
+
+			//ルートジョブから、すべてのオブジェクトのドローを呼ぶ
+			pRootjob->DrawSub();
+
+			Direct3D::EndDraw();
+
+			//▼ゲームの処理
+			Direct3D::BeginDraw(1);
+
+			//カメラの処理
+			pCamera->Update();
+
+			//入力の処理
+			Input::Update();
+
+			pRootjob->UpdateSub();
+			
+			////▼描画
+
+			//ルートジョブから、すべてのオブジェクトのドローを呼ぶ
+			pRootjob->DrawSub();
+
+			Direct3D::EndDraw();
 
 			if (Input::IsKeyUp(DIK_ESCAPE))
 			{
 				PostQuitMessage(0);
 			}
-
-			//▼ゲームの処理
-			for (int i = 0; i <= 1; i++)
-			{
-				Direct3D::BeginDraw(i);
-
-				//カメラの処理
-				//pCamera->Update();
-
-				//入力の処理
-				Input::Update();
-
-				pRootjob->UpdateSub();
-
-				////▼描画
-
-				//ルートジョブから、すべてのオブジェクトのドローを呼ぶ
-				pRootjob->DrawSub();
-
-				Direct3D::EndDraw();
-
-			}
 		}
+
 	}
 
 	Model::Release();
