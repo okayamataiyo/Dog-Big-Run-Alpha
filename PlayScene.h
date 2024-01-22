@@ -1,6 +1,5 @@
 #pragma once
 #include "Engine/GameObject.h"
-#include "Engine/Camera.h"
 #include "Player.h"
 
 /// <summary>
@@ -11,8 +10,7 @@ class PlayScene :
 {
 private:
     //メンバ変数
-    Player* pPlayer_[1];
-    Camera* pCamera_;
+    Player* pPlayer_[2];
 public:
     /// <summary>
     /// コンストラクタ

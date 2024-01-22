@@ -148,7 +148,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
 				Direct3D::SetViewPort(i);
 
 				//カメラの処理
-				pCamera->Update();
+				pCamera->Update(i);
 				pRootjob->DrawSub();	//ルートジョブから、すべてのオブジェクトのドローを呼ぶ
 				Direct3D::EndDraw();
 			}

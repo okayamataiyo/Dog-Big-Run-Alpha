@@ -14,7 +14,7 @@ public:
 	void Initialize();
 
 	//更新（ビュー行列作成）
-	void Update();
+	void Update(int _CamPos);
 
 	//視点（カメラの位置）を設定
 	void SetPosition(XMVECTOR position,int type);

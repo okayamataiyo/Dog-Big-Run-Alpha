@@ -19,11 +19,10 @@ void Camera::Initialize()
 }
 
 //更新
-void Camera::Update()
+void Camera::Update(int _CamPos)
 {
 	//ビュー行列の作成
-	viewMatrix_[0] = XMMatrixLookAtLH(position_[0], target_[0], XMVectorSet(0, 1, 0, 0));
-	viewMatrix_[1] = XMMatrixLookAtLH(position_[1], target_[1], XMVectorSet(0, 1, 0, 0));
+	viewMatrix_[_CamPos] = XMMatrixLookAtLH(position_[_CamPos], target_[_CamPos], XMVectorSet(0, 1, 0, 0));
 }
 
 //位置を設定

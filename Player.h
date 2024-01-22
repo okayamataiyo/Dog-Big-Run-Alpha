@@ -1,5 +1,12 @@
 #pragma once
 #include "Engine/GameObject.h"
+#include "Engine/Camera.h"
+
+enum
+{
+	PlayerFirst,
+	PlayerSeconds
+};
 
 //プレイヤーを管理するクラス
 class Player : public GameObject
@@ -7,9 +14,14 @@ class Player : public GameObject
 protected:
 	int hModel_;	//モデル番号
 	int camType_;	
+	float powerX_;
+	float powerY_;
+	float powerZ_;
 	XMFLOAT3 move_;
-	Transform TransPlayer_;
+	Transform TransPlayer_[2];
+	Camera* pCamera_;
 public:
+	int playerNum_;
 	//コンストラクタ
 	Player(GameObject* _parent);
 
@@ -38,6 +50,6 @@ public:
 	/// プレイヤーの位置取得
 	/// </summary>
 	/// <returns>プレイヤーの位置</returns>
-	Transform GetPlayerPos() { return TransPlayer_; }
+	Transform GetPlayerPos(int _PPos) { return TransPlayer_[_PPos]; }
 };
 
