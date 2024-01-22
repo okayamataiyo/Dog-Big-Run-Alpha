@@ -6,14 +6,18 @@
 #include "Engine/Input.h"
 #include "Engine/Rootjob.h"
 #include "Engine/Model.h"
+#include "Player.h"
 
+//リンカ
 #pragma comment(lib, "winmm.lib")
 
 //定数宣言
 const char* WIN_CLASS_NAME = "SampleGame";  //ウィンドウクラス名
 
 Rootjob* pRootjob = nullptr;
-Camera* pCamera = new Camera;
+Player* pPlayer   = nullptr;
+Camera* pCamera   = new Camera;
+
 
 //プロトタイプ宣言
 LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
@@ -105,10 +109,9 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
 		//メッセージなし
 		else
 		{
-			//timeBeginPeriod(1);
-
+			//時間測定
+			timeBeginPeriod(1);							//時間計測の制度をあげる
 			static DWORD countFps = 0;
-
 			static DWORD startTime = timeGetTime();
 			DWORD nowTime = timeGetTime();
 			static DWORD lastUpdateTime = nowTime;
@@ -132,38 +135,21 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
 			countFps++;
 
 
-			//timeEndPeriod(1);
+			timeEndPeriod(1);
 
 			//▼ゲームの処理
-			Direct3D::BeginDraw(0);
-
-			//カメラの処理
-			pCamera->Update();
-
 			//入力の処理
 			Input::Update();
 
 			pRootjob->UpdateSub();
 
 			////▼描画
-
-			//ルートジョブから、すべてのオブジェクトのドローを呼ぶ
-			pRootjob->DrawSub();
-
-			Direct3D::EndDraw();
-
-			//▼ゲームの処理
-			Direct3D::BeginDraw(1);
-
-			//カメラの処理
-			pCamera->Update();
-
-			//入力の処理
-			Input::Update();
-
-			pRootjob->UpdateSub();
+			Direct3D::BeginDraw();
+			pPlayer = (Player*)pRootjob->FindObject("Player");
+			Direct3D::SetViewPort(0);
 			
-			////▼描画
+			//カメラの処理
+			pCamera->Update();
 
 			//ルートジョブから、すべてのオブジェクトのドローを呼ぶ
 			pRootjob->DrawSub();

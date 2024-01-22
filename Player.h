@@ -28,6 +28,9 @@ public:
 	//開放
 	void Release() override;
 
+	/// <summary>
+	/// プレイヤーの移動関数
+	/// </summary>
 	void PlayerMove();
 };
 

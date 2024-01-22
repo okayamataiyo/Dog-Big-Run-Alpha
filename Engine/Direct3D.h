@@ -26,7 +26,7 @@ namespace Direct3D
 {
 
 	extern ID3D11Device* pDevice_;		                //デバイス
-	extern ID3D11DeviceContext* pContext_[2];		        //デバイスコンテキスト
+	extern ID3D11DeviceContext* pContext_;		        //デバイスコンテキスト
 
 	//初期化
 	HRESULT Initialize(int winW, int winH, HWND hWnd);
@@ -41,7 +41,7 @@ namespace Direct3D
 	void SetShader(SHADER_TYPE type);
 
 	//描画開始
-	void BeginDraw(int vpType);
+	void BeginDraw();
 
 	//描画終了
 	void EndDraw();
@@ -60,6 +60,12 @@ namespace Direct3D
 	/// <param name="_distance">衝突点までの距離を返す</param>
 	/// <returns>衝突したかどうか</returns>
 	bool Intersect(XMFLOAT3& _start, XMFLOAT3& _direction,XMFLOAT3& _v0,XMFLOAT3& _v1, XMFLOAT3& _v2, float* _distance);
+
+	/// <summary>
+	/// ビューポートに情報を入れる
+	/// </summary>
+	/// <param name="VpType">ビューポートの種類</param>
+	void SetViewPort(int VpType);
 
 };
 

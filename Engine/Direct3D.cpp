@@ -8,24 +8,24 @@
 //変数
 namespace Direct3D
 {
-	ID3D11Device* pDevice_ = nullptr;		                //デバイス
-	ID3D11DeviceContext* pContext_[2] = {};		        //デバイスコンテキスト
-	IDXGISwapChain* pSwapChain_ = nullptr;		            //スワップチェイン
+	ID3D11Device* pDevice_					   = nullptr;	//デバイス
+	ID3D11DeviceContext* pContext_			   = nullptr;	//デバイスコンテキスト
+	IDXGISwapChain* pSwapChain_				   = nullptr;	//スワップチェイン
 	ID3D11RenderTargetView* pRenderTargetView_ = nullptr;	//レンダーターゲットビュー
 
 	ID3D11Texture2D* pDepthStencil;							//深度ステンシル
 	ID3D11DepthStencilView* pDepthStencilView;				//深度ステンシルビュー
 
-	ID3D11VertexShader* pVertexShader_ = nullptr;			//頂点シェーダー
-	ID3D11PixelShader* pPixelShader_ = nullptr;				//ピクセルシェーダー
-	ID3D11InputLayout* pVertexLayout_ = nullptr;			//頂点インプットレイアウト
-	ID3D11RasterizerState* pRasterizerState_ = nullptr;		//ラスタライザー
+	ID3D11VertexShader* pVertexShader_		   = nullptr;	//頂点シェーダー
+	ID3D11PixelShader* pPixelShader_		   = nullptr;	//ピクセルシェーダー
+	ID3D11InputLayout* pVertexLayout_		   = nullptr;	//頂点インプットレイアウト
+	ID3D11RasterizerState* pRasterizerState_   = nullptr;	//ラスタライザー
 	D3D11_VIEWPORT vp[2];									//分割ビューポート、これをモデルの描画前に設定する
 	struct SHADER_BUNDLE
 	{
-		ID3D11VertexShader* pVertexShader_ = nullptr;		//頂点シェーダー
-		ID3D11PixelShader* pPixelShader_ = nullptr;			//ピクセルシェーダー
-		ID3D11InputLayout* pVertexLayout_ = nullptr;		//頂点インプットレイアウト
+		ID3D11VertexShader* pVertexShader_	   = nullptr;	//頂点シェーダー
+		ID3D11PixelShader* pPixelShader_	   = nullptr;	//ピクセルシェーダー
+		ID3D11InputLayout* pVertexLayout_	   = nullptr;	//頂点インプットレイアウト
 		ID3D11RasterizerState* pRasterizerState_ = nullptr;	//ラスタライザー
 	};
 	SHADER_BUNDLE shaderBundle[SHADER_MAX];
@@ -72,7 +72,7 @@ HRESULT Direct3D::Initialize(int winW, int winH, HWND hWnd)
 		&pSwapChain_,					// 無事完成したSwapChainのアドレスが返ってくる
 		&pDevice_,						// 無事完成したDeviceアドレスが返ってくる
 		&level,							// 無事完成したDevice、Contextのレベルが返ってくる
-		&pContext_[0]);					// 無事完成したContextのアドレスが返ってくる
+		&pContext_);					// 無事完成したContextのアドレスが返ってくる
 	if (FAILED(hr))
 	{
 		//エラー処理
@@ -134,8 +134,8 @@ HRESULT Direct3D::Initialize(int winW, int winH, HWND hWnd)
 	pDevice_->CreateDepthStencilView(pDepthStencil, NULL, &pDepthStencilView);
 
 	//データを画面に描画するための一通りの設定（パイプライン）
-	pContext_[0]->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);		// データの入力種類を指定
-	pContext_[0]->OMSetRenderTargets(1, &pRenderTargetView_, pDepthStencilView);    // 描画先を
+	pContext_->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);		// データの入力種類を指定
+	pContext_->OMSetRenderTargets(1, &pRenderTargetView_, pDepthStencilView);    // 描画先を
 
 	//シェーダー準備
 	hr = InitShader();
@@ -497,28 +497,21 @@ HRESULT Direct3D::InitShaderToonOutLine()
 void Direct3D::SetShader(SHADER_TYPE type)
 {
 	//それぞれをデバイスコンテキストにセット
-	pContext_[0]->VSSetShader(shaderBundle[type].pVertexShader_, NULL, 0);	//頂点シェーダー
-	pContext_[0]->PSSetShader(shaderBundle[type].pPixelShader_, NULL, 0);	//ピクセルシェーダー
-	pContext_[0]->IASetInputLayout(shaderBundle[type].pVertexLayout_);	//頂点インプットレイアウト
-	pContext_[0]->RSSetState(shaderBundle[type].pRasterizerState_);		//ラスタライザー
+	pContext_->VSSetShader(shaderBundle[type].pVertexShader_, NULL, 0);	//頂点シェーダー
+	pContext_->PSSetShader(shaderBundle[type].pPixelShader_, NULL, 0);	//ピクセルシェーダー
+	pContext_->IASetInputLayout(shaderBundle[type].pVertexLayout_);	//頂点インプットレイアウト
+	pContext_->RSSetState(shaderBundle[type].pRasterizerState_);		//ラスタライザー
 }
 
 //描画開始
-void Direct3D::BeginDraw(int vpType)
+void Direct3D::BeginDraw()
 {
-	pContext_[0]->RSSetViewports(1, &vp[vpType]);
-
 	//背景の色
-	/*Camera* pCamera = new Camera;
-	pCamera->Update();*/
-
-
 	float clearColor[4] = { 0.0f, 0.5f, 0.5f, 1.0f };//R,G,B,A
 	//画面をクリア
-	pContext_[0]->ClearRenderTargetView(pRenderTargetView_, clearColor);
-
+	pContext_->ClearRenderTargetView(pRenderTargetView_, clearColor);
 	//深度バッファクリア
-	pContext_[0]->ClearDepthStencilView(pDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
+	pContext_->ClearDepthStencilView(pDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
 }
 
 
@@ -547,7 +540,7 @@ void Direct3D::Release()
 
 	SAFE_RELEASE(pRenderTargetView_);
 	SAFE_RELEASE(pSwapChain_);
-	SAFE_RELEASE(pContext_[0]);
+	SAFE_RELEASE(pContext_);
 	SAFE_RELEASE(pDevice_);
 
 
@@ -602,4 +595,9 @@ bool Direct3D::Intersect(XMFLOAT3& _start, XMFLOAT3& _direction, XMFLOAT3& _v0, 
 
 	*_distance = t;
 	return true;
+}
+
+void Direct3D::SetViewPort(int VpType)
+{
+	pContext_->RSSetViewports(1, &vp[VpType]);
 }
