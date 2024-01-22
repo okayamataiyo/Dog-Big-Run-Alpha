@@ -15,7 +15,6 @@
 const char* WIN_CLASS_NAME = "SampleGame";  //ウィンドウクラス名
 
 Rootjob* pRootjob = nullptr;
-Player* pPlayer   = nullptr;
 Camera* pCamera   = new Camera;
 
 
@@ -140,22 +139,17 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
 			//▼ゲームの処理
 			//入力の処理
 			Input::Update();
-
 			pRootjob->UpdateSub();
 
-			////▼描画
+			//▼描画
 			Direct3D::BeginDraw();
-			pPlayer = (Player*)pRootjob->FindObject("Player");
 			for (int i = 0; i < 2; i++)
 			{
 				Direct3D::SetViewPort(i);
 
 				//カメラの処理
 				pCamera->Update();
-
-				//ルートジョブから、すべてのオブジェクトのドローを呼ぶ
-				pRootjob->DrawSub();
-
+				pRootjob->DrawSub();	//ルートジョブから、すべてのオブジェクトのドローを呼ぶ
 				Direct3D::EndDraw();
 			}
 

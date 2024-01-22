@@ -8,10 +8,10 @@ protected:
 	int hModel_;	//モデル番号
 	int camType_;	
 	XMFLOAT3 move_;
-	Transform Trans_P;
+	Transform TransPlayer_;
 public:
 	//コンストラクタ
-	Player(GameObject* parent);
+	Player(GameObject* _parent);
 
 	//デストラクタ
 	~Player();
@@ -32,5 +32,12 @@ public:
 	/// プレイヤーの移動関数
 	/// </summary>
 	void PlayerMove();
+
+	//セッター・ゲッター
+	/// <summary>
+	/// プレイヤーの位置取得
+	/// </summary>
+	/// <returns>プレイヤーの位置</returns>
+	Transform GetPlayerPos() { return TransPlayer_; }
 };
 

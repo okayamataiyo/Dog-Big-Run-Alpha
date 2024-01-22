@@ -21,7 +21,7 @@ void Camera::Initialize()
 //更新
 void Camera::Update()
 {
-	//ビュー行列の作成
+	//ビュー行列の作成dddddd
 	viewMatrix_[0] = XMMatrixLookAtLH(position_[0], target_[0], XMVectorSet(0, 1, 0, 0));
 	viewMatrix_[1] = XMMatrixLookAtLH(position_[1], target_[1], XMVectorSet(0, 1, 0, 0));
 }

@@ -7,17 +7,17 @@ GameObject::GameObject()
 {
 }
 
-GameObject::GameObject(GameObject* parent, const std::string& name)
-	: pParent_(parent), Is_DeadFlag(false), objectName_(name), pCollider_(nullptr)
+GameObject::GameObject(GameObject* _parent, const std::string& _name)
+	: pParent_(_parent), Is_DeadFlag(false), objectName_(_name), pCollider_(nullptr)
 {
 	if (pParent_ != nullptr) {
-		this->transform_.pParent_ = &(parent->transform_);
+		this->transform_.pParent_ = &(_parent->transform_);
 	}
 
 }
 //template <class T>
 
-void Instantiate(GameObject* parent)
+void Instantiate(GameObject* _parent)
 {
 	/*T* pPlayScene;
 	pPlayScene = new T(parent);
@@ -39,14 +39,14 @@ void GameObject::KillMe()
 	Is_DeadFlag = true;
 }
 
-void GameObject::SetPosition(XMFLOAT3 position)
+void GameObject::SetPosition(XMFLOAT3 _position)
 {
-	transform_.position_ = position;
+	transform_.position_ = _position;
 }
 
-void GameObject::SetPosition(float x, float y, float z)
+void GameObject::SetPosition(float _x, float _y, float _z)
 {
-	SetPosition(XMFLOAT3(x, y, z));
+	SetPosition(XMFLOAT3(_x, _y, _z));
 }
 
 GameObject* GameObject::FindChildObject(string _objName)
@@ -133,16 +133,16 @@ void GameObject::ReleaseSub()
 	Release();
 }
 
-void GameObject::AddCollider(SphereCollider* pCollider)
+void GameObject::AddCollider(SphereCollider* _pCollider)
 {
 
-	pCollider_ = pCollider;
+	pCollider_ = _pCollider;
 }
 
-void GameObject::Collision(GameObject* pTarget)
+void GameObject::Collision(GameObject* _pTarget)
 {
 
-	if (pTarget == this || pTarget->pCollider_ == nullptr) 
+	if (_pTarget == this || _pTarget->pCollider_ == nullptr) 
 		return;		//ターゲットにコライダーがアタッチされていない
 
 		//XMVECTOR v{ transform_.position_.x - pTarget->transform_.position_.x,
@@ -150,37 +150,29 @@ void GameObject::Collision(GameObject* pTarget)
 		//			transform_.position_.z - pTarget->transform_.position_.z,
 		//			0 };
 		//XMVECTOR dist = XMVector3Dot(v, v);
-		float dist = (transform_.position_.x - pTarget->transform_.position_.x) * (transform_.position_.x - pTarget->transform_.position_.x)
-			+ (transform_.position_.y - pTarget->transform_.position_.y) * (transform_.position_.y - pTarget->transform_.position_.y)
-			+ (transform_.position_.z - pTarget->transform_.position_.z) * (transform_.position_.z - pTarget->transform_.position_.z);
+		float dist = (transform_.position_.x - _pTarget->transform_.position_.x) * (transform_.position_.x - _pTarget->transform_.position_.x)
+			+ (transform_.position_.y - _pTarget->transform_.position_.y) * (transform_.position_.y - _pTarget->transform_.position_.y)
+			+ (transform_.position_.z - _pTarget->transform_.position_.z) * (transform_.position_.z - _pTarget->transform_.position_.z);
 
-		float rDist = (this->pCollider_->GetRadius() + pTarget->pCollider_->GetRadius()) * (this->pCollider_->GetRadius() + pTarget->pCollider_->GetRadius());
+		float rDist = (this->pCollider_->GetRadius() + _pTarget->pCollider_->GetRadius()) * (this->pCollider_->GetRadius() + _pTarget->pCollider_->GetRadius());
 
 		//自分とターゲットの距離	<= R1+R2なら
 		//もし、自分のコライダーとターゲットがぶつかっていたら
 		//onCollision(pTarget)を呼び出す
 		if (dist <= rDist) {
 
-			OnCollision(pTarget);
+			OnCollision(_pTarget);
 		}
 }
 
-void GameObject::RoundRobin(GameObject* pTarget)
+void GameObject::RoundRobin(GameObject* _pTarget)
 {
 
 	if (pCollider_ == nullptr)
 		return;
-	if (pTarget->pCollider_ != nullptr)	//自分とターゲット
-		Collision(pTarget);
+	if (_pTarget->pCollider_ != nullptr)	//自分とターゲット
+		Collision(_pTarget);
 	//自分の子供全部とターゲット
-	for (auto itr:pTarget->childList_)
+	for (auto itr:_pTarget->childList_)
 		RoundRobin(itr);
 }
-
-//オブジェクトの名前を取得
-const std::string& GameObject::GetObjectName(void)const
-{
-
-	return objectName_;
-}
-

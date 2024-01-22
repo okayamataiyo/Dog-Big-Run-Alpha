@@ -4,7 +4,7 @@
 //ƒQ[ƒ€‚ÌƒV[ƒ“‚ğ—ñ‹“
 enum SCENE_ID
 {
-    SCENE_ID_TEST = 0,
+    SCENE_ID_PLAY = 0,
 };
 
 class SceneManager :

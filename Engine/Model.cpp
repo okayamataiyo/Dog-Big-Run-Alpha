@@ -12,16 +12,16 @@ struct ModelData {
 	std::vector<ModelData* >modelList;
 
 
-int Model::Load(std::string fileName)
+int Model::Load(std::string _fileName)
 {
 	ModelData* pData;
 	pData = new ModelData;
-	pData->filename_ = fileName;
+	pData->filename_ = _fileName;
 	pData->pfbx_ = nullptr;
 
 	//ファイルネームが同じだったら、読まん
 	for (auto& e : modelList) {
-		if (e->filename_ == fileName) {
+		if (e->filename_ == _fileName) {
 			pData->pfbx_ = e->pfbx_;
 			break;
 		}
@@ -30,7 +30,7 @@ int Model::Load(std::string fileName)
 
 	if (pData->pfbx_ == nullptr) {
 		pData->pfbx_ = new Fbx;
-		pData->pfbx_->Load(fileName);
+		pData->pfbx_->Load(_fileName);
 	}
 
 	modelList.push_back(pData);
@@ -38,17 +38,17 @@ int Model::Load(std::string fileName)
 
 }
 
-void Model::SetTransform(int hModel, Transform transform)
+void Model::SetTransform(int _hModel, Transform _transform)
 {
 	//モデル番号は、modelListのインデックス
-	modelList[hModel]->transform_ = transform;
+	modelList[_hModel]->transform_ = _transform;
 	
 }
 
-void Model::Draw(int hModel)
+void Model::Draw(int _hModel)
 {
 	//モデル番号は、modelListのインデックス
-	modelList[hModel]->pfbx_->Draw(modelList[hModel]->transform_);
+	modelList[_hModel]->pfbx_->Draw(modelList[_hModel]->transform_);
 //	Transform& trf = modelList
 }
 
@@ -71,16 +71,16 @@ void Model::Release()
 	
 }
 
-void Model::RayCast(int handle, RayCastData* data)
+void Model::RayCast(int _handle, RayCastData* _data)
 {
-	XMFLOAT3 target = Transform::Float3Add(data->start, data->dir);
-	XMMATRIX matInv = XMMatrixInverse(nullptr, modelList[handle]->transform_.GetWorldMatrix());
-	XMVECTOR vecStart = XMVector3TransformCoord(XMLoadFloat3(&data->start), matInv);
+	XMFLOAT3 target = Transform::Float3Add(_data->start, _data->dir);
+	XMMATRIX matInv = XMMatrixInverse(nullptr, modelList[_handle]->transform_.GetWorldMatrix());
+	XMVECTOR vecStart = XMVector3TransformCoord(XMLoadFloat3(&_data->start), matInv);
 	XMVECTOR vecTarget = XMVector3TransformCoord(XMLoadFloat3(&target), matInv);
 	XMVECTOR vecDir = vecTarget - vecStart;
 
-	XMStoreFloat3(&data->start, vecStart);
-	XMStoreFloat3(&data->dir, vecDir);
+	XMStoreFloat3(&_data->start, vecStart);
+	XMStoreFloat3(&_data->dir, vecDir);
 
-	modelList[handle]->pfbx_->RayCast(data);
+	modelList[_handle]->pfbx_->RayCast(_data);
 }
