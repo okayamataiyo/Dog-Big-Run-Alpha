@@ -146,15 +146,18 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
 			////▼描画
 			Direct3D::BeginDraw();
 			pPlayer = (Player*)pRootjob->FindObject("Player");
-			Direct3D::SetViewPort(0);
-			
-			//カメラの処理
-			pCamera->Update();
+			for (int i = 0; i < 2; i++)
+			{
+				Direct3D::SetViewPort(i);
 
-			//ルートジョブから、すべてのオブジェクトのドローを呼ぶ
-			pRootjob->DrawSub();
+				//カメラの処理
+				pCamera->Update();
 
-			Direct3D::EndDraw();
+				//ルートジョブから、すべてのオブジェクトのドローを呼ぶ
+				pRootjob->DrawSub();
+
+				Direct3D::EndDraw();
+			}
 
 			if (Input::IsKeyUp(DIK_ESCAPE))
 			{

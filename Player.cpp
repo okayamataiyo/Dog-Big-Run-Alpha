@@ -17,7 +17,7 @@ Player::~Player()
 
 void Player::Initialize()
 {
-	//モデルデータのロード
+	//モデルデータのロードssss
 	hModel_ = Model::Load("Assets/PlayerC.fbx");
 	assert(hModel_ >= 0);
 }
