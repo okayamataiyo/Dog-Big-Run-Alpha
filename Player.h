@@ -12,11 +12,11 @@ enum
 class Player : public GameObject
 {
 protected:
-	int hModel_;	//ƒ‚ƒfƒ‹”Ô†
+	int hModel_[2];	//ƒ‚ƒfƒ‹”Ô†
 	int camType_;	
-	float powerX_;
-	float powerY_;
-	float powerZ_;
+	float powerX_[2];
+	float powerY_[2];
+	float powerZ_[2];
 	XMFLOAT3 move_;
 	Transform TransPlayer_[2];
 	Camera* pCamera_;
