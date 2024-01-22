@@ -38,7 +38,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
 	WNDCLASSEX wc;
 	wc.cbSize = sizeof(WNDCLASSEX);             //この構造体のサイズ
 	wc.hInstance = hInstance;                   //インスタンスハンドル
-	wc.lpszClassName = WIN_CLASS_NAME;            //ウィンドウクラス名
+	wc.lpszClassName = WIN_CLASS_NAME;          //ウィンドウクラス名
 	wc.lpfnWndProc = WndProc;                   //ウィンドウプロシージャ
 	wc.style = CS_VREDRAW | CS_HREDRAW;         //スタイル（デフォルト）
 	wc.hIcon = LoadIcon(NULL, IDI_APPLICATION); //アイコン
