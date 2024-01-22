@@ -599,5 +599,8 @@ bool Direct3D::Intersect(XMFLOAT3& _start, XMFLOAT3& _direction, XMFLOAT3& _v0, 
 
 void Direct3D::SetViewPort(int VpType)
 {
+	uint8_t cnt = sizeof(vp) / sizeof(vp[0]);
+
 	pContext_->RSSetViewports(1, &vp[VpType]);
+
 }

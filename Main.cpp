@@ -143,15 +143,19 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
 
 			//▼描画
 			Direct3D::BeginDraw();
-			for (int i = 0; i < 2; i++)
-			{
+			constexpr uint8_t SIZE_VP = 2;
+
+			for (auto i = 0u; i < SIZE_VP; i++) {
 				Direct3D::SetViewPort(i);
 
+				
 				//カメラの処理
 				pCamera->Update(i);
 				pRootjob->DrawSub();	//ルートジョブから、すべてのオブジェクトのドローを呼ぶ
-				Direct3D::EndDraw();
+
 			}
+			Direct3D::EndDraw();
+
 
 			if (Input::IsKeyUp(DIK_ESCAPE))
 			{
