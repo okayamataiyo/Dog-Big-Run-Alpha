@@ -24,6 +24,11 @@ protected:
 	float rayDist_[2];		//地面とプレイヤーの差分
 	float moveYTemp_[2];	//y座標をPrevに保存する
 	float moveYPrev_[2];	//y座標を保存しておく
+
+	//慣性で使うメンバ変数
+	float mv[2];			//加速度
+	XMFLOAT3 velocity_[2];		//速度
+
 	Transform TransPlayer_[2];
 public:
 	int playerNum_;

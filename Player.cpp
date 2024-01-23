@@ -26,17 +26,17 @@ void Player::Initialize()
 
 void Player::Update()
 {
+    PlayerMove();
     for (int i = 0u; i <= 1; i++)
     {
-        TransPlayer_[i].position_ = { powerX_[i],powerY_[i],powerZ_[i] };
         PlayerJump(i);
         pCamera->SetTarget(TransPlayer_[i].position_, i);
         XMFLOAT3 camPos = TransPlayer_[i].position_;
-        camPos.y += 5;
-        camPos.z -= 10;
+        camPos.y += 2;
+        camPos.z -= 15;
         pCamera->SetPosition(camPos, i);
     }
-    PlayerMove();
+
 }
 
 void Player::Draw()
@@ -54,6 +54,14 @@ void Player::Release()
 
 void Player::PlayerMove()
 {
+    for (int i = 0u; i <= 1; i++)
+    {
+        velocity_[i].x *= 0.9f;    //X軸方向の慣性
+        velocity_[i].z *= 0.9f;    //Z軸方向の慣性
+        powerX_[i] += velocity_[i].x;
+        powerZ_[i] += velocity_[i].z;
+        TransPlayer_[i].position_ = { powerX_[i],powerY_[i],powerZ_[i] };
+    }
     //▼プレイヤー右の人
     if (Input::IsKey(DIK_UP))
     {
@@ -75,20 +83,30 @@ void Player::PlayerMove()
     //▼プレイヤー左の人
     if (Input::IsKey(DIK_W))
     {
-        powerZ_[0] += 0.2;
+        //powerZ_[0] += 0.2;
+        velocity_[0].z += 0.005f;
     }
     if (Input::IsKey(DIK_S))
     {
-        powerZ_[0] -= 0.2;
+        //powerZ_[0] -= 0.2;
+        velocity_[0].z -= 0.005f;
     }
 
     if (Input::IsKey(DIK_D))
     {
-        powerX_[0] += 0.2;
+        //powerX_[0] += 0.2;
+        velocity_[0].x += 0.005f;
     }
     if (Input::IsKey(DIK_A))
     {
-        powerX_[0] -= 0.2;
+        //powerX_[0] -= 0.2;
+        velocity_[0].x -= 0.005f;
+    }
+
+    if (Input::IsKey(DIK_LSHIFT))
+    {
+        velocity_[0].x = velocity_[0].x * 1.1;
+        velocity_[0].z = velocity_[0].z * 1.1;
     }
 
     if (Input::IsKey(DIK_C))
