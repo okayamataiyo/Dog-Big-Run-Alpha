@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include "Transform.h"
+#include "Camera.h"
 
 #pragma comment(lib, "LibFbxSDK-MD.lib")
 #pragma comment(lib, "LibXml2-MD.lib")
@@ -12,6 +13,9 @@
 using std::vector;
 
 class Texture;
+class Camera;
+
+extern Camera* pCamera;
 
 //レイキャスト構造体
 struct RayCastData

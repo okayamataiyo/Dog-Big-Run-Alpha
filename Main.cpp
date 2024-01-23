@@ -15,7 +15,7 @@
 const char* WIN_CLASS_NAME = "SampleGame";  //ウィンドウクラス名
 
 Rootjob* pRootjob = nullptr;
-Camera* pCamera   = new Camera;
+Camera* pCamera = new Camera;
 
 
 //プロトタイプ宣言
@@ -144,13 +144,12 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
 			//▼描画
 			Direct3D::BeginDraw();
 			constexpr uint8_t SIZE_VP = 2;
-
 			for (auto i = 0u; i < SIZE_VP; i++) {
 				Direct3D::SetViewPort(i);
-
-				
-				//カメラの処理
+				pCamera->IntConstantBuffer(i);
 				pCamera->Update(i);
+
+				//カメラの処理
 				pRootjob->DrawSub();	//ルートジョブから、すべてのオブジェクトのドローを呼ぶ
 
 			}

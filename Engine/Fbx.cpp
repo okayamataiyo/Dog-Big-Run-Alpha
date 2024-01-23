@@ -279,7 +279,6 @@ void Fbx::Draw(Transform& transform)
 
     transform.Calclation();//トランスフォームを計算
 
-    Camera* pCamera = new Camera;
     for (int j = 0; j < 2; j++)
     {
 

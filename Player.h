@@ -1,7 +1,8 @@
 #pragma once
 #include "Engine/GameObject.h"
 #include "Engine/Camera.h"
-
+class Camera;
+extern Camera* pCamera;
 enum
 {
 	PlayerFirst,
@@ -19,7 +20,6 @@ protected:
 	float powerZ_[2];
 	XMFLOAT3 move_;
 	Transform TransPlayer_[2];
-	Camera* pCamera_;
 public:
 	int playerNum_;
 	//コンストラクタ

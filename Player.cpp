@@ -33,14 +33,12 @@ void Player::Update()
 
     for (int i = 0; i <= 1; i++)
     {
-
+        pCamera->SetTarget(TransPlayer_[i].position_, i);
+        XMFLOAT3 camPos = TransPlayer_[i].position_;
+        camPos.y += 5;
+        camPos.z -= 10;
+        pCamera->SetPosition(camPos, i);
     }
-
-    pCamera_->SetTarget(TransPlayer_[1].position_, 1);
-    XMFLOAT3 camPos = TransPlayer_[1].position_;
-    camPos.y += 5;
-    camPos.z -= 10;
-    pCamera_->SetPosition(camPos, 1);
 }
 
 void Player::Draw()
