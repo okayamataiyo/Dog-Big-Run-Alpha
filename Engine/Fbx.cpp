@@ -287,7 +287,7 @@ void Fbx::Draw(Transform& transform)
 
             //コンスタントバッファに情報を渡す
             CONSTANT_BUFFER_MODEL cb;
-            cb.matWVP = XMMatrixTranspose(transform.GetWorldMatrix() * pCamera->GetViewMatrix(0) * pCamera->GetProjectionMatrix());
+            cb.matWVP = XMMatrixTranspose(transform.GetWorldMatrix() * pCamera->GetViewMatrix() * pCamera->GetProjectionMatrix());
             cb.matNormal = XMMatrixTranspose(transform.GetNormalMatrix());
             cb.matW = XMMatrixTranspose(transform.GetNormalMatrix());
             cb.diffuseColor = pMaterialList_[i].diffuse;

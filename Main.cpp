@@ -146,9 +146,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
 			constexpr uint8_t SIZE_VP = 2;
 			for (auto i = 0u; i < SIZE_VP; i++) {
 				Direct3D::SetViewPort(i);
-				pCamera->IntConstantBuffer(i);
 				pCamera->Update(i);
-
 				//カメラの処理
 				pRootjob->DrawSub();	//ルートジョブから、すべてのオブジェクトのドローを呼ぶ
 

@@ -35,7 +35,7 @@ public:
 	XMFLOAT4 GetLightPos() { return(lightSourcePosition_); }
 
 	//ビュー行列を取得
-	XMMATRIX GetViewMatrix(int type);
+	XMMATRIX GetViewMatrix();
 
 	//プロジェクション行列を取得
 	XMMATRIX GetProjectionMatrix();

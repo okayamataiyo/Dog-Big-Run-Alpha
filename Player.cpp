@@ -71,6 +71,7 @@ void Player::PlayerMove()
         //powerY_ += 0.2;
         playerNum_ += 1;
         playerNum_ = playerNum_ % 2;
+
     }
 
     if (Input::IsKey(DIK_W))

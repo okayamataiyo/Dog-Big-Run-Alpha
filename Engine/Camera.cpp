@@ -3,7 +3,7 @@
 //変数
 XMVECTOR position_[2];	//カメラの位置（視点）
 XMVECTOR target_[2];	//見る位置（焦点）
-XMMATRIX viewMatrix_[2];	//ビュー行列
+XMMATRIX viewMatrix_;	//ビュー行列
 XMMATRIX projMatrix_;	//プロジェクション行列
 
 struct CBUFF_STAGESCENE
@@ -32,7 +32,8 @@ void Camera::Initialize()
 void Camera::Update(int _CamPos)
 {
 	//ビュー行列の作成
-	viewMatrix_[_CamPos] = XMMatrixLookAtLH(position_[_CamPos], target_[_CamPos], XMVectorSet(0, 1, 0, 0));
+	viewMatrix_ = XMMatrixLookAtLH(position_[_CamPos], target_[_CamPos], XMVectorSet(0, 1, 0, 0));
+	IntConstantBuffer(_CamPos);
 }
 
 void Camera::IntConstantBuffer(int _type)
@@ -96,9 +97,9 @@ XMVECTOR Camera::GetTarget(int _type)
 }
 
 //ビュー行列を取得
-XMMATRIX Camera::GetViewMatrix(int _type)
+XMMATRIX Camera::GetViewMatrix()
 {
-	return viewMatrix_[_type];
+	return viewMatrix_;
 }
 
 //プロジェクション行列を取得
