@@ -26,7 +26,7 @@ void Stage::Initialize()
     hModel_ = Model::Load("Assets/Ground.fbx");
     assert(hModel_ >= 0);
 
-    Trans_G.position_.y = -1;
+    Trans_G.position_.y = -10;
     Trans_G.rotate_.y = 90;
     Trans_G.scale_ = { 1,0.5,1 };
 }

@@ -4,7 +4,7 @@
 #include "Stage.h"
 
 Player::Player(GameObject* parent)
-	:GameObject(parent, "Player"),hModel_{ -1 ,-1}, camType_(0), playerNum_(0)
+    :GameObject(parent, "Player"), hModel_{ -1 ,-1 }, camType_(0), playerNum_(0), jumpFlg_{ false,false }
 {
 }
 
@@ -15,16 +15,12 @@ Player::~Player()
 void Player::Initialize()
 {
 	//モデルデータのロード
-	hModel_[0] = Model::Load("Assets/PlayerC.fbx");
-	assert(hModel_[0] >= 0);
+    for (int i = 0; i <= 1; i++)
+    {
+        hModel_[i] = Model::Load("Assets/PlayerC.fbx");
+        assert(hModel_[i] >= 0);
+    }
 
-    hModel_[1] = Model::Load("Assets/Pipe.fbx");
-    assert(hModel_[1] >= 0);
-
-    playerNum_ = 0;
-
-    TransPlayer_[1].position_.x = 5;
-    powerY_[0] = 2;
 }
 
 void Player::Update()
@@ -56,69 +52,98 @@ void Player::Release()
 
 void Player::PlayerMove()
 {
-    switch (playerNum_)
+    if (Input::IsKey(DIK_UP))
     {
-    case PlayerFirst:
-        TransPlayer_[0].position_ = { powerX_[playerNum_],powerY_[playerNum_],powerZ_[playerNum_] };
-        break;
-    case PlayerSeconds:
-        TransPlayer_[1].position_ = { powerX_[playerNum_],powerY_[playerNum_],powerZ_[playerNum_] };
-        break;
+        powerZ_[1] += 0.2;
+    }
+    if (Input::IsKey(DIK_DOWN))
+    {
+        powerZ_[1] -= 0.2;
     }
 
-    if (jumpFlg_ == true)
+    if (Input::IsKey(DIK_RIGHT))
     {
-        TransPlayer_[playerNum_].position_.y += (TransPlayer_[playerNum_].position_.y - moveYPrev_) + 1;
-        moveYPrev_ =
+        powerX_[1] += 0.2;
     }
-
-    if (Input::IsKey(DIK_SPACE))
+    if (Input::IsKey(DIK_LEFT))
     {
-        //powerY_ += 0.2;
-        playerNum_ += 1;
-        playerNum_ = playerNum_ % 2;
-        if (jumpFlg_ == false)
-        {
-            jumpFlg_ = true;
-            moveYPrev_ = TransPlayer_[playerNum_].position_.y;
-            TransPlayer_[playerNum_].position_.y = TransPlayer_[playerNum_].position_.y - 10;
-        }
-
+        powerX_[1] -= 0.2;
     }
 
     if (Input::IsKey(DIK_W))
     {
-        powerZ_[playerNum_] += 0.2;
+        powerZ_[0] += 0.2;
     }
     if (Input::IsKey(DIK_S))
     {
-        powerZ_[playerNum_] -= 0.2;
+        powerZ_[0] -= 0.2;
     }
 
     if (Input::IsKey(DIK_D))
     {
-        powerX_[playerNum_] += 0.2;
+        powerX_[0] += 0.2;
     }
     if (Input::IsKey(DIK_A))
     {
-        powerX_[playerNum_] -= 0.2;
+        powerX_[0] -= 0.2;
     }
 
+    if (Input::IsKey(DIK_C))
+    {
+        playerNum_ += 1;
+        playerNum_ = playerNum_ % 2;
+    }
+
+    RayCastData data[2];
     Stage* pStage = (Stage*)FindObject("Stage");    //ステージオブジェクト
     int hStageModel = pStage->GetModelHandle();   //モデル番号を取得
-    RayCastData data;
 
     for (int i = 0; i <= 1; i++)
     {
-        data.start = TransPlayer_[i].position_;  //レイの発射位置
-        data.start.y = 0;
-        data.dir = XMFLOAT3(0, -1, 0);       //レイの方向
-        Model::RayCast(hStageModel, &data);  //レイを発射
+        TransPlayer_[i].position_ = { powerX_[i],powerY_[i],powerZ_[i] };
 
-        if (data.hit == true)
+        if (jumpFlg_[i] == true)
         {
-            TransPlayer_[i].position_.y = -data.dist;
+            moveYTemp_[i] = powerY_[i];
+            powerY_[i] += (powerY_[i] - moveYPrev_[i]) - 0.005;
+            moveYPrev_[i] = moveYTemp_[i];
+            if (powerY_[i] <= 10)
+            {
+                jumpFlg_[i] = false;
+            }
+        }
+
+        if (Input::IsKey(DIK_SPACE) && jumpFlg_[0] == false)
+        {
+            jumpFlg_[0] = true;
+            moveYPrev_[0] = powerY_[0];
+            powerY_[0] = powerY_[0] + 0.2;
+        }
+
+        if (Input::IsKey(DIK_RSHIFT) && jumpFlg_[1] == false)
+        {
+            jumpFlg_[1] = true;
+            moveYPrev_[1] = powerY_[1];
+            powerY_[1] = powerY_[1] + 0.2;
+        }
+
+        data[i].start = TransPlayer_[i].position_;  //レイの発射位置
+        data[i].start.y = 0;
+        data[i].dir = XMFLOAT3(0, -1, 0);       //レイの方向
+        Model::RayCast(hStageModel, &data[i]);  //レイを発射
+        aaa = data[i].dist;
+
+        if (data[i].hit == true)
+        {
+            if (jumpFlg_[0] == false)
+            {
+                TransPlayer_[0].position_.y = -data[0].dist;
+            }
+
+            if (jumpFlg_[1] == false)
+            {
+                TransPlayer_[1].position_.y = -data[1].dist;
+            }
         }
     }
-
 }

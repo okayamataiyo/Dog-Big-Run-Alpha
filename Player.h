@@ -3,6 +3,7 @@
 #include "Engine/Camera.h"
 class Camera;
 extern Camera* pCamera;
+
 enum
 {
 	PlayerFirst,
@@ -18,8 +19,11 @@ protected:
 	float powerX_[2];
 	float powerY_[2];
 	float powerZ_[2];
-	bool  jumpFlg_;
-	float moveYPrev_;
+	//▼ジャンプで使うメンバ変数
+	bool  jumpFlg_[2];
+	float aaa;
+	float moveYTemp_[2];	//y座標をPrevに保存する
+	float moveYPrev_[2];	//y座標を保存しておく
 	XMFLOAT3 move_;
 	Transform TransPlayer_[2];
 public:
