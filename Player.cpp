@@ -61,24 +61,34 @@ void Player::PlayerMove()
         powerX_[i] += velocity_[i].x;
         powerZ_[i] += velocity_[i].z;
         TransPlayer_[i].position_ = { powerX_[i],powerY_[i],powerZ_[i] };
+
+        if (Input::IsKey(DIK_LSHIFT))
+        {
+            velocity_[i].x = velocity_[i].x * 1.1;
+            velocity_[i].z = velocity_[i].z * 1.1;
+        }
     }
     //▼プレイヤー右の人
     if (Input::IsKey(DIK_UP))
     {
-        powerZ_[1] += 0.2;
+        //powerZ_[1] += 0.2;
+        velocity_[1].z += 0.005f;
     }
     if (Input::IsKey(DIK_DOWN))
     {
-        powerZ_[1] -= 0.2;
+        //powerZ_[1] -= 0.2;
+        velocity_[1].z -= 0.005f;
     }
 
     if (Input::IsKey(DIK_RIGHT))
     {
-        powerX_[1] += 0.2;
+        //powerX_[1] += 0.2;
+        velocity_[1].x += 0.005f;
     }
     if (Input::IsKey(DIK_LEFT))
     {
-        powerX_[1] -= 0.2;
+        //powerX_[1] -= 0.2;
+        velocity_[1].x -= 0.005f;
     }
     //▼プレイヤー左の人
     if (Input::IsKey(DIK_W))
@@ -101,12 +111,6 @@ void Player::PlayerMove()
     {
         //powerX_[0] -= 0.2;
         velocity_[0].x -= 0.005f;
-    }
-
-    if (Input::IsKey(DIK_LSHIFT))
-    {
-        velocity_[0].x = velocity_[0].x * 1.1;
-        velocity_[0].z = velocity_[0].z * 1.1;
     }
 
     if (Input::IsKey(DIK_C))
