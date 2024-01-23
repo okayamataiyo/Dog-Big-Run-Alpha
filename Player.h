@@ -18,6 +18,8 @@ protected:
 	float powerX_[2];
 	float powerY_[2];
 	float powerZ_[2];
+	bool  jumpFlg_;
+	float moveYPrev_;
 	XMFLOAT3 move_;
 	Transform TransPlayer_[2];
 public:

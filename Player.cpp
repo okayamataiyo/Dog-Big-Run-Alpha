@@ -66,11 +66,23 @@ void Player::PlayerMove()
         break;
     }
 
+    if (jumpFlg_ == true)
+    {
+        TransPlayer_[playerNum_].position_.y += (TransPlayer_[playerNum_].position_.y - moveYPrev_) + 1;
+        moveYPrev_ =
+    }
+
     if (Input::IsKey(DIK_SPACE))
     {
         //powerY_ += 0.2;
         playerNum_ += 1;
         playerNum_ = playerNum_ % 2;
+        if (jumpFlg_ == false)
+        {
+            jumpFlg_ = true;
+            moveYPrev_ = TransPlayer_[playerNum_].position_.y;
+            TransPlayer_[playerNum_].position_.y = TransPlayer_[playerNum_].position_.y - 10;
+        }
 
     }
 
