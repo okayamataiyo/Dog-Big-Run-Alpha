@@ -21,10 +21,9 @@ protected:
 	float powerZ_[2];
 	//▼ジャンプで使うメンバ変数
 	bool  jumpFlg_[2];
-	float aaa;
+	float rayDist_[2];		//地面とプレイヤーの差分
 	float moveYTemp_[2];	//y座標をPrevに保存する
 	float moveYPrev_[2];	//y座標を保存しておく
-	XMFLOAT3 move_;
 	Transform TransPlayer_[2];
 public:
 	int playerNum_;
@@ -50,6 +49,12 @@ public:
 	/// プレイヤーの移動関数
 	/// </summary>
 	void PlayerMove();
+
+	/// <summary>
+	/// プレイヤーのジャンプ関数
+	/// </summary>
+	/// <param name="_PlayerNum">プレイヤーの番号</param>
+	void PlayerJump(int _PlayerNum);
 
 	//セッター・ゲッター
 	/// <summary>

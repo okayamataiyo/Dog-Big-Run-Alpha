@@ -14,32 +14,34 @@ Player::~Player()
 
 void Player::Initialize()
 {
-	//モデルデータのロード
-    for (int i = 0; i <= 1; i++)
+    for (int i = 0u; i <= 1; i++)
     {
+        //モデルデータのロード
         hModel_[i] = Model::Load("Assets/PlayerC.fbx");
         assert(hModel_[i] >= 0);
+        powerY_[i] = TransPlayer_[i].position_.y;
     }
 
 }
 
 void Player::Update()
 {
-    PlayerMove();
-
-    for (int i = 0; i <= 1; i++)
+    for (int i = 0u; i <= 1; i++)
     {
+        TransPlayer_[i].position_ = { powerX_[i],powerY_[i],powerZ_[i] };
+        PlayerJump(i);
         pCamera->SetTarget(TransPlayer_[i].position_, i);
         XMFLOAT3 camPos = TransPlayer_[i].position_;
         camPos.y += 5;
         camPos.z -= 10;
         pCamera->SetPosition(camPos, i);
     }
+    PlayerMove();
 }
 
 void Player::Draw()
 {
-    for (int i = 0; i <= 1; i++)
+    for (int i = 0u; i <= 1; i++)
     {
         Model::SetTransform(hModel_[i], TransPlayer_[i]);
         Model::Draw(hModel_[i]);
@@ -52,6 +54,7 @@ void Player::Release()
 
 void Player::PlayerMove()
 {
+    //▼プレイヤー右の人
     if (Input::IsKey(DIK_UP))
     {
         powerZ_[1] += 0.2;
@@ -69,7 +72,7 @@ void Player::PlayerMove()
     {
         powerX_[1] -= 0.2;
     }
-
+    //▼プレイヤー左の人
     if (Input::IsKey(DIK_W))
     {
         powerZ_[0] += 0.2;
@@ -93,21 +96,23 @@ void Player::PlayerMove()
         playerNum_ += 1;
         playerNum_ = playerNum_ % 2;
     }
+}
 
+void Player::PlayerJump(int _PlayerNum)
+{
     RayCastData data[2];
     Stage* pStage = (Stage*)FindObject("Stage");    //ステージオブジェクト
     int hStageModel = pStage->GetModelHandle();   //モデル番号を取得
 
-    for (int i = 0; i <= 1; i++)
+    for (int i = 0u; i <= 1; i++)
     {
-        TransPlayer_[i].position_ = { powerX_[i],powerY_[i],powerZ_[i] };
 
         if (jumpFlg_[i] == true)
         {
             moveYTemp_[i] = powerY_[i];
-            powerY_[i] += (powerY_[i] - moveYPrev_[i]) - 0.005;
+            powerY_[i] += (powerY_[i] - moveYPrev_[i]) - 0.003;
             moveYPrev_[i] = moveYTemp_[i];
-            if (powerY_[i] <= 10)
+            if (powerY_[i] <= rayDist_[i] - 22)
             {
                 jumpFlg_[i] = false;
             }
@@ -131,18 +136,18 @@ void Player::PlayerMove()
         data[i].start.y = 0;
         data[i].dir = XMFLOAT3(0, -1, 0);       //レイの方向
         Model::RayCast(hStageModel, &data[i]);  //レイを発射
-        aaa = data[i].dist;
+        rayDist_[i] = data[i].dist;
 
         if (data[i].hit == true)
         {
             if (jumpFlg_[0] == false)
             {
-                TransPlayer_[0].position_.y = -data[0].dist;
+                TransPlayer_[0].position_.y = -data[0].dist + 0.6;
             }
 
             if (jumpFlg_[1] == false)
             {
-                TransPlayer_[1].position_.y = -data[1].dist;
+                TransPlayer_[1].position_.y = -data[1].dist + 0.6;
             }
         }
     }
