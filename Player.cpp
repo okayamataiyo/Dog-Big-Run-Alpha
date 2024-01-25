@@ -22,6 +22,9 @@ void Player::Initialize()
         powerY_[i] = TransPlayer_[i].position_.y;
     }
 
+    BoxCollider* pCollision = new BoxCollider(XMFLOAT3(0.0, 0.0, 0.0), XMFLOAT3(1.0,1.0,1.0));
+    AddCollider(pCollision);
+
 }
 
 void Player::Update()
@@ -46,10 +49,19 @@ void Player::Draw()
         Model::SetTransform(hModel_[i], TransPlayer_[i]);
         Model::Draw(hModel_[i]);
     }
+    GameObject::CollisionDraw();
 }
 
 void Player::Release()
 {
+}
+
+void Player::OnCollision(GameObject* _pTarget)
+{
+    if (_pTarget->GetObjectName() == "PlayerSecond")
+    {
+        PlayerJump(1);
+    }
 }
 
 void Player::PlayerMove()

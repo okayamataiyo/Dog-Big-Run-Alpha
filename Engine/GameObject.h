@@ -69,6 +69,11 @@ public:
 	//引数:pTarget衝突してるか調べる相手
 	virtual void OnCollision(GameObject* _pTarget) {};
 
+	/// <summary>
+	/// テスト用の衝突判定枠を表示
+	/// </summary>
+	void CollisionDraw();
+
 
 public:	//テンプレートの定義
 	template <class T>

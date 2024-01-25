@@ -204,3 +204,13 @@ void GameObject::RoundRobin(GameObject* _pTarget)
 	for (auto itr:_pTarget->childList_)
 		RoundRobin(itr);
 }
+
+void GameObject::CollisionDraw()
+{
+	Direct3D::SetShader(SHADER_UNLIT);
+	for (auto i = this->colliderList_.begin(); i != this->colliderList_.end(); i++)
+	{
+		(*i)->Draw(GetWorldPosition());
+	}
+	Direct3D::SetShader(SHADER_3D);
+}

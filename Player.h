@@ -14,6 +14,7 @@ enum
 class Player : public GameObject
 {
 protected:
+	int playerNum_;
 	int hModel_[2];	//モデル番号
 	int camType_;	
 	float powerX_[2];
@@ -25,30 +26,49 @@ protected:
 	float moveYTemp_[2];	//y座標をPrevに保存する
 	float moveYPrev_[2];	//y座標を保存しておく
 
-	//慣性で使うメンバ変数
+	//▼慣性で使うメンバ変数
 	float mv[2];			//加速度
 	XMFLOAT3 velocity_[2];		//速度
 
 	Transform TransPlayer_[2];
 public:
-	int playerNum_;
-	//コンストラクタ
+
+	/// <summary>
+	/// コンストラクタ関数
+	/// </summary>
+	/// <param name="_parent"></param>
 	Player(GameObject* _parent);
 
-	//デストラクタ
+	/// <summary>
+	/// デストラクタ関数
+	/// </summary>
 	~Player();
 
-	//初期化
+	/// <summary>
+	/// 初期化関数
+	/// </summary>
 	void Initialize() override;
 
-	//更新
+	/// <summary>
+	/// 更新関数
+	/// </summary>
 	void Update() override;
 
-	//描画
+	/// <summary>
+	/// 描画関数
+	/// </summary>
 	void Draw() override;
 
-	//開放
+	/// <summary>
+	/// 開放関数
+	/// </summary>
 	void Release() override;
+
+	/// <summary>
+	/// 何かに当たった時の関数
+	/// </summary>
+	/// <param name="_pTarget">当たった相手</param>
+	void OnCollision(GameObject* _pTarget) override;
 
 	/// <summary>
 	/// プレイヤーの移動関数

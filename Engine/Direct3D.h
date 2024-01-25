@@ -19,6 +19,7 @@ enum SHADER_TYPE
 	SHADER_3D,
 	SHADER_TOON,
 	SHADER_TOONOUTLINE,
+	SHADER_UNLIT,
 	SHADER_MAX,
 };
 
@@ -37,6 +38,7 @@ namespace Direct3D
 	HRESULT InitShader2D();
 	HRESULT InitShaderToon();
 	HRESULT InitShaderToonOutLine();
+	HRESULT InitShaderUNLIT();
 
 	void SetShader(SHADER_TYPE type);
 
