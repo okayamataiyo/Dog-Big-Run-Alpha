@@ -65,10 +65,10 @@
     <ClCompile Include="Engine\SphereCollider.cpp">
       <Filter>ソース ファイル\Engine\Collider</Filter>
     </ClCompile>
-    <ClCompile Include="Collider.cpp">
+    <ClCompile Include="Engine\BoxCollider.cpp">
       <Filter>ソース ファイル\Engine\Collider</Filter>
     </ClCompile>
-    <ClCompile Include="BoxCollider.cpp">
+    <ClCompile Include="Engine\Collider.cpp">
       <Filter>ソース ファイル\Engine\Collider</Filter>
     </ClCompile>
   </ItemGroup>
@@ -124,10 +124,10 @@
     <ClInclude Include="Engine\SphereCollider.h">
       <Filter>ソース ファイル\Engine\Collider</Filter>
     </ClInclude>
-    <ClInclude Include="Collider.h">
+    <ClInclude Include="Engine\BoxCollider.h">
       <Filter>ソース ファイル\Engine\Collider</Filter>
     </ClInclude>
-    <ClInclude Include="BoxCollider.h">
+    <ClInclude Include="Engine\Collider.h">
       <Filter>ソース ファイル\Engine\Collider</Filter>
     </ClInclude>
   </ItemGroup>

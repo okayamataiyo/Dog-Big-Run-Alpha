@@ -1,9 +1,11 @@
 #pragma once
-
+//インクルード
 #include <list>
 #include <string>
 #include "Transform.h"
 #include "Direct3D.h"
+#include "BoxCollider.h"
+#include "SphereCollider.h"
 
 using std::string;
 using std::list;
@@ -17,6 +19,7 @@ class GameObject
 	
 protected:
 	list<GameObject*>	childList_;
+	list<Collider*>		colliderList_;
 	Transform			transform_;
 	GameObject*			pParent_;
 	string				objectName_;	//オブジェクトの名前の配列
@@ -38,7 +41,6 @@ public:
 	void ReleaseSub();
 
 	//セッター・ゲッター
-
 	void SetPosition(XMFLOAT3 _position);
 	void SetPosition(float _x, float _y, float _z);	
 	void SetObjectName(string _s) { objectName_ = _s; }
@@ -49,10 +51,17 @@ public:
 	/// <param name="">オブジェクトの名前</param>
 	/// <returns>オブジェクトの名前</returns>
 	const string& GetObjectName(void) const { return objectName_; }
-	GameObject* FindChildObject(string _objName);
 	GameObject* GetRootJob();
+	/// <summary>
+	/// 親オブジェクトを取得
+	/// </summary>
+	/// <returns></returns>
+	GameObject* GetParent();
+
+	XMFLOAT3 GetWorldPosition() { return Transform::Float3Add(GetParent()->transform_.position_, transform_.position_); }
+	GameObject* FindChildObject(string _objName);
 	GameObject* FindObject(string _objName);
-	void AddCollider(SphereCollider* _pCollider);
+	void AddCollider(Collider* _pCollider);
 	void Collision(GameObject* _pTarget);
 	void RoundRobin(GameObject* _pTarget);
 

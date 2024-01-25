@@ -27,6 +27,11 @@ void Instantiate(GameObject* _parent)
 
 GameObject::~GameObject()
 {
+	for (auto it = colliderList_.begin(); it != colliderList_.end(); it++)
+	{
+		SAFE_DELETE(*it);
+	}
+	colliderList_.clear();
 }
 
 bool GameObject::IsDead()
@@ -47,6 +52,11 @@ void GameObject::SetPosition(XMFLOAT3 _position)
 void GameObject::SetPosition(float _x, float _y, float _z)
 {
 	SetPosition(XMFLOAT3(_x, _y, _z));
+}
+
+GameObject* GameObject::GetParent()
+{
+	return pParent_;
 }
 
 GameObject* GameObject::FindChildObject(string _objName)
@@ -133,10 +143,12 @@ void GameObject::ReleaseSub()
 	Release();
 }
 
-void GameObject::AddCollider(SphereCollider* _pCollider)
+void GameObject::AddCollider(Collider* _pCollider)
 {
 
-	pCollider_ = _pCollider;
+	_pCollider->SetGameObject(this);
+	colliderList_.push_back(_pCollider);
+
 }
 
 void GameObject::Collision(GameObject* _pTarget)
@@ -150,15 +162,16 @@ void GameObject::Collision(GameObject* _pTarget)
 		//			transform_.position_.z - pTarget->transform_.position_.z,
 		//			0 };
 		//XMVECTOR dist = XMVector3Dot(v, v);
-		float dist = (transform_.position_.x - _pTarget->transform_.position_.x) * (transform_.position_.x - _pTarget->transform_.position_.x)
+		/*float dist = (transform_.position_.x - _pTarget->transform_.position_.x) * (transform_.position_.x - _pTarget->transform_.position_.x)
 			+ (transform_.position_.y - _pTarget->transform_.position_.y) * (transform_.position_.y - _pTarget->transform_.position_.y)
 			+ (transform_.position_.z - _pTarget->transform_.position_.z) * (transform_.position_.z - _pTarget->transform_.position_.z);
 
-		float rDist = (this->pCollider_->GetRadius() + _pTarget->pCollider_->GetRadius()) * (this->pCollider_->GetRadius() + _pTarget->pCollider_->GetRadius());
+		float rDist = (this->pCollider_->GetRadius() + _pTarget->pCollider_->GetRadius()) * (this->pCollider_->GetRadius() + _pTarget->pCollider_->GetRadius());*/
 
 		//自分とターゲットの距離	<= R1+R2なら
 		//もし、自分のコライダーとターゲットがぶつかっていたら
 		//onCollision(pTarget)を呼び出す
+	for(auto i = this->colliderList_)
 		if (dist <= rDist) {
 
 			OnCollision(_pTarget);
