@@ -23,7 +23,7 @@ protected:
 	Transform			transform_;
 	GameObject*			pParent_;
 	string				objectName_;	//オブジェクトの名前の配列
-	SphereCollider*		pCollider_;
+	Collider*		pCollider_;
 
 public:
 	GameObject();

@@ -28,7 +28,7 @@ void Stage::Initialize()
 
     Trans_G.position_.y = -10;
     Trans_G.rotate_.y = 90;
-    Trans_G.scale_ = { 1,0.5,1 };
+    Trans_G.scale_ = { 2,0.5,2 };
 }
 
 //çXêV

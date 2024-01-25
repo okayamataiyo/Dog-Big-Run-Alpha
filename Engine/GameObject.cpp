@@ -168,14 +168,29 @@ void GameObject::Collision(GameObject* _pTarget)
 
 		float rDist = (this->pCollider_->GetRadius() + _pTarget->pCollider_->GetRadius()) * (this->pCollider_->GetRadius() + _pTarget->pCollider_->GetRadius());*/
 
-		//自分とターゲットの距離	<= R1+R2なら
-		//もし、自分のコライダーとターゲットがぶつかっていたら
-		//onCollision(pTarget)を呼び出す
-	for(auto i = this->colliderList_)
-		if (dist <= rDist) {
-
-			OnCollision(_pTarget);
+	//自分とターゲットの距離	<= R1+R2なら
+	//もし、自分のコライダーとターゲットがぶつかっていたら
+	//onCollision(pTarget)を呼び出す
+	for (auto i = this->colliderList_.begin(); i != this->colliderList_.end(); i++)
+	{
+		for (auto j = _pTarget->colliderList_.begin(); j != _pTarget->colliderList_.end(); j++)
+		{
+			if ((*i)->IsHit(*j))
+			{
+				this->OnCollision(_pTarget);
+			}
 		}
+	}
+
+	if (_pTarget->childList_.empty())
+	{
+		return;
+	}
+
+	for (auto i = _pTarget->childList_.begin(); i != _pTarget->childList_.end(); i++)
+	{
+		Collision(*i);
+	}
 }
 
 void GameObject::RoundRobin(GameObject* _pTarget)

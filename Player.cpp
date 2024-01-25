@@ -56,16 +56,22 @@ void Player::PlayerMove()
 {
     for (int i = 0u; i <= 1; i++)
     {
-        velocity_[i].x *= 0.9f;    //X軸方向の慣性
-        velocity_[i].z *= 0.9f;    //Z軸方向の慣性
+        if (jumpFlg_[i] == false)
+        {
+            velocity_[i].x *= 0.9f;    //X軸方向の慣性
+            velocity_[i].z *= 0.9f;    //Z軸方向の慣性
+        }
         powerX_[i] += velocity_[i].x;
         powerZ_[i] += velocity_[i].z;
         TransPlayer_[i].position_ = { powerX_[i],powerY_[i],powerZ_[i] };
 
         if (Input::IsKey(DIK_LSHIFT))
         {
-            velocity_[i].x = velocity_[i].x * 1.1;
-            velocity_[i].z = velocity_[i].z * 1.1;
+            if (jumpFlg_[i] == false)
+            {
+                velocity_[i].x = velocity_[i].x * 1.1;
+                velocity_[i].z = velocity_[i].z * 1.1;
+            }
         }
     }
     //▼プレイヤー右の人
