@@ -154,20 +154,19 @@ void GameObject::AddCollider(Collider* _pCollider)
 void GameObject::Collision(GameObject* _pTarget)
 {
 
-	if (_pTarget == this || _pTarget->pCollider_ == nullptr) 
+	if (_pTarget == this || _pTarget->pCollider_ == nullptr)
+	{
 		return;		//ターゲットにコライダーがアタッチされていない
-
-		//XMVECTOR v{ transform_.position_.x - pTarget->transform_.position_.x,
-		//			transform_.position_.y - pTarget->transform_.position_.y,
-		//			transform_.position_.z - pTarget->transform_.position_.z,
-		//			0 };
-		//XMVECTOR dist = XMVector3Dot(v, v);
-		/*float dist = (transform_.position_.x - _pTarget->transform_.position_.x) * (transform_.position_.x - _pTarget->transform_.position_.x)
-			+ (transform_.position_.y - _pTarget->transform_.position_.y) * (transform_.position_.y - _pTarget->transform_.position_.y)
-			+ (transform_.position_.z - _pTarget->transform_.position_.z) * (transform_.position_.z - _pTarget->transform_.position_.z);
-
+	}
+	//XMVECTOR v{ transform_.position_.x - pTarget->transform_.position_.x,
+	//			transform_.position_.y - pTarget->transform_.position_.y,
+	//			transform_.position_.z - pTarget->transform_.position_.z,
+	//			0 };
+	//XMVECTOR dist = XMVector3Dot(v, v);
+	/*float dist = (transform_.position_.x - _pTarget->transform_.position_.x) * (transform_.position_.x - _pTarget->transform_.position_.x)
+		+ (transform_.position_.y - _pTarget->transform_.position_.y) * (transform_.position_.y - _pTarget->transform_.position_.y)
+		+ (transform_.position_.z - _pTarget->transform_.position_.z) * (transform_.position_.z - _pTarget->transform_.position_.z);
 		float rDist = (this->pCollider_->GetRadius() + _pTarget->pCollider_->GetRadius()) * (this->pCollider_->GetRadius() + _pTarget->pCollider_->GetRadius());*/
-
 	//自分とターゲットの距離	<= R1+R2なら
 	//もし、自分のコライダーとターゲットがぶつかっていたら
 	//onCollision(pTarget)を呼び出す
