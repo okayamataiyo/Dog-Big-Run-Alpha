@@ -3,6 +3,7 @@
 #include "PlayScene.h"
 #include "Stage.h"
 #include "Player.h"
+#include "Item.h"
 
 
 PlayScene::PlayScene(GameObject* _parent)
@@ -14,6 +15,7 @@ PlayScene::PlayScene(GameObject* _parent)
 void PlayScene::Initialize()
 {
 	Instantiate<Stage>(this);
+	Instantiate<Item>(this);
 	for (int i = 0; i <= 1; i++)
 	{
 		pPlayer_[i] = Instantiate<Player>(this);

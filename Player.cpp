@@ -3,8 +3,8 @@
 #include "Engine/Model.h"
 #include "Stage.h"
 
-Player::Player(GameObject* parent)
-    :GameObject(parent, "Player"), hModel_{ -1 ,-1 }, camType_(0), playerNum_(0), jumpFlg_{ false,false }
+Player::Player(GameObject* _parent)
+    :GameObject(_parent, "Player"), hModel_{ -1 ,-1 }, camType_(0), playerNum_(0), jumpFlg_{ false,false }
 {
 }
 
@@ -22,7 +22,7 @@ void Player::Initialize()
         powerY_[i] = TransPlayer_[i].position_.y;
     }
 
-    BoxCollider* pCollision = new BoxCollider(XMFLOAT3(0.0, 0.0, 0.0), XMFLOAT3(1.0,1.0,1.0));
+    BoxCollider* pCollision = new BoxCollider(XMFLOAT3(0.0,0.0,0.0), XMFLOAT3(1.1,1.1,1.1));
     AddCollider(pCollision);
 
 }
@@ -72,6 +72,11 @@ void Player::PlayerMove()
         {
             velocity_[i].x *= 0.9f;    //Xé≤ï˚å¸ÇÃäµê´
             velocity_[i].z *= 0.9f;    //Zé≤ï˚å¸ÇÃäµê´
+        }
+        else
+        {
+            velocity_[i].x *= 0.97f;
+            velocity_[i].z *= 0.97f;
         }
         powerX_[i] += velocity_[i].x;
         powerZ_[i] += velocity_[i].z;
