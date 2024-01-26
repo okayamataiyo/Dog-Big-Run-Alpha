@@ -149,15 +149,21 @@ void Player::PlayerJump(int _PlayerNum)
     Stage* pStage = (Stage*)FindObject("Stage");    //ステージオブジェクト
     int hStageModel = pStage->GetModelHandle();   //モデル番号を取得
 
+
     for (int i = 0u; i <= 1; i++)
     {
+        data[i].start = TransPlayer_[i].position_;  //レイの発射位置
+        data[i].start.y = 0;
+        data[i].dir = XMFLOAT3(0, -1, 0);       //レイの方向
+        Model::RayCast(hStageModel, &data[i]);  //レイを発射
+        rayDist_[i] = data[i].dist;
 
         if (jumpFlg_[i] == true)
         {
             moveYTemp_[i] = powerY_[i];
             powerY_[i] += (powerY_[i] - moveYPrev_[i]) - 0.003;
             moveYPrev_[i] = moveYTemp_[i];
-            if (powerY_[i] <= rayDist_[i] - 22)
+            if (powerY_[i] <= -rayDist_[i])
             {
                 jumpFlg_[i] = false;
             }
@@ -177,22 +183,18 @@ void Player::PlayerJump(int _PlayerNum)
             powerY_[1] = powerY_[1] + 0.2;
         }
 
-        data[i].start = TransPlayer_[i].position_;  //レイの発射位置
-        data[i].start.y = 0;
-        data[i].dir = XMFLOAT3(0, -1, 0);       //レイの方向
-        Model::RayCast(hStageModel, &data[i]);  //レイを発射
-        rayDist_[i] = data[i].dist;
-
         if (data[i].hit == true)
         {
             if (jumpFlg_[0] == false)
             {
                 TransPlayer_[0].position_.y = -data[0].dist + 0.6;
+                powerY_[0] = -data[0].dist + 0.6;
             }
 
             if (jumpFlg_[1] == false)
             {
                 TransPlayer_[1].position_.y = -data[1].dist + 0.6;
+                powerY_[1] = -data[1].dist + 0.6;
             }
         }
     }

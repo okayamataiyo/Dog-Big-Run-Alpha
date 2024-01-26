@@ -12,7 +12,7 @@
 #pragma comment(lib, "winmm.lib")
 
 //定数宣言
-const char* WIN_CLASS_NAME = "SampleGame";  //ウィンドウクラス名
+const char* WIN_CLASS_NAME = "Dog Big Run";  //ウィンドウクラス名
 
 Rootjob* pRootjob = nullptr;
 Camera* pCamera = new Camera;
