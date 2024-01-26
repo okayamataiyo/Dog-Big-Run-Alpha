@@ -36,7 +36,7 @@ void Item::Update()
 
 	if (data.hit == true)
 	{
-		transform_.position_.y = -data.dist;
+		transform_.position_.y = -data.dist + 0.6;
 	}
 }
 
@@ -53,4 +53,8 @@ void Item::Release()
 
 void Item::OnCollision(GameObject* _pTarget)
 {
+	if (_pTarget->GetObjectName() == "PlayerFirst")
+	{
+		transform_.position_.x += 1;
+	}
 }

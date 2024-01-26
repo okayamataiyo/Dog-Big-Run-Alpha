@@ -58,7 +58,7 @@ void Player::Release()
 
 void Player::OnCollision(GameObject* _pTarget)
 {
-    if (_pTarget->GetObjectName() == "PlayerSecond")
+    if (_pTarget->GetObjectName() == "Item")
     {
         PlayerJump(1);
     }
@@ -185,17 +185,13 @@ void Player::PlayerJump(int _PlayerNum)
 
         if (data[i].hit == true)
         {
-            if (jumpFlg_[0] == false)
+            if (jumpFlg_[i] == false)
             {
-                TransPlayer_[0].position_.y = -data[0].dist + 0.6;
-                powerY_[0] = -data[0].dist + 0.6;
+                TransPlayer_[i].position_.y = -data[i].dist + 0.6;
+                powerY_[i] = -data[i].dist + 0.6;
             }
 
-            if (jumpFlg_[1] == false)
-            {
-                TransPlayer_[1].position_.y = -data[1].dist + 0.6;
-                powerY_[1] = -data[1].dist + 0.6;
-            }
+
         }
     }
 }
