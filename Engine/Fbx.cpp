@@ -275,91 +275,84 @@ void Fbx::InitMaterial(fbxsdk::FbxNode* pNode)
 //テクスチャをロード
 void Fbx::Draw(Transform& transform)
 {
-    Direct3D::SetShader(SHADER_TOONOUTLINE);
 
     transform.Calclation();//トランスフォームを計算
-
-    for (int j = 0; j < 2; j++)
+    for (int i = 0; i < materialCount_; i++)
     {
 
-        for (int i = 0; i < materialCount_; i++) 
-        {
+        //コンスタントバッファに情報を渡す
+        CONSTANT_BUFFER_MODEL cb;
+        cb.matWVP = XMMatrixTranspose(transform.GetWorldMatrix() * pCamera->GetViewMatrix() * pCamera->GetProjectionMatrix());
+        cb.matNormal = XMMatrixTranspose(transform.GetNormalMatrix());
+        cb.matW = XMMatrixTranspose(transform.GetNormalMatrix());
+        cb.diffuseColor = pMaterialList_[i].diffuse;
+        cb.ambientColor = pMaterialList_[i].diffuse;
+        cb.specularColor = pMaterialList_[i].diffuse;
+        cb.shineness = pMaterialList_[i].shineness;
+        cb.isTextured = pMaterialList_[i].pTexture != nullptr;
 
-            //コンスタントバッファに情報を渡す
-            CONSTANT_BUFFER_MODEL cb;
-            cb.matWVP = XMMatrixTranspose(transform.GetWorldMatrix() * pCamera->GetViewMatrix() * pCamera->GetProjectionMatrix());
-            cb.matNormal = XMMatrixTranspose(transform.GetNormalMatrix());
-            cb.matW = XMMatrixTranspose(transform.GetNormalMatrix());
-            cb.diffuseColor = pMaterialList_[i].diffuse;
-            cb.ambientColor = pMaterialList_[i].diffuse;
-            cb.specularColor = pMaterialList_[i].diffuse;
-            cb.shineness = pMaterialList_[i].shineness;
+        Direct3D::pContext_->UpdateSubresource(pConstantBuffer_, 0, NULL, &cb, 0, 0);
+
+        /*if (i == 1) {
+            cb.diffuseColor = XMFLOAT4(1, 0, 0, 1);
             cb.isTextured = pMaterialList_[i].pTexture != nullptr;
-
-            Direct3D::pContext_->UpdateSubresource(pConstantBuffer_, 0, NULL, &cb, 0, 0);
-
-            /*if (i == 1) {
-                cb.diffuseColor = XMFLOAT4(1, 0, 0, 1);
-                cb.isTextured = pMaterialList_[i].pTexture != nullptr;
-            }
-            else {
-                cb.diffuseColor = pMaterialList_[i].diffuse;
-                cb.isTextured = pMaterialList_[i].pTexture != nullptr;
-            }*/
-
-            //        cb.diffuseColor = pMaterialList_[i].diffuse;
-            //        cb.isTextured = pMaterialList_[i].pTexture != nullptr;
-
-                    //D3D11_MAPPED_SUBRESOURCE pdata;
-                    //Direct3D::pContext_->Map(pConstantBuffer_, 0, D3D11_MAP_WRITE_DISCARD, 0, &pdata);	// GPUからのデータアクセスを止める
-                    //memcpy_s(pdata.pData, pdata.RowPitch, (void*)(&cb), sizeof(cb));	// データを値を送る
-
-                    //Direct3D::pContext_->Unmap(pConstantBuffer_, 0);	//再開
-
-                    //頂点バッファ、インデックスバッファ、コンスタントバッファをパイプラインにセット
-
-                    //頂点バッファ
-            UINT stride = sizeof(VERTEX);
-            UINT offset = 0;
-            Direct3D::pContext_->IASetVertexBuffers(0, 1, &pVertexBuffer_, &stride, &offset);
-
-            // インデックスバッファーをセット
-            stride = sizeof(int);
-            offset = 0;
-            Direct3D::pContext_->IASetIndexBuffer(pIndexBuffer_[i], DXGI_FORMAT_R32_UINT, 0);
-
-            //コンスタントバッファ
-            Direct3D::pContext_->VSSetConstantBuffers(0, 1, &pConstantBuffer_);	//頂点シェーダー用	
-            Direct3D::pContext_->PSSetConstantBuffers(0, 1, &pConstantBuffer_);	//ピクセルシェーダー用
-
-            ////描画
-            //Direct3D::pContext_->DrawIndexed(polygonCount_ * 3, 0, 0);
-            //D3D11_MAPPED_SUBRESOURCE pdata;
-            //Direct3D::pContext_->Map(pConstantBuffer_, 0, D3D11_MAP_WRITE_DISCARD, 0, &pdata);  //GPUからのデータアクセス
-            //memcpy_s(pdata.pData, pdata.RowPitch, (void*)(&cb), sizeof(cb));                    //データを送る
-
-            //Direct3D::pContext_->Unmap(pConstantBuffer_, 0);     //再開
-
-            //頂点バッファ、インデックスバッファ、コンスタントバッファをパイプラインにセット
-            /*UINT stride = sizeof(VERTEX);
-            UINT offset = 0;*/
-
-            if (pMaterialList_[i].pTexture)
-            {
-                ID3D11SamplerState* pSampler = pMaterialList_[i].pTexture->GetSampler();
-                Direct3D::pContext_->PSSetSamplers(0, 1, &pSampler);
-
-                ID3D11ShaderResourceView* pSRV = pMaterialList_[i].pTexture->GetSRV();
-                Direct3D::pContext_->PSSetShaderResources(0, 1, &pSRV);
-            }
-
-            ID3D11ShaderResourceView* pSRVToon = pToonTex_->GetSRV();
-            Direct3D::pContext_->PSSetShaderResources(1, 1, &pSRVToon);
-
-            //描画
-            Direct3D::pContext_->DrawIndexed(indexCount_[i], 0, 0);
         }
-        Direct3D::SetShader(SHADER_3D);
+        else {
+            cb.diffuseColor = pMaterialList_[i].diffuse;
+            cb.isTextured = pMaterialList_[i].pTexture != nullptr;
+        }*/
+
+        //        cb.diffuseColor = pMaterialList_[i].diffuse;
+        //        cb.isTextured = pMaterialList_[i].pTexture != nullptr;
+
+                //D3D11_MAPPED_SUBRESOURCE pdata;
+                //Direct3D::pContext_->Map(pConstantBuffer_, 0, D3D11_MAP_WRITE_DISCARD, 0, &pdata);	// GPUからのデータアクセスを止める
+                //memcpy_s(pdata.pData, pdata.RowPitch, (void*)(&cb), sizeof(cb));	// データを値を送る
+
+                //Direct3D::pContext_->Unmap(pConstantBuffer_, 0);	//再開
+
+                //頂点バッファ、インデックスバッファ、コンスタントバッファをパイプラインにセット
+
+                //頂点バッファ
+        UINT stride = sizeof(VERTEX);
+        UINT offset = 0;
+        Direct3D::pContext_->IASetVertexBuffers(0, 1, &pVertexBuffer_, &stride, &offset);
+
+        // インデックスバッファーをセット
+        stride = sizeof(int);
+        offset = 0;
+        Direct3D::pContext_->IASetIndexBuffer(pIndexBuffer_[i], DXGI_FORMAT_R32_UINT, 0);
+
+        //コンスタントバッファ
+        Direct3D::pContext_->VSSetConstantBuffers(0, 1, &pConstantBuffer_);	//頂点シェーダー用	
+        Direct3D::pContext_->PSSetConstantBuffers(0, 1, &pConstantBuffer_);	//ピクセルシェーダー用
+
+        ////描画
+        //Direct3D::pContext_->DrawIndexed(polygonCount_ * 3, 0, 0);
+        //D3D11_MAPPED_SUBRESOURCE pdata;
+        //Direct3D::pContext_->Map(pConstantBuffer_, 0, D3D11_MAP_WRITE_DISCARD, 0, &pdata);  //GPUからのデータアクセス
+        //memcpy_s(pdata.pData, pdata.RowPitch, (void*)(&cb), sizeof(cb));                    //データを送る
+
+        //Direct3D::pContext_->Unmap(pConstantBuffer_, 0);     //再開
+
+        //頂点バッファ、インデックスバッファ、コンスタントバッファをパイプラインにセット
+        /*UINT stride = sizeof(VERTEX);
+        UINT offset = 0;*/
+
+        if (pMaterialList_[i].pTexture)
+        {
+            ID3D11SamplerState* pSampler = pMaterialList_[i].pTexture->GetSampler();
+            Direct3D::pContext_->PSSetSamplers(0, 1, &pSampler);
+
+            ID3D11ShaderResourceView* pSRV = pMaterialList_[i].pTexture->GetSRV();
+            Direct3D::pContext_->PSSetShaderResources(0, 1, &pSRV);
+        }
+
+        ID3D11ShaderResourceView* pSRVToon = pToonTex_->GetSRV();
+        Direct3D::pContext_->PSSetShaderResources(1, 1, &pSRVToon);
+
+        //描画
+        Direct3D::pContext_->DrawIndexed(indexCount_[i], 0, 0);
     }
 }
 

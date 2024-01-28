@@ -20,7 +20,7 @@ void PlayScene::Initialize()
 	{
 		pPlayer_[i] = Instantiate<Player>(this);
 	}
-	pPlayer_[0]->SetObjectName("PlayerFist");
+	pPlayer_[0]->SetObjectName("PlayerFirst");
 	pPlayer_[1]->SetObjectName("PlayerSecond");
 
 }

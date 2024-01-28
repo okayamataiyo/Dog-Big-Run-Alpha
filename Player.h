@@ -15,7 +15,7 @@ class Player : public GameObject
 {
 protected:
 	int playerNum_;
-	int hModel_[2];	//ƒ‚ƒfƒ‹”Ô†
+	int hModel_;	//ƒ‚ƒfƒ‹”Ô†
 	int camType_;	
 	float powerX_[2];
 	float powerY_[2];
@@ -31,6 +31,7 @@ protected:
 	XMFLOAT3 velocity_[2];		//‘¬“x
 
 	Transform TransPlayer_[2];
+	BoxCollider* pCollision;
 public:
 
 	/// <summary>

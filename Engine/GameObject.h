@@ -44,6 +44,7 @@ public:
 	void SetPosition(XMFLOAT3 _position);
 	void SetPosition(float _x, float _y, float _z);	
 	void SetObjectName(string _s) { objectName_ = _s; }
+	void SetTransform(Transform _transform) { transform_.position_ = _transform.position_; }
 
 	/// <summary>
 	/// オブジェクトの名前を取得
@@ -51,13 +52,20 @@ public:
 	/// <param name="">オブジェクトの名前</param>
 	/// <returns>オブジェクトの名前</returns>
 	const string& GetObjectName(void) const { return objectName_; }
+	/// <summary>
+	/// ルートジョブの取得
+	/// </summary>
+	/// <returns></returns>
 	GameObject* GetRootJob();
 	/// <summary>
 	/// 親オブジェクトを取得
 	/// </summary>
 	/// <returns></returns>
 	GameObject* GetParent();
-
+	/// <summary>
+	/// ワールド座標を取得
+	/// </summary>
+	/// <returns></returns>
 	XMFLOAT3 GetWorldPosition() { return Transform::Float3Add(GetParent()->transform_.position_, transform_.position_); }
 	GameObject* FindChildObject(string _objName);
 	GameObject* FindObject(string _objName);

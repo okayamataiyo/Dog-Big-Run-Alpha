@@ -4,7 +4,7 @@
 #include "Stage.h"
 
 Player::Player(GameObject* _parent)
-    :GameObject(_parent, "Player"), hModel_{ -1 ,-1 }, camType_(0), playerNum_(0), jumpFlg_{ false,false }
+    :GameObject(_parent, "Player"), hModel_{ -1}, camType_(0), playerNum_(0), jumpFlg_{ false,false }
 {
 }
 
@@ -14,15 +14,16 @@ Player::~Player()
 
 void Player::Initialize()
 {
+    //モデルデータのロード
+    hModel_ = Model::Load("Assets/PlayerC.fbx");
+    assert(hModel_ >= 0);
+
     for (int i = 0u; i <= 1; i++)
     {
-        //モデルデータのロード
-        hModel_[i] = Model::Load("Assets/PlayerC.fbx");
-        assert(hModel_[i] >= 0);
         powerY_[i] = TransPlayer_[i].position_.y;
     }
 
-    BoxCollider* pCollision = new BoxCollider(XMFLOAT3(0.0,0.0,0.0), XMFLOAT3(1.1,1.1,1.1));
+    pCollision = new BoxCollider(XMFLOAT3(0.0,0.0,0.0), XMFLOAT3(1.1,1.1,1.1));
     AddCollider(pCollision);
 
 }
@@ -46,8 +47,8 @@ void Player::Draw()
 {
     for (int i = 0u; i <= 1; i++)
     {
-        Model::SetTransform(hModel_[i], TransPlayer_[i]);
-        Model::Draw(hModel_[i]);
+        Model::SetTransform(hModel_, TransPlayer_[i]);
+        Model::Draw(hModel_);
     }
     GameObject::CollisionDraw();
 }
