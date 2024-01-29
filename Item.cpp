@@ -15,11 +15,13 @@ Item::~Item()
 
 void Item::Initialize()
 {
-	hModel_ = Model::Load("Assets/PlayerC.fbx");
+	hModel_ = Model::Load("Assets/Bone.fbx");
 	assert(hModel_ >= 0);
 
-	BoxCollider* pCollision = new BoxCollider(XMFLOAT3(0.0, 0.0, 0.0), XMFLOAT3(1.1, 1.1, 1.1));
+	BoxCollider* pCollision = new BoxCollider(XMFLOAT3(0.0, 0.0, 0.0), XMFLOAT3(1.1, 0.5, 1.1));
 	AddCollider(pCollision);
+
+	transform_.scale_ = { 0.2,0.2,0.2 };
 }
 
 void Item::Update()

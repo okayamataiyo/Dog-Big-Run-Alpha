@@ -78,7 +78,6 @@ class Fbx
 	void InitMaterial(fbxsdk::FbxNode* pNode);
 	bool IsFloatColor_;
 	XMFLOAT4 dColor_;
-	XMFLOAT4 lightSourcePosition_;
 	Texture* pToonTex_;
 	VERTEX* pVertexData_;
 	DWORD** ppIndexData_;
