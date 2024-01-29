@@ -273,47 +273,28 @@ void Fbx::InitMaterial(fbxsdk::FbxNode* pNode)
 }
 
 //テクスチャをロード
-void Fbx::Draw(Transform& transform)
+void Fbx::Draw(Transform& _transform)
 {
 
-    transform.Calclation();//トランスフォームを計算
+    _transform.Calclation();//トランスフォームを計算
     for (int i = 0; i < materialCount_; i++)
     {
 
         //コンスタントバッファに情報を渡す
         CONSTANT_BUFFER_MODEL cb;
-        cb.matWVP = XMMatrixTranspose(transform.GetWorldMatrix() * pCamera->GetViewMatrix() * pCamera->GetProjectionMatrix());
-        cb.matNormal = XMMatrixTranspose(transform.GetNormalMatrix());
-        cb.matW = XMMatrixTranspose(transform.GetNormalMatrix());
+        cb.matWVP = XMMatrixTranspose(_transform.GetWorldMatrix() * pCamera->GetViewMatrix() * pCamera->GetProjectionMatrix());
+        cb.matNormal = XMMatrixTranspose(_transform.GetNormalMatrix());
+        cb.matW = XMMatrixTranspose(_transform.GetNormalMatrix());
+
         cb.diffuseColor = pMaterialList_[i].diffuse;
-        cb.ambientColor = pMaterialList_[i].diffuse;
-        cb.specularColor = pMaterialList_[i].diffuse;
+        cb.ambientColor = pMaterialList_[i].ambient;
+        cb.specularColor = pMaterialList_[i].specular;
         cb.shineness = pMaterialList_[i].shineness;
         cb.isTextured = pMaterialList_[i].pTexture != nullptr;
 
         Direct3D::pContext_->UpdateSubresource(pConstantBuffer_, 0, NULL, &cb, 0, 0);
 
-        /*if (i == 1) {
-            cb.diffuseColor = XMFLOAT4(1, 0, 0, 1);
-            cb.isTextured = pMaterialList_[i].pTexture != nullptr;
-        }
-        else {
-            cb.diffuseColor = pMaterialList_[i].diffuse;
-            cb.isTextured = pMaterialList_[i].pTexture != nullptr;
-        }*/
-
-        //        cb.diffuseColor = pMaterialList_[i].diffuse;
-        //        cb.isTextured = pMaterialList_[i].pTexture != nullptr;
-
-                //D3D11_MAPPED_SUBRESOURCE pdata;
-                //Direct3D::pContext_->Map(pConstantBuffer_, 0, D3D11_MAP_WRITE_DISCARD, 0, &pdata);	// GPUからのデータアクセスを止める
-                //memcpy_s(pdata.pData, pdata.RowPitch, (void*)(&cb), sizeof(cb));	// データを値を送る
-
-                //Direct3D::pContext_->Unmap(pConstantBuffer_, 0);	//再開
-
-                //頂点バッファ、インデックスバッファ、コンスタントバッファをパイプラインにセット
-
-                //頂点バッファ
+        //頂点バッファ
         UINT stride = sizeof(VERTEX);
         UINT offset = 0;
         Direct3D::pContext_->IASetVertexBuffers(0, 1, &pVertexBuffer_, &stride, &offset);
