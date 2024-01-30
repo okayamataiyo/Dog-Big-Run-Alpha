@@ -27,12 +27,12 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
 	HRESULT hr;
 
 	//初期化ファイル(setup.ini)から必要な情報を取得
-	int screenWidth = GetPrivateProfileInt("SCREEN", "Width", 800, ".\\setup.ini");
-	int screenHeight = GetPrivateProfileInt("SCREEN", "Height", 600, ".\\setup.ini");
-	int fpsLimit = GetPrivateProfileInt("GAME", "Fps", 60, ".\\setup.ini");
-	int isDrawFps = GetPrivateProfileInt("DEBUG", "ViewFps", 0, ".\\setup.ini");
+	int screenWidth = GetPrivateProfileInt("SCREEN", "Width", 800, ".\\Assets\\setup.ini");
+	int screenHeight = GetPrivateProfileInt("SCREEN", "Height", 600, ".\\Assets\\setup.ini");
+	int fpsLimit = GetPrivateProfileInt("GAME", "Fps", 60, ".\\Assets\\setup.ini");
+	int isDrawFps = GetPrivateProfileInt("DEBUG", "ViewFps", 0, ".\\Assets\\setup.ini");
 	char caption[64];
-	GetPrivateProfileString("SCREEN", "Caption", "***", caption, 64, ".\\setup.ini");
+	GetPrivateProfileString("SCREEN", "Caption", "***", caption, 64, ".\\Assets\\setup.ini");
 
 	//ウィンドウクラス（設計図）を作成
 	WNDCLASSEX wc;

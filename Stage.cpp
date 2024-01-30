@@ -40,8 +40,13 @@ void Stage::Update()
 //•`‰æ
 void Stage::Draw()
 {
+    //Å‰‚É3D‚Å•`‰æŒãA˜g‚Ã‚¯‚à•`‰æ
     Model::SetTransform(hModel_, Trans_G);
-    Model::Draw(hModel_);
+    for (int i = 3; i >= 1; i -= 2)
+    {
+        Direct3D::SetShader(static_cast<SHADER_TYPE>(i));
+        Model::Draw(hModel_);
+    }
 }
 
 //ŠJ•ú
