@@ -4,22 +4,44 @@
 class Camera;
 extern Camera* pCamera;
 
-enum
-{
-	PlayerFirst,
-	PlayerSeconds
-};
-
 //プレイヤーを管理するクラス
 class Player : public GameObject
 {
-protected:
+public:
+	enum PLYAERS
+	{
+		PlayerFirst = 0,
+		PlayerSeconds
+	};
+
+	enum GAMESTATE
+	{
+		WAIT = 0,
+		WALK,
+		RUN,
+		JUNMP,
+
+	}GameSta_;
+
+	enum STATE
+	{
+		READY = 0,
+		PLAY,
+		GAMEOVER,
+	}State_;
+
 	int playerNum_;
 	int hModel_;	//モデル番号
-	int camType_;	
+	int camType_;
 	float powerX_[2];
 	float powerY_[2];
 	float powerZ_[2];
+	//▼ゲームの演出で使うメンバ関数
+	int TimeCounter_;
+	
+	//▼向き変えで使うメンバ変数
+	XMVECTOR vecMove_[2];
+	XMVECTOR vecLength_[2];
 	//▼ジャンプで使うメンバ変数
 	bool  jumpFlg_[2];
 	float rayDist_[2];		//地面とプレイヤーの差分
@@ -28,9 +50,9 @@ protected:
 
 	//▼慣性で使うメンバ変数
 	float mv[2];			//加速度
-	XMFLOAT3 velocity_[2];		//速度
+	XMFLOAT3 velocity_[2];	//速度
 
-	Transform TransPlayer_[2];
+	Transform transPlayer_[2];
 	BoxCollider* pCollision;
 public:
 
@@ -65,6 +87,10 @@ public:
 	/// </summary>
 	void Release() override;
 
+	void UpdateReady();
+	void UpdatePlay();
+	void UpdateGameOver();
+
 	/// <summary>
 	/// 何かに当たった時の関数
 	/// </summary>
@@ -87,6 +113,6 @@ public:
 	/// プレイヤーの位置取得
 	/// </summary>
 	/// <returns>プレイヤーの位置</returns>
-	Transform GetPlayerPos(int _PPos) { return TransPlayer_[_PPos]; }
+	Transform GetPlayerPos(int _PPos) { return transPlayer_[_PPos]; }
 };
 

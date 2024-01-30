@@ -4,7 +4,7 @@
 #include "Stage.h"
 
 Player::Player(GameObject* _parent)
-    :GameObject(_parent, "Player"), hModel_{ -1}, camType_(0), playerNum_(0), jumpFlg_{ false,false }
+    :GameObject(_parent, "Player"),TimeCounter_(0), hModel_{ -1 }, camType_(0), playerNum_(0), jumpFlg_{ false,false }, State_(READY)
 {
 }
 
@@ -20,8 +20,7 @@ void Player::Initialize()
     transform_.scale_ = { 0.5,0.5,0.5 };
     for (int i = 0u; i <= 1; i++)
     {
-        TransPlayer_[i] = transform_;
-        powerY_[i] = TransPlayer_[i].position_.y;
+        powerY_[i] = transPlayer_[i].position_.y;
     }
 
     pCollision = new BoxCollider(XMFLOAT3(0.0,0.0,0.0), XMFLOAT3(1.1,1.1,1.1));
@@ -31,25 +30,19 @@ void Player::Initialize()
 
 void Player::Update()
 {
-    PlayerMove();
-    for (int i = 0u; i <= 1; i++)
+    switch(State_)
     {
-        transform_ = TransPlayer_[i];
-        PlayerJump(i);
-        pCamera->SetTarget(TransPlayer_[i].position_, i);
-        XMFLOAT3 camPos = TransPlayer_[i].position_;
-        camPos.y += 2;
-        camPos.z -= 15;
-        pCamera->SetPosition(camPos, i);
+    case STATE::READY:     UpdateReady();    break;
+    case STATE::PLAY:      UpdatePlay();     break;
+    case STATE::GAMEOVER:  UpdateGameOver(); break;
     }
-
 }
 
 void Player::Draw()
 {
     for (int i = 0u; i <= 1; i++)
     {
-        Model::SetTransform(hModel_, TransPlayer_[i]);
+        Model::SetTransform(hModel_, transPlayer_[i]);
         Model::Draw(hModel_);
     }
     GameObject::CollisionDraw();
@@ -57,6 +50,40 @@ void Player::Draw()
 
 void Player::Release()
 {
+}
+
+void Player::UpdateReady()
+{
+    ++TimeCounter_;
+    if (TimeCounter_ >= 60)
+    {
+        State_ = STATE::PLAY;
+        TimeCounter_ = 0;
+    }
+}
+
+void Player::UpdatePlay()
+{
+    PlayerMove();
+    for (int i = 0u; i <= 1; i++)
+    {
+        transform_ = transPlayer_[i];
+        PlayerJump(i);
+        pCamera->SetTarget(transPlayer_[i].position_, i);
+        XMFLOAT3 camPos = transPlayer_[i].position_;
+        camPos.y += 2;
+        camPos.z -= 15;
+        pCamera->SetPosition(camPos, i);
+    }
+}
+
+void Player::UpdateGameOver()
+{
+    ++TimeCounter_;
+    if (TimeCounter_ >= 60)
+    {
+
+    }
 }
 
 void Player::OnCollision(GameObject* _pTarget)
@@ -83,7 +110,14 @@ void Player::PlayerMove()
         }
         powerX_[i] += velocity_[i].x;
         powerZ_[i] += velocity_[i].z;
-        TransPlayer_[i].position_ = { powerX_[i],powerY_[i],powerZ_[i] };
+        transPlayer_[i].position_ = { powerX_[i],powerY_[i],powerZ_[i] };
+        //vecMove_[i] = XMLoadFloat3(&velocity_[i]);
+        //vecMove_[i] = XMVector3Normalize(vecMove_[i]);
+        //vecMove_[i] *= 0.05f;
+        //XMStoreFloat3(&velocity_[i], vecMove_[i]);
+
+        //ecLength_[i] = XMVector3Length(vecMove_[i]);
+
 
         if (Input::IsKey(DIK_LSHIFT))
         {
@@ -91,59 +125,62 @@ void Player::PlayerMove()
             {
                 velocity_[i].x = velocity_[i].x * 1.1;
                 velocity_[i].z = velocity_[i].z * 1.1;
+                GameSta_ = RUN;
             }
         }
     }
     //▼プレイヤー右の人
     if (Input::IsKey(DIK_UP))
     {
-        //powerZ_[1] += 0.2;
         velocity_[1].z += 0.005f;
+        GameSta_ = WALK;
     }
     if (Input::IsKey(DIK_DOWN))
     {
-        //powerZ_[1] -= 0.2;
         velocity_[1].z -= 0.005f;
+        GameSta_ = WALK;
     }
 
     if (Input::IsKey(DIK_RIGHT))
     {
-        //powerX_[1] += 0.2;
         velocity_[1].x += 0.005f;
+        GameSta_ = WALK;
     }
     if (Input::IsKey(DIK_LEFT))
     {
-        //powerX_[1] -= 0.2;
         velocity_[1].x -= 0.005f;
+        GameSta_ = WALK;
     }
     //▼プレイヤー左の人
     if (Input::IsKey(DIK_W))
     {
-        //powerZ_[0] += 0.2;
         velocity_[0].z += 0.005f;
+        GameSta_ = WALK;
     }
     if (Input::IsKey(DIK_S))
     {
-        //powerZ_[0] -= 0.2;
         velocity_[0].z -= 0.005f;
+        GameSta_ = WALK;
     }
 
     if (Input::IsKey(DIK_D))
     {
-        //powerX_[0] += 0.2;
         velocity_[0].x += 0.005f;
+        GameSta_ = WALK;
     }
     if (Input::IsKey(DIK_A))
     {
-        //powerX_[0] -= 0.2;
         velocity_[0].x -= 0.005f;
+        GameSta_ = WALK;
     }
 
     if (Input::IsKey(DIK_C))
     {
         playerNum_ += 1;
         playerNum_ = playerNum_ % 2;
+        GameSta_ = WALK;
     }
+
 }
 
 void Player::PlayerJump(int _PlayerNum)
@@ -155,12 +192,7 @@ void Player::PlayerJump(int _PlayerNum)
 
     for (int i = 0u; i <= 1; i++)
     {
-        data[i].start = TransPlayer_[i].position_;  //レイの発射位置
-        data[i].start.y = 0;
-        data[i].dir = XMFLOAT3(0, -1, 0);       //レイの方向
-        Model::RayCast(hStageModel, &data[i]);  //レイを発射
-        rayDist_[i] = data[i].dist;
-
+        //ジャンプの処理
         if (jumpFlg_[i] == true)
         {
             moveYTemp_[i] = powerY_[i];
@@ -185,12 +217,19 @@ void Player::PlayerJump(int _PlayerNum)
             moveYPrev_[1] = powerY_[1];
             powerY_[1] = powerY_[1] + 0.2;
         }
+        
+        //レイの処理
+        data[i].start = transPlayer_[i].position_;  //レイの発射位置
+        data[i].start.y = 0;
+        data[i].dir = XMFLOAT3(0, -1, 0);       //レイの方向
+        Model::RayCast(hStageModel, &data[i]);  //レイを発射
+        rayDist_[i] = data[i].dist;
 
         if (data[i].hit == true)
         {
             if (jumpFlg_[i] == false)
             {
-                TransPlayer_[i].position_.y = -data[i].dist + 0.6;
+                transPlayer_[i].position_.y = -data[i].dist + 0.6;
                 powerY_[i] = -data[i].dist + 0.6;
             }
 
