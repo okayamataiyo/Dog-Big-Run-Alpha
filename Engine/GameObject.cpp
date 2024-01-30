@@ -15,7 +15,6 @@ GameObject::GameObject(GameObject* _parent, const std::string& _name)
 	}
 
 }
-//template <class T>
 
 void Instantiate(GameObject* _parent)
 {

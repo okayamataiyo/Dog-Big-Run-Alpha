@@ -15,11 +15,12 @@ Player::~Player()
 void Player::Initialize()
 {
     //モデルデータのロード
-    hModel_ = Model::Load("Assets/PlayerC.fbx");
+    hModel_ = Model::Load("Assets/Dog.fbx");
     assert(hModel_ >= 0);
-
+    transform_.scale_ = { 0.5,0.5,0.5 };
     for (int i = 0u; i <= 1; i++)
     {
+        TransPlayer_[i] = transform_;
         powerY_[i] = TransPlayer_[i].position_.y;
     }
 
@@ -33,6 +34,7 @@ void Player::Update()
     PlayerMove();
     for (int i = 0u; i <= 1; i++)
     {
+        transform_ = TransPlayer_[i];
         PlayerJump(i);
         pCamera->SetTarget(TransPlayer_[i].position_, i);
         XMFLOAT3 camPos = TransPlayer_[i].position_;
