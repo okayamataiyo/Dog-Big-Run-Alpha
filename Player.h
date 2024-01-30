@@ -33,9 +33,7 @@ public:
 	int playerNum_;
 	int hModel_;	//モデル番号
 	int camType_;
-	float powerX_[2];
 	float powerY_[2];
-	float powerZ_[2];
 	//▼ゲームの演出で使うメンバ関数
 	int TimeCounter_;
 	

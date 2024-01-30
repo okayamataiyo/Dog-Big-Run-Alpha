@@ -108,9 +108,9 @@ void Player::PlayerMove()
             velocity_[i].x *= 0.97f;
             velocity_[i].z *= 0.97f;
         }
-        powerX_[i] += velocity_[i].x;
-        powerZ_[i] += velocity_[i].z;
-        transPlayer_[i].position_ = { powerX_[i],powerY_[i],powerZ_[i] };
+        transPlayer_[i].position_.x += velocity_[i].x;
+        transPlayer_[i].position_.z += velocity_[i].z;
+        transPlayer_[i].position_.y = powerY_[i];
         //vecMove_[i] = XMLoadFloat3(&velocity_[i]);
         //vecMove_[i] = XMVector3Normalize(vecMove_[i]);
         //vecMove_[i] *= 0.05f;
