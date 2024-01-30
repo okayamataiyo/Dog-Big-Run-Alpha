@@ -74,6 +74,9 @@
     <ClCompile Include="Item.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Sky.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Camera.h">
@@ -127,6 +130,10 @@
     <ClInclude Include="Item.h">
       <Filter>ソース ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="Sky.h">
+      <Filter>ソース ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -137,5 +144,10 @@
     <FxCompile Include="Assets\Shader\Simple3D.hlsl" />
     <FxCompile Include="Assets\Shader\Toon.hlsl" />
     <FxCompile Include="Assets\Shader\ToonOutLine.hlsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Dog Big Run.rc">
+      <Filter>リソース ファイル</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>

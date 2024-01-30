@@ -4,7 +4,7 @@
 #include "Stage.h"
 #include "Player.h"
 #include "Item.h"
-
+#include "Sky.h"
 
 PlayScene::PlayScene(GameObject* _parent)
 	:GameObject(_parent, "PlayScene")
@@ -22,6 +22,7 @@ void PlayScene::Initialize()
 	pPlayer_[0]->SetObjectName("PlayerFirst");
 	pPlayer_[1]->SetObjectName("PlayerSecond");
 	Instantiate<Stage>(this);
+	Instantiate<Sky>(this);
 
 }
 

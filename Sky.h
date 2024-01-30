@@ -1,20 +1,18 @@
 #pragma once
 //インクルード
-#include <string>
 #include "Engine/GameObject.h"
 
-using std::string;
-//Stageを管理するクラス
-class Stage : public GameObject
+//Skyを管理するクラス
+class Sky : public GameObject
 {
     int hModel_;    //モデル番号
 public:
     //コンストラクタ
     //引数:parent 親オブジェクト(SceneManager)
-    Stage(GameObject* _parent);
+    Sky(GameObject* _parent);
 
     //デストラクタ
-    ~Stage();
+    ~Sky();
 
     //初期化
     void Initialize() override;

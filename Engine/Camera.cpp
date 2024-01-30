@@ -24,7 +24,7 @@ void Camera::Initialize()
 		IntConstantBuffer(i);
 	}
 	//プロジェクション行列
-	projMatrix_ = XMMatrixPerspectiveFovLH(XM_PIDIV4, (FLOAT)800 / (FLOAT)600, 0.1f, 100.0f);
+	projMatrix_ = XMMatrixPerspectiveFovLH(XM_PIDIV4, (FLOAT)800 / (FLOAT)600, 0.1f, 800.0f);
 	lightSourcePosition_ = { 0,2,-1,0 };
 
 }
