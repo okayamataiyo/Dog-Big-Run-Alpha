@@ -8,7 +8,7 @@ XMMATRIX projMatrix_;	//プロジェクション行列
 
 struct CBUFF_STAGESCENE
 {
-	XMFLOAT4 lightPosition{-2,0,0,0};
+	XMFLOAT4 lightPosition;
 	XMFLOAT4 eyePos[2];
 	XMFLOAT4 target[2];
 };
@@ -25,7 +25,7 @@ void Camera::Initialize()
 	}
 	//プロジェクション行列
 	projMatrix_ = XMMatrixPerspectiveFovLH(XM_PIDIV4, (FLOAT)800 / (FLOAT)600, 0.1f, 100.0f);
-	lightSourcePosition_ = { 1,2,1,0 };
+	lightSourcePosition_ = { 0,2,-1,0 };
 
 }
 

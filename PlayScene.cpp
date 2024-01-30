@@ -14,7 +14,6 @@ PlayScene::PlayScene(GameObject* _parent)
 
 void PlayScene::Initialize()
 {
-	Instantiate<Stage>(this);
 	Instantiate<Item>(this);
 	for (int i = 0; i <= 1; i++)
 	{
@@ -22,6 +21,7 @@ void PlayScene::Initialize()
 	}
 	pPlayer_[0]->SetObjectName("PlayerFirst");
 	pPlayer_[1]->SetObjectName("PlayerSecond");
+	Instantiate<Stage>(this);
 
 }
 
