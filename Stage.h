@@ -1,11 +1,14 @@
 #pragma once
+//インクルード
+#include <string>
 #include "Engine/GameObject.h"
 
-
+using std::string;
 //Stageを管理するクラス
 class Stage : public GameObject
 {
     int hModel_;    //モデル番号
+    string ModelName_[2] = { "Assets/Ground.fbx","Assets/Sky.fbx" };
 public:
     //コンストラクタ
     //引数:parent 親オブジェクト(SceneManager)

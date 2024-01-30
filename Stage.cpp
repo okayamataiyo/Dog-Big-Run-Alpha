@@ -23,9 +23,13 @@ Stage::~Stage()
 void Stage::Initialize()
 {
     //モデルデータのロード
-    hModel_ = Model::Load("Assets/Ground.fbx");
-    assert(hModel_ >= 0);
-
+    for (int i = 0u; i <= 1; i++)
+    {
+        //ModelName_[i] += "Assets/";
+        //ModelName_[i] += "ss";
+        hModel_ = Model::Load(ModelName_[i]);
+        assert(hModel_ >= i);
+    }
     Trans_G.position_.y = -5;
     Trans_G.rotate_.y = 90;
     Trans_G.scale_ = { 4,1,4 };
