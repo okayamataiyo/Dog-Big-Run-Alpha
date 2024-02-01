@@ -111,13 +111,34 @@ void Player::PlayerMove()
         transPlayer_[i].position_.x += velocity_[i].x;
         transPlayer_[i].position_.z += velocity_[i].z;
         transPlayer_[i].position_.y = powerY_[i];
-        //vecMove_[i] = XMLoadFloat3(&velocity_[i]);
-        //vecMove_[i] = XMVector3Normalize(vecMove_[i]);
-        //vecMove_[i] *= 0.05f;
+        vecMove_[i] = XMLoadFloat3(&velocity_[i]);
+        vecMove_[i] = XMVector3Normalize(vecMove_[i]);
+        vecMove_[i] *= 0.05f;
         //XMStoreFloat3(&velocity_[i], vecMove_[i]);
 
-        //ecLength_[i] = XMVector3Length(vecMove_[i]);
+        //向き変更
+        vecLength_[i] = XMVector3Length(vecMove_[i]);
+        length_[i] = XMVectorGetX(vecLength_[i]);
 
+        if (length_[i] != 0)
+        {
+            //プレイヤーが入力キーに応じて、その向きに変える(左向きには出来ない)
+            vecFront_[i] = {0,0,1,0};
+            vecMove_[i] = XMVector3Normalize(vecMove_[i]);
+
+            vecDot_[i] = XMVector3Dot(vecFront_[i], vecMove_[i]);
+            dot_[i] = XMVectorGetX(vecDot_[i]);
+            angle_[i] = acos(dot_[i]);
+
+            //右向きにしか向けなかったものを左向きにする事ができる
+            vecCross_[i] = XMVector3Cross(vecFront_[i], vecMove_[i]);
+            if (XMVectorGetY(vecCross_[i]) < 0)
+            {
+                angle_[i] *= -1;
+            }
+
+            transPlayer_[i].rotate_.y = XMConvertToDegrees(angle_[i]);
+        }
 
         if (Input::IsKey(DIK_LSHIFT))
         {

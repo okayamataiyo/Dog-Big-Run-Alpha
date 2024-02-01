@@ -40,6 +40,12 @@ public:
 	//▼向き変えで使うメンバ変数
 	XMVECTOR vecMove_[2];
 	XMVECTOR vecLength_[2];
+	float length_[2];
+	XMVECTOR vecFront_[2];
+	XMVECTOR vecDot_[2];
+	float dot_[2];
+	float angle_[2];
+	XMVECTOR vecCross_[2];
 	//▼ジャンプで使うメンバ変数
 	bool  jumpFlg_[2];
 	float rayDist_[2];		//地面とプレイヤーの差分
