@@ -23,12 +23,22 @@ void PlayScene::Initialize()
 	pPlayer_[1]->SetObjectName("PlayerSecond");
 	Instantiate<Stage>(this);
 	Instantiate<Sky>(this);
-	XMFLOAT3 position = { 3,3,3 };
+	pCamera_ = new Camera;
+	XMFLOAT3 position = { 3,0,0 };
 	pPlayer_[0]->SetTransform(position);
+
 }
 
 void PlayScene::Update()
 {
+	for (int j = 0u; j <= 1; j++)
+	{
+		camPos_ = pPlayer_[j]->GetPlayerPos().position_;
+		camPos_.y += 2;
+		camPos_.z -= 15;
+		pCamera_->SetPosition(camPos_, j);
+		pCamera_->SetTarget(pPlayer_[j]->GetPlayerPos().position_, j);
+	}
 
 }
 

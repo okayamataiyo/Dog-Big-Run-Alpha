@@ -2,8 +2,6 @@
 //インクルード
 #include "Engine/GameObject.h"
 #include "Engine/Camera.h"
-class Camera;
-extern Camera* pCamera;
 
 /// <summary>
 /// プレイヤーを管理するクラス
@@ -113,15 +111,14 @@ public:
 	/// <summary>
 	/// プレイヤーのジャンプ関数
 	/// </summary>
-	/// <param name="_PlayerNum">プレイヤーの番号</param>
-	void PlayerJump(int _PlayerNum);
+	void PlayerJump();
 
 	//▼セッター・ゲッター
 	/// <summary>
 	/// プレイヤーの位置取得
 	/// </summary>
 	/// <returns>プレイヤーの位置</returns>
-	Transform GetPlayerPos() { return transPlayer_; }
+	Transform GetPlayerPos() { return transform_; }
 
 	void SetTransform(XMFLOAT3 _position) { transform_.position_ = _position; }
 };

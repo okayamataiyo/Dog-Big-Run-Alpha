@@ -2,6 +2,7 @@
 //インクルード
 #include "Engine/GameObject.h"
 #include "Player.h"
+#include "Engine/Camera.h"
 
 /// <summary>
 /// 遊べるシーン
@@ -12,6 +13,9 @@ class PlayScene :
 private:
     //メンバ変数
     Player* pPlayer_[2];
+    Camera* pCamera_;
+
+    XMFLOAT3 camPos_;
 public:
     /// <summary>
     /// コンストラクタ

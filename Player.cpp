@@ -65,16 +65,7 @@ void Player::UpdateReady()
 void Player::UpdatePlay()
 {
     PlayerMove();
-    for (int i = 0u; i <= 1; i++)
-    {
-        //transform_ = transPlayer_[i];
-        PlayerJump(i);
-        pCamera->SetTarget(transform_.position_, i);
-        XMFLOAT3 camPos = transform_.position_;
-        camPos.y += 2;
-        camPos.z -= 15;
-        pCamera->SetPosition(camPos, i);
-    }
+    PlayerJump();
 }
 
 void Player::UpdateGameOver()
@@ -90,7 +81,7 @@ void Player::OnCollision(GameObject* _pTarget)
 {
     if (_pTarget->GetObjectName() == "Item")
     {
-        PlayerJump(1);
+        PlayerJump();
     }
 }
 
@@ -204,7 +195,7 @@ void Player::PlayerMove()
 
 }
 
-void Player::PlayerJump(int _PlayerNum)
+void Player::PlayerJump()
 {
     RayCastData data;
     Stage* pStage = (Stage*)FindObject("Stage");    //ステージオブジェクト
