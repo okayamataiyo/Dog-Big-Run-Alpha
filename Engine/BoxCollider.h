@@ -1,4 +1,5 @@
 #pragma once
+//インクルード
 #include "Collider.h"
 
 /// <summary>
@@ -16,7 +17,7 @@ public:
 	/// </summary>
 	/// <param name="basePos">当たり判定の中心位置（ゲームオブジェクトの原点から見た位置)</param>
 	/// <param name="size">	//引数：size	当たり判定のサイズ（幅、高さ、奥行き）</param>
-	BoxCollider(XMFLOAT3 basePos, XMFLOAT3 size);
+	BoxCollider(XMFLOAT3 _basePos, XMFLOAT3 _size);
 
 private:
 
@@ -25,6 +26,6 @@ private:
 	/// </summary>
 	/// <param name="target">相手の当たり判定</param>
 	/// <returns>接触してればtrue</returns>
-	bool IsHit(Collider* target) override;
+	bool IsHit(Collider* _target) override;
 };
 

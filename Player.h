@@ -1,10 +1,13 @@
 #pragma once
+//インクルード
 #include "Engine/GameObject.h"
 #include "Engine/Camera.h"
 class Camera;
 extern Camera* pCamera;
 
-//プレイヤーを管理するクラス
+/// <summary>
+/// プレイヤーを管理するクラス
+/// </summary>
 class Player : public GameObject
 {
 public:
@@ -34,6 +37,9 @@ public:
 	int hModel_;	//モデル番号
 	int camType_;
 	float powerY_[2];
+
+	Transform transPlayer_[2];
+	BoxCollider* pCollision_;
 	//▼ゲームの演出で使うメンバ関数
 	int TimeCounter_;
 	
@@ -56,8 +62,6 @@ public:
 	float mv[2];			//加速度
 	XMFLOAT3 velocity_[2];	//速度
 
-	Transform transPlayer_[2];
-	BoxCollider* pCollision;
 public:
 
 	/// <summary>
@@ -81,6 +85,10 @@ public:
 	/// </summary>
 	void Update() override;
 
+	void UpdateReady();
+	void UpdatePlay();
+	void UpdateGameOver();
+
 	/// <summary>
 	/// 描画関数
 	/// </summary>
@@ -90,10 +98,6 @@ public:
 	/// 開放関数
 	/// </summary>
 	void Release() override;
-
-	void UpdateReady();
-	void UpdatePlay();
-	void UpdateGameOver();
 
 	/// <summary>
 	/// 何かに当たった時の関数
@@ -112,7 +116,7 @@ public:
 	/// <param name="_PlayerNum">プレイヤーの番号</param>
 	void PlayerJump(int _PlayerNum);
 
-	//セッター・ゲッター
+	//▼セッター・ゲッター
 	/// <summary>
 	/// プレイヤーの位置取得
 	/// </summary>

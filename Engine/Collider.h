@@ -1,4 +1,5 @@
 #pragma once
+//インクルード
 #include <d3d11.h>
 #include <DirectXMath.h>
 using namespace DirectX;
@@ -16,9 +17,9 @@ enum ColliderType
 	COLLIDER_CIRCLE		//球体
 };
 
-//-----------------------------------------------------------
-//あたり判定を管理するクラス
-//-----------------------------------------------------------
+/// <summary>
+/// 当たり判定を管理するクラス
+/// </summary>
 class Collider
 {
 	//それぞれのクラスのprivateメンバにアクセスできるようにする
@@ -26,7 +27,7 @@ class Collider
 	friend class SphereCollider;
 
 protected:
-	GameObject* pGameObject_;	//この判定をつけたゲームオブジェクト
+	GameObject* pGameObject_;		//この判定をつけたゲームオブジェクト
 	ColliderType	type_;			//種類
 	XMFLOAT3		center_;		//中心位置（ゲームオブジェクトの原点から見た位置）
 	XMFLOAT3		size_;			//判定サイズ（幅、高さ、奥行き）
@@ -39,35 +40,45 @@ public:
 	//デストラクタ
 	virtual ~Collider();
 
-	//接触判定（継承先のSphereColliderかBoxColliderでオーバーライド）
-	//引数：target	相手の当たり判定
-	//戻値：接触してればtrue
-	virtual bool IsHit(Collider* target) = 0;
+	/// <summary>
+	/// 接触判定(継承先のSphereColliderかBoxColliderでオーバーライド)
+	/// </summary>
+	/// <param name="_target">相手の当たり判定</param>
+	/// <returns>接触していればtrue</returns>
+	virtual bool IsHit(Collider* _target) = 0;
 
-	//箱型同士の衝突判定
-	//引数：boxA	１つ目の箱型判定
-	//引数：boxB	２つ目の箱型判定
-	//戻値：接触していればtrue
-	bool IsHitBoxVsBox(BoxCollider* boxA, BoxCollider* boxB);
+	/// <summary>
+	/// 箱型同士の衝突判定
+	/// </summary>
+	/// <param name="_boxA">1つ目の箱型判定</param>
+	/// <param name="_boxB">2つ目の箱型判定</param>
+	/// <returns>接触していればtrue</returns>
+	bool IsHitBoxVsBox(BoxCollider* _boxA, BoxCollider* _boxB);
 
-	//箱型と球体の衝突判定
-	//引数：box	箱型判定
-	//引数：sphere	２つ目の箱型判定
-	//戻値：接触していればtrue
-	bool IsHitBoxVsCircle(BoxCollider* box, SphereCollider* sphere);
+	/// <summary>
+	/// 箱型と球体の衝突判定
+	/// </summary>
+	/// <param name="_box">1つ目の箱型判定</param>
+	/// <param name="_sphere">2つ目の球体判定</param>
+	/// <returns>接触していればtrue</returns>
+	bool IsHitBoxVsCircle(BoxCollider* _box, SphereCollider* _sphere);
 
-	//球体同士の衝突判定
-	//引数：circleA	１つ目の球体判定
-	//引数：circleB	２つ目の球体判定
-	//戻値：接触していればtrue
-	bool IsHitCircleVsCircle(SphereCollider* circleA, SphereCollider* circleB);
+	/// <summary>
+	/// 球体動詞の衝突判定
+	/// </summary>
+	/// <param name="_circleA">1つ目の球体判定</param>
+	/// <param name="_circleB">2つ目の球体判定</param>
+	/// <returns>接触していればtrue</returns>
+	bool IsHitCircleVsCircle(SphereCollider* _circleA, SphereCollider* _circleB);
 
-	//テスト表示用の枠を描画
-	//引数：position	オブジェクトの位置
-	void Draw(XMFLOAT3 position);
+	/// <summary>
+	/// テスト表示用の枠を描画
+	/// </summary>
+	/// <param name="_position">オブジェクトの位置</param>
+	void Draw(XMFLOAT3 _position);
 
-	//セッター
-	void SetGameObject(GameObject* gameObject) { pGameObject_ = gameObject; }
+	//▼セッター・ゲッター
+	void SetGameObject(GameObject* _gameObject) { pGameObject_ = _gameObject; }
 
 };
 

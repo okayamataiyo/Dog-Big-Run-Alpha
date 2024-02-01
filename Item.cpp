@@ -55,7 +55,7 @@ void Item::Release()
 
 void Item::OnCollision(GameObject* _pTarget)
 {
-	if (_pTarget->GetObjectName() == "PlayerFirst")
+	if (_pTarget->GetObjectName() == "PlayerSecond")
 	{
 		transform_.position_.x += 1;
 	}

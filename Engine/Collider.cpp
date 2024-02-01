@@ -4,21 +4,15 @@
 #include "Model.h"
 #include "Transform.h"
 
-//コンストラクタ
 Collider::Collider() :
 	pGameObject_(nullptr)
 {
 }
 
-//デストラクタ
 Collider::~Collider()
 {
 }
 
-//箱型同士の衝突判定
-//引数：boxA	１つ目の箱型判定
-//引数：boxB	２つ目の箱型判定
-//戻値：接触していればtrue
 bool Collider::IsHitBoxVsBox(BoxCollider* _boxA, BoxCollider* _boxB)
 {
 
@@ -38,10 +32,6 @@ bool Collider::IsHitBoxVsBox(BoxCollider* _boxA, BoxCollider* _boxB)
 	return false;
 }
 
-//箱型と球体の衝突判定
-//引数：box	箱型判定
-//引数：sphere	２つ目の箱型判定
-//戻値：接触していればtrue
 bool Collider::IsHitBoxVsCircle(BoxCollider* _box, SphereCollider* _sphere)
 {
 	XMFLOAT3 circlePos = Transform::Float3Add(_sphere->pGameObject_->GetWorldPosition(), _sphere->center_);
@@ -62,10 +52,6 @@ bool Collider::IsHitBoxVsCircle(BoxCollider* _box, SphereCollider* _sphere)
 	return false;
 }
 
-//球体同士の衝突判定
-//引数：circleA	１つ目の球体判定
-//引数：circleB	２つ目の球体判定
-//戻値：接触していればtrue
 bool Collider::IsHitCircleVsCircle(SphereCollider* _circleA, SphereCollider* _circleB)
 {
 	XMFLOAT3 centerA = _circleA->center_;
@@ -84,8 +70,6 @@ bool Collider::IsHitCircleVsCircle(SphereCollider* _circleA, SphereCollider* _ci
 	return false;
 }
 
-//テスト表示用の枠を描画
-//引数：position	オブジェクトの位置
 void Collider::Draw(XMFLOAT3 _position)
 {
 	Transform transform;

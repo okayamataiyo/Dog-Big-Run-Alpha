@@ -21,10 +21,10 @@ void Player::Initialize()
     for (int i = 0u; i <= 1; i++)
     {
         powerY_[i] = transPlayer_[i].position_.y;
-    }
 
-    pCollision = new BoxCollider(XMFLOAT3(0.0,0.0,0.0), XMFLOAT3(1.1,1.1,1.1));
-    AddCollider(pCollision);
+        pCollision_ = new BoxCollider(XMFLOAT3(0.0, 0.0, 0.0), XMFLOAT3(1.1, 1.1, 1.1));
+        AddCollider(pCollision_);
+    }
 
 }
 
