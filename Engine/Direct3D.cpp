@@ -175,7 +175,7 @@ HRESULT Direct3D::InitShader()
 	{
 		return E_FAIL;
 	}
-//	Direct3D::SetShader(SHADER_3D);
+	Direct3D::SetShader(SHADER_3D);
 	return S_OK;
 }
 

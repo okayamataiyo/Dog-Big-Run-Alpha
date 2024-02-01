@@ -36,31 +36,31 @@ public:
 	int playerNum_;
 	int hModel_;	//モデル番号
 	int camType_;
-	float powerY_[2];
+	float powerY_;
 
-	Transform transPlayer_[2];
+	Transform transPlayer_;
 	BoxCollider* pCollision_;
 	//▼ゲームの演出で使うメンバ関数
 	int TimeCounter_;
 	
 	//▼向き変えで使うメンバ変数
-	XMVECTOR vecMove_[2];
-	XMVECTOR vecLength_[2];
-	float length_[2];
-	XMVECTOR vecFront_[2];
-	XMVECTOR vecDot_[2];
-	float dot_[2];
-	float angle_[2];
-	XMVECTOR vecCross_[2];
+	XMVECTOR vecMove_;
+	XMVECTOR vecLength_;
+	float length_;
+	XMVECTOR vecFront_;
+	XMVECTOR vecDot_;
+	float dot_;
+	float angle_;
+	XMVECTOR vecCross_;
 	//▼ジャンプで使うメンバ変数
-	bool  jumpFlg_[2];
-	float rayDist_[2];		//地面とプレイヤーの差分
-	float moveYTemp_[2];	//y座標をPrevに保存する
-	float moveYPrev_[2];	//y座標を保存しておく
+	bool  jumpFlg_;
+	float rayDist_;		//地面とプレイヤーの差分
+	float moveYTemp_;	//y座標をPrevに保存する
+	float moveYPrev_;	//y座標を保存しておく
 
 	//▼慣性で使うメンバ変数
-	float mv[2];			//加速度
-	XMFLOAT3 velocity_[2];	//速度
+	float mv;			//加速度
+	XMFLOAT3 velocity_;	//速度
 
 public:
 
@@ -121,6 +121,8 @@ public:
 	/// プレイヤーの位置取得
 	/// </summary>
 	/// <returns>プレイヤーの位置</returns>
-	Transform GetPlayerPos(int _PPos) { return transPlayer_[_PPos]; }
+	Transform GetPlayerPos() { return transPlayer_; }
+
+	void SetTransform(XMFLOAT3 _position) { transform_.position_ = _position; }
 };
 

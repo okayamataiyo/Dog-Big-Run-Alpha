@@ -23,7 +23,8 @@ void PlayScene::Initialize()
 	pPlayer_[1]->SetObjectName("PlayerSecond");
 	Instantiate<Stage>(this);
 	Instantiate<Sky>(this);
-
+	XMFLOAT3 position = { 3,3,3 };
+	pPlayer_[0]->SetTransform(position);
 }
 
 void PlayScene::Update()
