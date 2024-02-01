@@ -6,7 +6,7 @@ XMVECTOR target_[2];	//見る位置（焦点）
 XMMATRIX viewMatrix_;	//ビュー行列
 XMMATRIX projMatrix_;	//プロジェクション行列
 
-struct CBUFF_STAGESCENE
+struct CAMBUFF
 {
 	XMFLOAT4 lightPosition;
 	XMFLOAT4 eyePos[2];
@@ -41,7 +41,7 @@ void Camera::IntConstantBuffer(int _type)
 {
 	//コンスタントバッファに情報を渡す
 	D3D11_BUFFER_DESC cb;
-	cb.ByteWidth = sizeof(CBUFF_STAGESCENE);
+	cb.ByteWidth = sizeof(CAMBUFF);
 	cb.Usage = D3D11_USAGE_DEFAULT;
 	cb.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	cb.CPUAccessFlags = 0;
@@ -50,19 +50,19 @@ void Camera::IntConstantBuffer(int _type)
 
 	//コンスタントバッファの作成
 	HRESULT hr;
-	hr = Direct3D::pDevice_->CreateBuffer(&cb, nullptr, &pCBStageScene_);
+	hr = Direct3D::pDevice_->CreateBuffer(&cb, nullptr, &pCB_);
 	if (FAILED(hr))
 	{
 		MessageBox(NULL, "コンスタントバッファの作成に失敗しました", "エラー", MB_OK);
 	}
 
-	CBUFF_STAGESCENE cs;
+	CAMBUFF cs;
 	cs.lightPosition = lightSourcePosition_;
 	XMStoreFloat4(&cs.eyePos[_type], GetEyePosition(_type));
 	XMStoreFloat4(&cs.target[_type], GetTarget(_type));
-	Direct3D::pContext_->UpdateSubresource(pCBStageScene_, 0, NULL, &cs, 0, 0);
-	Direct3D::pContext_->VSSetConstantBuffers(1, 1, &pCBStageScene_);//頂点シェーダー
-	Direct3D::pContext_->PSSetConstantBuffers(1, 1, &pCBStageScene_);//ピクセルシェーダー
+	Direct3D::pContext_->UpdateSubresource(pCB_, 0, NULL, &cs, 0, 0);
+	Direct3D::pContext_->VSSetConstantBuffers(1, 1, &pCB_);//頂点シェーダー
+	Direct3D::pContext_->PSSetConstantBuffers(1, 1, &pCB_);//ピクセルシェーダー
 }
 
 //位置を設定

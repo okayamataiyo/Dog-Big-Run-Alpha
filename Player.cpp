@@ -217,7 +217,7 @@ void Player::PlayerJump(int _PlayerNum)
         if (jumpFlg_[i] == true)
         {
             moveYTemp_[i] = powerY_[i];
-            powerY_[i] += (powerY_[i] - moveYPrev_[i]) - 0.003;
+            powerY_[i] += (powerY_[i] - moveYPrev_[i]) - 0.004;
             moveYPrev_[i] = moveYTemp_[i];
             if (powerY_[i] <= -rayDist_[i])
             {

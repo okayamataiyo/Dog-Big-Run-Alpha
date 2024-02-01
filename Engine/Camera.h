@@ -11,7 +11,7 @@ class Camera
 {
 private:
 	XMFLOAT4 lightSourcePosition_;
-	ID3D11Buffer* pCBStageScene_;
+	ID3D11Buffer* pCB_;
 public:
 	//初期化（プロジェクション行列作成）
 	void Initialize();
