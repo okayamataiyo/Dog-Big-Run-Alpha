@@ -1,5 +1,4 @@
 ﻿#include <d3dcompiler.h>
-#include <DirectXMath.h>
 #include <cassert>
 #include <vector>
 #include "Direct3D.h"
@@ -28,7 +27,9 @@ namespace Direct3D
 		ID3D11InputLayout* pVertexLayout_	   = nullptr;	//頂点インプットレイアウト
 		ID3D11RasterizerState* pRasterizerState_ = nullptr;	//ラスタライザー
 	};
-	SHADER_BUNDLE shaderBundle[SHADER_MAX];
+
+	bool isDrawCollision_ = true;							//コリジョンを表示するか
+	SHADER_BUNDLE shaderBundle[SHADER_MAX] = {};
 }
 
 //初期化
@@ -137,6 +138,7 @@ HRESULT Direct3D::Initialize(int winW, int winH, HWND hWnd)
 	pContext_->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);		// データの入力種類を指定
 	pContext_->OMSetRenderTargets(1, &pRenderTargetView_, pDepthStencilView);    // 描画先を
 
+	isDrawCollision_ = GetPrivateProfileInt("DEBUG", "ViewCollider", 0, ".\\Assets/setup.ini") != 0;
 	//シェーダー準備
 	hr = InitShader();
 	if (FAILED(hr))

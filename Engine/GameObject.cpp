@@ -1,6 +1,4 @@
 #include "GameObject.h"
-#include "SphereCollider.h"
-#include "Direct3D.h"
 
 GameObject::GameObject()
 	:pParent_(nullptr)
@@ -77,10 +75,6 @@ GameObject* GameObject::FindChildObject(string _objName)
 	return nullptr;
 }
 
-/// <summary>
-/// 再帰呼び出しでRootJobを探してそのアドレスを返す関数
-/// </summary>
-/// <returns>RootJobのアドレス(GameObject * 型)</returns>
 GameObject* GameObject::GetRootJob()
 {
 
@@ -101,6 +95,13 @@ GameObject* GameObject::FindObject(string _objName)
 void GameObject::DrawSub()
 {
 	Draw();
+
+#ifdef _DEBUG
+	if (Direct3D::isDrawCollision_)
+	{
+		CollisionDraw();
+	}
+#endif
 
 	for (auto itr = childList_.begin(); itr != childList_.end(); itr++)
 	(*itr)->DrawSub();
@@ -152,7 +153,6 @@ void GameObject::AddCollider(Collider* _pCollider)
 
 void GameObject::Collision(GameObject* _pTarget)
 {
-
 	if (_pTarget == this || _pTarget->pCollider_ == nullptr)
 	{
 		return;		//ターゲットにコライダーがアタッチされていない
