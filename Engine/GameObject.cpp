@@ -1,13 +1,20 @@
 #include "GameObject.h"
 
 GameObject::GameObject()
-	:pParent_(nullptr)
+	:GameObject(nullptr, "")
 {
 }
 
-GameObject::GameObject(GameObject* _parent, const std::string& _name)
-	: pParent_(_parent), Is_DeadFlag(false), objectName_(_name), pCollider_(nullptr)
+GameObject::GameObject(GameObject* _parent)
+	:GameObject(_parent, "")
 {
+}
+
+GameObject::GameObject(GameObject* _parent, const string& _name)
+	: pParent_(_parent), Is_DeadFlag(false), objectName_(_name)
+{
+	childList_.clear();
+	state_ = { 0,1,1,0 };
 	if (pParent_ != nullptr) {
 		this->transform_.pParent_ = &(_parent->transform_);
 	}
@@ -77,19 +84,19 @@ GameObject* GameObject::FindChildObject(string _objName)
 
 GameObject* GameObject::GetRootJob()
 {
-
-	if(pParent_ == nullptr)	return this;
-	
+	if (pParent_ == nullptr)
+	{
+		return this;
+	}
 	return pParent_->GetRootJob();
 }
 
 GameObject* GameObject::FindObject(string _objName) 
 {
-
 	GameObject* rootJob = GetRootJob();
 	GameObject* result = rootJob->FindChildObject(_objName);
 	return (result);
-//	return GetRootJob()->FindObject(_objName);
+	//return GetRootJob()->FindObject(_objName);
 }
 
 void GameObject::DrawSub()

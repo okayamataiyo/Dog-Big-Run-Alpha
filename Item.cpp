@@ -18,7 +18,7 @@ void Item::Initialize()
 	hModel_ = Model::Load("Assets/Bone.fbx");
 	assert(hModel_ >= 0);
 
-	BoxCollider* pCollision = new BoxCollider(XMFLOAT3(0.0, 0.0, 0.0), XMFLOAT3(1.1, 0.5, 1.1));
+	SphereCollider* pCollision = new SphereCollider(XMFLOAT3(0.0, 0.0, 0.0), 1);
 	AddCollider(pCollision);
 
 	transform_.scale_ = { 0.2,0.2,0.2 };
@@ -54,8 +54,9 @@ void Item::Release()
 
 void Item::OnCollision(GameObject* _pTarget)
 {
-	if (_pTarget->GetObjectName() == "PlayerSecond")
+	if (_pTarget->GetObjectName() == "PlayerFirst")
 	{
+		KillMe();
 		transform_.position_.x += 1;
 	}
 }

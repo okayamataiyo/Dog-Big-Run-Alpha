@@ -22,7 +22,7 @@ void Player::Initialize()
     {
         powerY_ = transform_.position_.y;
 
-        pCollision_ = new BoxCollider(XMFLOAT3(0.0, 0.0, 0.0), XMFLOAT3(1.1, 1.1, 1.1));
+        pCollision_ = new SphereCollider(XMFLOAT3(0.0, 0.0, 0.0), 1);
         AddCollider(pCollision_);
     }
 
@@ -80,6 +80,7 @@ void Player::OnCollision(GameObject* _pTarget)
 {
     if (_pTarget->GetObjectName() == "Item")
     {
+        KillMe();
         PlayerJump();
     }
 }
