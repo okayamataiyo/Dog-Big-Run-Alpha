@@ -1,17 +1,20 @@
 #pragma once
+//インクルード
 #include "GameObject.h"
 
-
-class Rootjob :
-    public GameObject
+/// <summary>
+/// 一番上に来るオブジェクト
+/// 全てのオブジェクトは、これの子孫になる
+/// </summary>
+class Rootjob : public GameObject
 {
 public:
-    Rootjob(GameObject *parent);
+    Rootjob();
     ~Rootjob();
 
-    virtual void Initialize() override;
-    virtual void Update() override;
-    virtual void Draw() override;
-    virtual void Release() override;
+    void Initialize() override;
+    void Update() override;
+    void Draw() override;
+    void Release() override;
 };
 

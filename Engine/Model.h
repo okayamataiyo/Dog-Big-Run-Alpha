@@ -1,13 +1,15 @@
 #pragma once
+//インクルード
 #include<string>
 #include<vector>
 #include"Transform.h"
 #include"Fbx.h"
-//必要なincludeを書く
 
+/// <summary>
+/// 3Dモデル(FBXファイル)を管理する
+/// </summary>
 namespace Model
 {
-
 	int Load(std::string fileName);
 	void SetTransform(int hModel, Transform transform);
 	void Draw(int hModel);

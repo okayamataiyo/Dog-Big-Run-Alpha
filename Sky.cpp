@@ -22,6 +22,7 @@ void Sky::Initialize()
 
 void Sky::Update()
 {
+	transform_.rotate_.y += 0.01;
 }
 
 void Sky::Draw()

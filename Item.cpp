@@ -46,7 +46,6 @@ void Item::Draw()
 {
 	Model::SetTransform(hModel_, transform_);
 	Model::Draw(hModel_);
-	GameObject::CollisionDraw();
 }
 
 void Item::Release()

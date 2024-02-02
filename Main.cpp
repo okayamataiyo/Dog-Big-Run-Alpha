@@ -89,7 +89,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
 	//DirectInputの初期化
 	Input::Initialize(hWnd);
 
-	pRootjob = new Rootjob(nullptr);
+	pRootjob = new Rootjob();
 	pRootjob->Initialize();
 
 	//メッセージループ（何か起きるのを待つ）
@@ -114,7 +114,8 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
 			static DWORD startTime = timeGetTime();
 			DWORD nowTime = timeGetTime();
 			static DWORD lastUpdateTime = nowTime;
-
+			
+			//キャプションに現在のFPS表示
 			if (nowTime - startTime >= 1000)
 			{
 				char str[16];
