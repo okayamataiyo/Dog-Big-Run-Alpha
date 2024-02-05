@@ -79,6 +79,11 @@ bool GameObject::IsVisibled()
 	return (state_.visible != 0);
 }
 
+list<GameObject*>* GameObject::GetChildList()
+{
+	return &childList_;
+}
+
 void GameObject::SetPosition(XMFLOAT3 _position)
 {
 	transform_.position_ = _position;
@@ -156,6 +161,13 @@ void GameObject::PushBackChild(GameObject* _pObject)
 	childList_.push_back(_pObject);
 }
 
+void GameObject::PushFrontChild(GameObject* _pObject)
+{
+	assert(_pObject != nullptr);
+	_pObject->pParent_ = this;
+	childList_.push_front(_pObject);
+}
+
 void GameObject::UpdateSub()
 {
 	Update();
@@ -198,7 +210,8 @@ void GameObject::DrawSub()
 
 void GameObject::ReleaseSub()
 {
-
+	//コライダーを削除
+	ClearCollider();
 	for (auto itr = childList_.begin(); itr != childList_.end(); itr++) {
 
 		(*itr)->ReleaseSub();	//*itrのリリースを呼ぶ
@@ -206,6 +219,11 @@ void GameObject::ReleaseSub()
 	}
 
 	Release();
+}
+
+XMMATRIX GameObject::GetWorldMatrix()
+{
+	return transform_.GetWorldMatrix();
 }
 
 void GameObject::KillAllChildren()
@@ -233,6 +251,15 @@ void GameObject::AddCollider(Collider* _pCollider)
 	_pCollider->SetGameObject(this);
 	colliderList_.push_back(_pCollider);
 
+}
+
+void GameObject::ClearCollider()
+{
+	for (auto itr = colliderList_.begin(); itr != colliderList_.end(); itr++)
+	{
+		SAFE_DELETE(*itr);
+	}
+	colliderList_.clear();
 }
 
 void GameObject::Collision(GameObject* _pTarget)

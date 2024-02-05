@@ -113,6 +113,11 @@ public:
 	/// </summary>
 	void PlayerJump();
 
+	/// <summary>
+	/// プレイヤーの重力関数
+	/// </summary>
+	void PlayerGravity();
+
 	//▼セッター・ゲッター
 	/// <summary>
 	/// プレイヤーの位置取得

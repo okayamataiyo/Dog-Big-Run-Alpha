@@ -134,6 +134,7 @@
     <ClInclude Include="Sky.h">
       <Filter>ソース ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="Global.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

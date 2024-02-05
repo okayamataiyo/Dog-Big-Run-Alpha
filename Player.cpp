@@ -64,7 +64,11 @@ void Player::UpdateReady()
 void Player::UpdatePlay()
 {
     PlayerMove();
-    PlayerJump();
+    PlayerGravity();
+    if (Input::IsKey(DIK_SPACE) && jumpFlg_ == false)
+    {
+        PlayerJump();
+    }
 }
 
 void Player::UpdateGameOver()
@@ -80,7 +84,6 @@ void Player::OnCollision(GameObject* _pTarget)
 {
     if (_pTarget->GetObjectName() == "Item")
     {
-        KillMe();
         PlayerJump();
     }
 }
@@ -197,55 +200,42 @@ void Player::PlayerMove()
 
 void Player::PlayerJump()
 {
+    //ジャンプの処理
+    jumpFlg_ = true;
+    moveYPrev_ = powerY_;
+    powerY_ = powerY_ + 0.2;
+}
+
+void Player::PlayerGravity()
+{
     RayCastData data;
     Stage* pStage = (Stage*)FindObject("Stage");    //ステージオブジェクト
     int hStageModel = pStage->GetModelHandle();   //モデル番号を取得
 
-
-    for (int i = 0u; i <= 1; i++)
+    if (jumpFlg_ == true)
     {
-        //ジャンプの処理
-        if (jumpFlg_ == true)
+        moveYTemp_ = powerY_;
+        powerY_ += (powerY_ - moveYPrev_) - 0.007;
+        moveYPrev_ = moveYTemp_;
+        if (powerY_ <= -rayDist_)
         {
-            moveYTemp_ = powerY_;
-            powerY_ += (powerY_ - moveYPrev_) - 0.004;
-            moveYPrev_ = moveYTemp_;
-            if (powerY_ <= -rayDist_)
-            {
-                jumpFlg_ = false;
-            }
+            jumpFlg_ = false;
         }
+    }
 
-        if (Input::IsKey(DIK_SPACE) && jumpFlg_ == false)
+    //レイの処理
+    data.start = transform_.position_;  //レイの発射位置
+    data.start.y = 0;
+    data.dir = XMFLOAT3(0, -1, 0);       //レイの方向
+    Model::RayCast(hStageModel, &data);  //レイを発射
+    rayDist_ = data.dist;
+
+    if (data.hit == true)
+    {
+        if (jumpFlg_ == false)
         {
-            jumpFlg_ = true;
-            moveYPrev_ = powerY_;
-            powerY_ = powerY_ + 0.2;
-        }
-
-        if (Input::IsKey(DIK_RSHIFT) && jumpFlg_ == false)
-        {
-            jumpFlg_ = true;
-            moveYPrev_ = powerY_;
-            powerY_ = powerY_ + 0.2;
-        }
-        
-        //レイの処理
-        data.start = transform_.position_;  //レイの発射位置
-        data.start.y = 0;
-        data.dir = XMFLOAT3(0, -1, 0);       //レイの方向
-        Model::RayCast(hStageModel, &data);  //レイを発射
-        rayDist_ = data.dist;
-
-        if (data.hit == true)
-        {
-            if (jumpFlg_ == false)
-            {
-                transform_.position_.y = -data.dist + 0.6;
-                powerY_ = -data.dist + 0.6;
-            }
-
-
+            transform_.position_.y = -data.dist + 0.6;
+            powerY_ = -data.dist + 0.6;
         }
     }
 }

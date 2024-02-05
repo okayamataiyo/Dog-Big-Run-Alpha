@@ -22,6 +22,7 @@ void Item::Initialize()
 	AddCollider(pCollision);
 
 	transform_.scale_ = { 0.2,0.2,0.2 };
+	transform_.position_ = { 10,0,0 };
 }
 
 void Item::Update()
@@ -56,7 +57,6 @@ void Item::OnCollision(GameObject* _pTarget)
 {
 	if (_pTarget->GetObjectName() == "PlayerFirst")
 	{
-		KillMe();
-		transform_.position_.x += 1;
+		
 	}
 }
