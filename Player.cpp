@@ -1,4 +1,5 @@
 #include "Player.h"
+#include "Engine/SceneManager.h"
 #include "Engine/Input.h"
 #include "Engine/Model.h"
 #include "Stage.h"
@@ -76,7 +77,8 @@ void Player::UpdateGameOver()
     ++TimeCounter_;
     if (TimeCounter_ >= 60)
     {
-
+        SceneManager* pSceneManager = (SceneManager*)FindObject("SceneManager");
+        pSceneManager->ChangeScene(SCENE_ID_GAMEOVER);
     }
 }
 
@@ -85,6 +87,14 @@ void Player::OnCollision(GameObject* _pTarget)
     if (_pTarget->GetObjectName() == "Item")
     {
         PlayerJump();
+    }
+
+    if (_pTarget->GetObjectName() == "PlayerSeconds")
+    {
+        if (State_ != STATE::GAMEOVER)
+        {
+            State_ = STATE::GAMEOVER;
+        }
     }
 }
 

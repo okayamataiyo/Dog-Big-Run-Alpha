@@ -7,8 +7,7 @@
 /// <summary>
 /// 遊べるシーン
 /// </summary>
-class PlayScene :
-    public GameObject
+class PlayScene : public GameObject
 {
 private:
     //メンバ変数
@@ -20,8 +19,8 @@ public:
     /// <summary>
     /// コンストラクタ
     /// </summary>
-    /// <param name="parent">親オブジェクト</param>
-    PlayScene(GameObject* _parent);
+    /// <param name="pParent">親オブジェクト</param>
+    PlayScene(GameObject* _pParent);
     void Initialize() override;
     void Update() override;
     void Draw() override;

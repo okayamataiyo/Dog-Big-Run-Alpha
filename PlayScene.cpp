@@ -6,8 +6,8 @@
 #include "Item.h"
 #include "Sky.h"
 
-PlayScene::PlayScene(GameObject* _parent)
-	:GameObject(_parent, "PlayScene")
+PlayScene::PlayScene(GameObject* _pParent)
+	:GameObject(_pParent, "PlayScene")
 {
 	
 }
