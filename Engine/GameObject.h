@@ -18,7 +18,6 @@ using std::list;
 class GameObject
 {	
 protected:
-	bool Is_DeadFlag;					//消去フラグ
 	Transform			transform_;
 	string				objectName_;	//オブジェクトの名前の配列
 	list<Collider*>		colliderList_;
@@ -60,7 +59,7 @@ public:
 	void ClearCollider();
 	void Collision(GameObject* _pTarget);
 	void CollisionDraw();
-	void RoundRobin(GameObject* _pTarget);
+	//void RoundRobin(GameObject* _pTarget);
 	GameObject* GetRootJob();
 
 	//セッター・ゲッター
@@ -90,7 +89,7 @@ private:
 	struct OBJECT_STATE
 	{
 		unsigned initialized : 1;
-		unsigned enterd : 1;
+		unsigned entered : 1;
 		unsigned visible : 1;
 		unsigned dead : 1;
 	}state_;
@@ -105,11 +104,14 @@ private:
 /// <param name="_parent">親のオブジェクト</param>
 /// <returns></returns>
 template <class T>
-T* Instantiate(GameObject* _parent)
+T* Instantiate(GameObject* _pParent)
 {
-	T* pObject = new T(_parent);
+	T* pObject = new T(_pParent);
+	if (_pParent != nullptr)
+	{
+		_pParent->PushBackChild(pObject);
+	}
 	pObject->Initialize();
-	childList_.push_back(pObject);
 	return pObject;
 }
 

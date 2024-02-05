@@ -11,22 +11,13 @@ GameObject::GameObject(GameObject* _parent)
 }
 
 GameObject::GameObject(GameObject* _parent, const string& _name)
-	: pParent_(_parent), Is_DeadFlag(false), objectName_(_name)
+	: pParent_(_parent), objectName_(_name)
 {
 	childList_.clear();
 	state_ = { 0,1,1,0 };
 	if (pParent_ != nullptr) {
 		this->transform_.pParent_ = &(_parent->transform_);
 	}
-
-}
-
-void Instantiate(GameObject* _parent)
-{
-	/*T* pPlayScene;
-	pPlayScene = new T(parent);
-	pPlayScene->Initialize();
-	childList_.push_back(pPlayScene);*/
 }
 
 GameObject::~GameObject()
@@ -40,12 +31,52 @@ GameObject::~GameObject()
 
 bool GameObject::IsDead()
 {
-	return(Is_DeadFlag != false );
+	return(state_.dead != 0);
 }
 
 void GameObject::KillMe()
 {
-	Is_DeadFlag = true;
+	state_.dead = 1;
+}
+
+void GameObject::Enter()
+{
+	state_.entered = 1;
+}
+
+void GameObject::Leave()
+{
+	state_.entered = 0;
+}
+
+void GameObject::Visible()
+{
+	state_.visible = 1;
+}
+
+void GameObject::Invisible()
+{
+	state_.visible = 0;
+}
+
+bool GameObject::IsInitialized()
+{
+	return (state_.initialized != 0);
+}
+
+void GameObject::SetInitialized()
+{
+	state_.initialized = 1;
+}
+
+bool GameObject::IsEntered()
+{
+	return (state_.entered != 0);
+}
+
+bool GameObject::IsVisibled()
+{
+	return (state_.visible != 0);
 }
 
 void GameObject::SetPosition(XMFLOAT3 _position)
@@ -56,6 +87,24 @@ void GameObject::SetPosition(XMFLOAT3 _position)
 void GameObject::SetPosition(float _x, float _y, float _z)
 {
 	SetPosition(XMFLOAT3(_x, _y, _z));
+}
+
+void GameObject::KillObjectSub(GameObject* _pObject)
+{
+	if (!childList_.empty())
+	{
+		auto list = _pObject->GetChildList();
+		auto it = list->begin();
+		auto end = list->end();
+		while (it != end)
+		{
+			KillObjectSub(*it);
+			delete* it;
+			it = list->erase(it);
+		}
+		list->clear();
+	}
+	_pObject->Release();
 }
 
 GameObject* GameObject::GetParent()
@@ -99,26 +148,19 @@ GameObject* GameObject::FindObject(string _objName)
 	//return GetRootJob()->FindObject(_objName);
 }
 
-void GameObject::DrawSub()
+void GameObject::PushBackChild(GameObject* _pObject)
 {
-	Draw();
+	assert(_pObject != nullptr);
 
-#ifdef _DEBUG
-	if (Direct3D::isDrawCollision_)
-	{
-		CollisionDraw();
-	}
-#endif
-
-	for (auto itr = childList_.begin(); itr != childList_.end(); itr++)
-	(*itr)->DrawSub();
+	_pObject->pParent_ = this;
+	childList_.push_back(_pObject);
 }
 
 void GameObject::UpdateSub()
 {
 	Update();
-
-	RoundRobin(GetRootJob());
+	Transform();
+	//RoundRobin(GetRootJob());
 	for (auto itr = childList_.begin(); itr != childList_.end(); itr++) {
 
 		(*itr)->UpdateSub();
@@ -133,9 +175,25 @@ void GameObject::UpdateSub()
 			itr = childList_.erase(itr);	//リストからも削除
 		}
 		else {
+			(*itr)->Collision(GetParent());
 			itr++;
 		}
 	}
+}
+
+void GameObject::DrawSub()
+{
+	Draw();
+
+#ifdef _DEBUG
+	if (Direct3D::isDrawCollision_)
+	{
+		CollisionDraw();
+	}
+#endif
+
+	for (auto itr = childList_.begin(); itr != childList_.end(); itr++)
+		(*itr)->DrawSub();
 }
 
 void GameObject::ReleaseSub()
@@ -150,6 +208,25 @@ void GameObject::ReleaseSub()
 	Release();
 }
 
+void GameObject::KillAllChildren()
+{
+	if (childList_.empty())
+	{
+		return;
+	}
+
+	auto it = childList_.begin();
+	auto end = childList_.end();
+
+	while (it != end)
+	{
+		KillObjectSub(*it);
+		delete* it;
+		it = childList_.erase(it);
+	}
+	childList_.clear();
+}
+
 void GameObject::AddCollider(Collider* _pCollider)
 {
 
@@ -160,20 +237,12 @@ void GameObject::AddCollider(Collider* _pCollider)
 
 void GameObject::Collision(GameObject* _pTarget)
 {
-	if (_pTarget == this || _pTarget->pCollider_ == nullptr)
+	if (_pTarget == this || _pTarget == nullptr)
 	{
 		return;		//ターゲットにコライダーがアタッチされていない
 	}
-	//XMVECTOR v{ transform_.position_.x - pTarget->transform_.position_.x,
-	//			transform_.position_.y - pTarget->transform_.position_.y,
-	//			transform_.position_.z - pTarget->transform_.position_.z,
-	//			0 };
-	//XMVECTOR dist = XMVector3Dot(v, v);
-	/*float dist = (transform_.position_.x - _pTarget->transform_.position_.x) * (transform_.position_.x - _pTarget->transform_.position_.x)
-		+ (transform_.position_.y - _pTarget->transform_.position_.y) * (transform_.position_.y - _pTarget->transform_.position_.y)
-		+ (transform_.position_.z - _pTarget->transform_.position_.z) * (transform_.position_.z - _pTarget->transform_.position_.z);
-		float rDist = (this->pCollider_->GetRadius() + _pTarget->pCollider_->GetRadius()) * (this->pCollider_->GetRadius() + _pTarget->pCollider_->GetRadius());*/
-	//自分とターゲットの距離	<= R1+R2なら
+	
+	//自分とターゲットの距離
 	//もし、自分のコライダーとターゲットがぶつかっていたら
 	//onCollision(pTarget)を呼び出す
 	for (auto i = this->colliderList_.begin(); i != this->colliderList_.end(); i++)
@@ -198,17 +267,17 @@ void GameObject::Collision(GameObject* _pTarget)
 	}
 }
 
-void GameObject::RoundRobin(GameObject* _pTarget)
-{
-
-	if (pCollider_ == nullptr)
-		return;
-	if (_pTarget->pCollider_ != nullptr)	//自分とターゲット
-		Collision(_pTarget);
-	//自分の子供全部とターゲット
-	for (auto itr:_pTarget->childList_)
-		RoundRobin(itr);
-}
+//void GameObject::RoundRobin(GameObject* _pTarget)
+//{
+//
+//	if (pCollider_ == nullptr)
+//		return;
+//	if (_pTarget->pCollider_ != nullptr)	//自分とターゲット
+//		Collision(_pTarget);
+//	//自分の子供全部とターゲット
+//	for (auto itr:_pTarget->childList_)
+//		RoundRobin(itr);
+//}
 
 void GameObject::CollisionDraw()
 {
