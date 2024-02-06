@@ -66,7 +66,7 @@ public:
 	/// コンストラクタ関数
 	/// </summary>
 	/// <param name="_parent">親の名前</param>
-	Player(GameObject* _parent);
+	Player(GameObject* _pParent);
 
 	/// <summary>
 	/// デストラクタ関数

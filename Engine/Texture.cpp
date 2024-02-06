@@ -1,9 +1,7 @@
-﻿//インクルード
+﻿#include <DirectXTex.h>
 #include "Texture.h"
 #include "Direct3D.h"
-#include <DirectXTex.h>
 
-//リンカ
 #pragma comment( lib, "WindowsCodecs.lib" )
 
 Texture::Texture()

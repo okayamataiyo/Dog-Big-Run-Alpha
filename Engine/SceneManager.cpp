@@ -17,7 +17,6 @@ void SceneManager::Initialize()
 	currentSceneID_ = SCENE_ID_PLAY;
 	nextSceneID_ = currentSceneID_;
 	Instantiate<PlayScene>(this);
-	Instantiate<GameOverScene>(this);
 }
 
 void SceneManager::Update()

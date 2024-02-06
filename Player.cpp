@@ -4,8 +4,8 @@
 #include "Engine/Model.h"
 #include "Stage.h"
 
-Player::Player(GameObject* _parent)
-    :GameObject(_parent, "Player"),TimeCounter_(0), hModel_{ -1 }, camType_(0), playerNum_(0), jumpFlg_(false), State_(READY)
+Player::Player(GameObject* _pParent)
+    :GameObject(_pParent, "Player"),TimeCounter_(0), hModel_{ -1 }, camType_(0), playerNum_(0), jumpFlg_(false), State_(READY)
 {
 }
 
@@ -41,11 +41,8 @@ void Player::Update()
 
 void Player::Draw()
 {
-    for (int i = 0u; i <= 1; i++)
-    {
-        Model::SetTransform(hModel_, transform_);
-        Model::Draw(hModel_);
-    }
+    Model::SetTransform(hModel_, transform_);
+    Model::Draw(hModel_);
 }
 
 void Player::Release()
@@ -89,7 +86,7 @@ void Player::OnCollision(GameObject* _pTarget)
         PlayerJump();
     }
 
-    if (_pTarget->GetObjectName() == "PlayerSeconds")
+    if (_pTarget->GetObjectName() == "PlayerSecond")
     {
         if (State_ != STATE::GAMEOVER)
         {
