@@ -2,6 +2,7 @@
 #include "Engine/SceneManager.h"
 #include "Engine/Input.h"
 #include "Engine/Model.h"
+#include "Engine/Direct3D.h"
 #include "Stage.h"
 
 Player::Player(GameObject* _pParent)
@@ -90,6 +91,7 @@ void Player::OnCollision(GameObject* _pTarget)
     {
         if (State_ != STATE::GAMEOVER)
         {
+            Direct3D::SetIsChangeView(1);
             State_ = STATE::GAMEOVER;
         }
     }

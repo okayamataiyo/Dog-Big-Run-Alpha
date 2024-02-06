@@ -29,12 +29,18 @@ namespace Direct3D
 	};
 
 	bool isDrawCollision_ = true;							//コリジョンを表示するか
+	int isChangeView_ = 0;
+	float vPSize_[2] = {2,2};
+	int Width_ = 0;
+	int Height_ = 0;
 	SHADER_BUNDLE shaderBundle[SHADER_MAX] = {};
 }
 
 //初期化
 HRESULT Direct3D::Initialize(int winW, int winH, HWND hWnd)
 {
+	Width_ = winW;
+	Height_ = winH;
 	HRESULT hr;
 	///////////////////////////いろいろ準備するための設定///////////////////////////////
 	//いろいろな設定項目をまとめた構造体
@@ -103,20 +109,6 @@ HRESULT Direct3D::Initialize(int winW, int winH, HWND hWnd)
 	SAFE_RELEASE(pBackBuffer);
 
 	///////////////////////////ビューポート（描画範囲）設定///////////////////////////////
-	//レンダリング結果を表示する範囲
-	vp[0].Width    = winW / 2;
-	vp[0].Height   = winH;
-	vp[0].TopLeftX = 0;			 //画面左上のx座標
-	vp[0].TopLeftY = 0;			 //画面左上のy座標
-	vp[0].MinDepth = 0.0f;		 //深度値の最小値
-	vp[0].MaxDepth = 1.0f;		 //深度値の最大値
-
-	vp[1].Width    = winW / 2;
-	vp[1].Height   = winH;
-	vp[1].TopLeftX = winW / 2;   //画面左上のx座標
-	vp[1].TopLeftY = 0;			 //画面左上のy座標
-	vp[1].MinDepth = 0.0f;	     //深度値の最小値
-	vp[1].MaxDepth = 1.0f;		 //深度値の最大値
 	
 	//深度ステンシルビューの作成
 	D3D11_TEXTURE2D_DESC descDepth;
@@ -545,6 +537,45 @@ void Direct3D::SetShader(SHADER_TYPE type)
 	pContext_->RSSetState(shaderBundle[type].pRasterizerState_);		//ラスタライザー
 }
 
+void Direct3D::Update()
+{
+	//レンダリング結果を表示する範囲
+	vp[0].Width = Width_ / vPSize_[0];
+	vp[0].Height = Height_;
+	vp[0].TopLeftX = 0;			 //画面左上のx座標
+	vp[0].TopLeftY = 0;			 //画面左上のy座標
+	vp[0].MinDepth = 0.0f;		 //深度値の最小値
+	vp[0].MaxDepth = 1.0f;		 //深度値の最大値
+	
+	vp[1].Width = Width_ / vPSize_[1];
+	vp[1].Height = Height_;
+	vp[1].TopLeftX = Width_ / 2;	 //画面左上のx座標
+	vp[1].TopLeftY = 0;			 //画面左上のy座標
+	vp[1].MinDepth = 0.0f;		 //深度値の最小値
+	vp[1].MaxDepth = 1.0f;		 //深度値の最大値
+
+	switch (isChangeView_)
+	{
+	case 0:
+		for (int i = 0u; i >= 1u; i++)
+		{
+			vPSize_[i] = 2;
+		}
+		break;
+	case 1:
+		//if (vPSize_[0] <= 1)
+		{
+			vPSize_[0] -= 0.01;
+			vPSize_[1] -= 0.01;
+		}
+		break;
+	case 2:
+		break;
+	default:
+		break;
+	}
+}
+
 //描画開始
 void Direct3D::BeginDraw()
 {
@@ -556,8 +587,6 @@ void Direct3D::BeginDraw()
 	pContext_->ClearDepthStencilView(pDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
 }
 
-
-
 //描画終了
 void Direct3D::EndDraw()
 {
@@ -565,8 +594,6 @@ void Direct3D::EndDraw()
 	//スワップ（バックバッファを表に表示する）
 	pSwapChain_->Present(0, 0);
 }
-
-
 
 //解放処理
 void Direct3D::Release()
@@ -645,4 +672,9 @@ void Direct3D::SetViewPort(int VpType)
 
 	pContext_->RSSetViewports(1, &vp[VpType]);
 
+}
+
+void Direct3D::SetIsChangeView(int _IsChangeView)
+{
+	isChangeView_ = _IsChangeView;
 }

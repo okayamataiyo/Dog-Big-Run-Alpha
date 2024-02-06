@@ -143,6 +143,8 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
 			pRootjob->UpdateSub();
 
 			//Å•ï`âÊ
+
+			Direct3D::Update();
 			Direct3D::BeginDraw();
 			constexpr uint8_t SIZE_VP = 2;
 			for (auto i = 0u; i < SIZE_VP; i++) {

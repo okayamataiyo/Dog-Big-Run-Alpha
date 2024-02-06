@@ -29,6 +29,10 @@ namespace Direct3D
 	extern ID3D11Device* pDevice_;		                //デバイス
 	extern ID3D11DeviceContext* pContext_;		        //デバイスコンテキスト
 	extern bool isDrawCollision_;						//コリジョンを表示するかフラッグ
+	extern int isChangeView_;								//ゲーム開始・終了の時に変化するフラグ
+	extern float  vPSize_[2];								//ビューポートのサイズ変更メンバ変数
+	extern int Width_;
+	extern int Height_;
 	//初期化
 	HRESULT Initialize(int winW, int winH, HWND hWnd);
 
@@ -41,6 +45,8 @@ namespace Direct3D
 	HRESULT InitShaderUNLIT();
 
 	void SetShader(SHADER_TYPE type);
+
+	void Update();
 
 	//描画開始
 	void BeginDraw();
@@ -66,8 +72,10 @@ namespace Direct3D
 	/// <summary>
 	/// ビューポートに情報を入れる
 	/// </summary>
-	/// <param name="VpType">ビューポートの種類</param>
-	void SetViewPort(int VpType);
+	/// <param name="_VpType">ビューポートの種類</param>
+	void SetViewPort(int _VpType);
+
+	void SetIsChangeView(int _IsChangeView);
 
 };
 
