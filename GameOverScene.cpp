@@ -1,5 +1,6 @@
 #include "Engine/Input.h"
 #include "Engine/SceneManager.h"
+#include "Engine/Direct3D.h"
 #include "GameOverScene.h"
 #include "Sky.h"
 GameOverScene::GameOverScene(GameObject* _pParent)
@@ -24,6 +25,7 @@ void GameOverScene::Update()
 	pCamera_->SetTarget(pGameOverText_->GetPosition(), 0);
 	if (Input::IsKeyDown(DIK_S))
 	{
+		Direct3D::SetIsChangeView(2);
 		SceneManager* pSceneManager = (SceneManager*)FindObject("SceneManager");
 		pSceneManager->ChangeScene(SCENE_ID_PLAY);
 	}

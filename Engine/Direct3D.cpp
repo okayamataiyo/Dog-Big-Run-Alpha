@@ -30,17 +30,23 @@ namespace Direct3D
 
 	bool isDrawCollision_ = true;							//コリジョンを表示するか
 	int isChangeView_ = 0;
-	float vPSize_[2] = {2,2};
-	int Width_ = 0;
-	int Height_ = 0;
+	float vPSize_[2] = { 2,2 };
+	float vPMove_[2] = { 0,0 };
+	float prevVP_ = 0;
+	int widthHaif_ = 0;
+	int width_ = 0;
+	int height_ = 0;
+	bool isFinishView_ = false;
 	SHADER_BUNDLE shaderBundle[SHADER_MAX] = {};
 }
 
 //初期化
 HRESULT Direct3D::Initialize(int winW, int winH, HWND hWnd)
 {
-	Width_ = winW;
-	Height_ = winH;
+	widthHaif_ = winW / 2;
+	width_ = winW;
+	height_ = winH;
+	prevVP_ = vp[1].Width;
 	HRESULT hr;
 	///////////////////////////いろいろ準備するための設定///////////////////////////////
 	//いろいろな設定項目をまとめた構造体
@@ -540,16 +546,15 @@ void Direct3D::SetShader(SHADER_TYPE type)
 void Direct3D::Update()
 {
 	//レンダリング結果を表示する範囲
-	vp[0].Width = Width_ / vPSize_[0];
-	vp[0].Height = Height_;
+	vp[0].Width = widthHaif_ + vPSize_[0];
+	vp[0].Height = height_;
 	vp[0].TopLeftX = 0;			 //画面左上のx座標
 	vp[0].TopLeftY = 0;			 //画面左上のy座標
 	vp[0].MinDepth = 0.0f;		 //深度値の最小値
 	vp[0].MaxDepth = 1.0f;		 //深度値の最大値
-	
-	vp[1].Width = Width_ / vPSize_[1];
-	vp[1].Height = Height_;
-	vp[1].TopLeftX = Width_ / 2;	 //画面左上のx座標
+	vp[1].Width = widthHaif_;
+	vp[1].Height = height_;
+	vp[1].TopLeftX = widthHaif_ + vPSize_[1];	 //画面左上のx座標
 	vp[1].TopLeftY = 0;			 //画面左上のy座標
 	vp[1].MinDepth = 0.0f;		 //深度値の最小値
 	vp[1].MaxDepth = 1.0f;		 //深度値の最大値
@@ -557,19 +562,21 @@ void Direct3D::Update()
 	switch (isChangeView_)
 	{
 	case 0:
-		for (int i = 0u; i >= 1u; i++)
-		{
-			vPSize_[i] = 2;
-		}
+		prevVP_ = vp[1].Width;
 		break;
 	case 1:
-		//if (vPSize_[0] <= 1)
+		if (vPSize_[0] <= widthHaif_)
 		{
-			vPSize_[0] -= 0.01;
-			vPSize_[1] -= 0.01;
+			vPSize_[0] += 10;
+			vPSize_[1] += 10;
 		}
 		break;
 	case 2:
+		if(vPSize_[0] >= 10)
+		{
+			vPSize_[0] -= 10;
+			vPSize_[1] -= 10;
+		}
 		break;
 	default:
 		break;

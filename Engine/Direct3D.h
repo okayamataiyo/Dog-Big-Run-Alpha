@@ -29,10 +29,13 @@ namespace Direct3D
 	extern ID3D11Device* pDevice_;		                //デバイス
 	extern ID3D11DeviceContext* pContext_;		        //デバイスコンテキスト
 	extern bool isDrawCollision_;						//コリジョンを表示するかフラッグ
-	extern int isChangeView_;								//ゲーム開始・終了の時に変化するフラグ
-	extern float  vPSize_[2];								//ビューポートのサイズ変更メンバ変数
-	extern int Width_;
-	extern int Height_;
+	extern int isChangeView_;							//ゲーム開始・終了の時に変化するフラグ
+	extern float vPSize_[2];							//ビューポートのサイズ変更メンバ変数
+	extern float prevVP_;								//ビューポートの元のサイズ
+	extern float vPMove_[2];
+	extern int widthHaif_;
+	extern int width_;
+	extern int height_;
 	//初期化
 	HRESULT Initialize(int winW, int winH, HWND hWnd);
 

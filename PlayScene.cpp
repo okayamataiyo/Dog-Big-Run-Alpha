@@ -20,7 +20,7 @@ void PlayScene::Initialize()
 		pPlayer_[i] = Instantiate<Player>(this);
 	}
 	pPlayer_[0]->SetObjectName("PlayerFirst");
-	pPlayer_[1]->SetObjectName("PlayerSecond");
+	pPlayer_[1]->SetObjectName("PlayerSeconds");
 	Instantiate<Stage>(this);
 	Instantiate<Sky>(this);
 	pCamera_ = new Camera;

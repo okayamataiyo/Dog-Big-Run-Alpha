@@ -73,7 +73,7 @@ void Player::UpdatePlay()
 void Player::UpdateGameOver()
 {
     ++TimeCounter_;
-    if (TimeCounter_ >= 60)
+    if (Input::IsKey(DIK_SPACE))
     {
         SceneManager* pSceneManager = (SceneManager*)FindObject("SceneManager");
         pSceneManager->ChangeScene(SCENE_ID_GAMEOVER);
@@ -87,7 +87,7 @@ void Player::OnCollision(GameObject* _pTarget)
         PlayerJump();
     }
 
-    if (_pTarget->GetObjectName() == "PlayerSecond")
+    if (_pTarget->GetObjectName() == "PlayerSeconds")
     {
         if (State_ != STATE::GAMEOVER)
         {
