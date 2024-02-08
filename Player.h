@@ -118,6 +118,6 @@ public:
 	/// </summary>
 	void PlayerGravity();
 	Transform GetPlayerPos() { return transform_; }
-	void SetTransform(XMFLOAT3 _position) { transform_.position_ = _position; }
+	//void SetTransform(XMFLOAT3 _position) { transform_.position_ = _position; }
 };
 

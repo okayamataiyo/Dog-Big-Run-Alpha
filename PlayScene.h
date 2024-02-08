@@ -12,7 +12,7 @@ class PlayScene : public GameObject
 private:
     //ƒƒ“ƒo•Ï”
     Player* pPlayer_[2];
-    Sky* pSky_[2];
+    Sky* pSky_;
     Camera* pCamera_;
 
     XMFLOAT3 camPos_;

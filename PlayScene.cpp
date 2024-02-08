@@ -16,21 +16,22 @@ void PlayScene::Initialize()
 	for (int i = 0u; i <= 1; i++)
 	{
 		pPlayer_[i] = Instantiate<Player>(this);
-		pSky_[i] = Instantiate<Sky>(this);
 	}
 	pPlayer_[0]->SetObjectName("PlayerFirst");
 	pPlayer_[1]->SetObjectName("PlayerSeconds");
-	pSky_[0]->SetObjectName("SkyFirst");
-	pSky_[1]->SetObjectName("SkySeconds");
 	Instantiate<Stage>(this);
+	pSky_ = Instantiate<Sky>(this);
+	pSky_->SetObjectName("SkyFirst");
 	pCamera_ = new Camera;
-	XMFLOAT3 position = { 3,0,0 };
-	XMFLOAT3 skyPos = { 0,90,0 };
-	pSky_[0]->SetRotate(skyPos);
+	XMFLOAT3 PlayerPos = { 3,0,0 };
+	XMFLOAT3 skyRot = { 0,150,90 };
+	XMFLOAT3 skyPos = { 0, -100, 0 };
+	pSky_->SetRotate(skyRot);
+	pSky_->SetPosition(skyPos);
 	camPos_.x = 0;
 	camPos_.y = 5;
 	camPos_.z = -10;
-	pPlayer_[0]->SetTransform(position);
+	pPlayer_[0]->SetPosition(PlayerPos);
 
 }
 
