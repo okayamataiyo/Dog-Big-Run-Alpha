@@ -1,9 +1,9 @@
 #pragma once
 //インクルード
 #include "Engine/GameObject.h"
-#include "Player.h"
 #include "Engine/Camera.h"
-
+#include "Player.h"
+#include "Sky.h"
 /// <summary>
 /// 遊べるシーン
 /// </summary>
@@ -12,6 +12,7 @@ class PlayScene : public GameObject
 private:
     //メンバ変数
     Player* pPlayer_[2];
+    Sky* pSky_[2];
     Camera* pCamera_;
 
     XMFLOAT3 camPos_;

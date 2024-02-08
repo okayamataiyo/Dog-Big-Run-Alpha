@@ -20,10 +20,9 @@ void Player::Initialize()
     hModel_ = Model::Load("Assets/Dog.fbx");
     assert(hModel_ >= 0);
     transform_.scale_ = { 0.5,0.5,0.5 };
+    powerY_ = transform_.position_.y;
     for (int i = 0u; i <= 1; i++)
     {
-        powerY_ = transform_.position_.y;
-
         pCollision_ = new SphereCollider(XMFLOAT3(0.0, 0.0, 0.0), 1);
         AddCollider(pCollision_);
     }

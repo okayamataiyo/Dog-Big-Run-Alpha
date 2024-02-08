@@ -44,12 +44,12 @@ public:
 	//▼向き変えで使うメンバ変数
 	XMVECTOR vecMove_;
 	XMVECTOR vecLength_;
-	float length_;
 	XMVECTOR vecFront_;
 	XMVECTOR vecDot_;
+	XMVECTOR vecCross_;
+	float length_;
 	float dot_;
 	float angle_;
-	XMVECTOR vecCross_;
 	//▼ジャンプで使うメンバ変数
 	bool  jumpFlg_;
 	float rayDist_;		//地面とプレイヤーの差分
@@ -117,14 +117,7 @@ public:
 	/// プレイヤーの重力関数
 	/// </summary>
 	void PlayerGravity();
-
-	//▼セッター・ゲッター
-	/// <summary>
-	/// プレイヤーの位置取得
-	/// </summary>
-	/// <returns>プレイヤーの位置</returns>
 	Transform GetPlayerPos() { return transform_; }
-
 	void SetTransform(XMFLOAT3 _position) { transform_.position_ = _position; }
 };
 
