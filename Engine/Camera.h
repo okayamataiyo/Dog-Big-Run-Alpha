@@ -21,11 +21,10 @@ public:
 
 	void IntConstantBuffer(int _type);
 
-	//▼セッター・
+	//▼セッター・ゲッター
 	//視点（カメラの位置）を設定
 	void SetPosition(XMVECTOR position,int type);
 	void SetPosition(XMFLOAT3 position,int type);
-
 	//焦点（見る位置）を設定
 	void SetTarget(XMVECTOR target,int type);
 	void SetTarget(XMFLOAT3 target,int type);
@@ -33,10 +32,6 @@ public:
 	XMVECTOR GetEyePosition(int _type);
 	XMVECTOR GetTarget(int _type);
 	XMFLOAT4 GetLightPos() { return(lightSourcePosition_); }
-
-	//ビュー行列を取得
-	XMMATRIX GetViewMatrix();
-
-	//プロジェクション行列を取得
-	XMMATRIX GetProjectionMatrix();
+	XMMATRIX GetViewMatrix();											//ビュー行列を取得
+	XMMATRIX GetProjectionMatrix();										//プロジェクション行列を取得
 };

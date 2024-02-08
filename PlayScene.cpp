@@ -34,11 +34,12 @@ void PlayScene::Update()
 	for (int j = 0u; j <= 1; j++)
 	{
 		XMFLOAT3 mouse;
+		//Input::SetMousePosition(800,600);
 		mouse = Input::GetMousePosition();
 		//camPos_ = pPlayer_[j]->GetPlayerPos().position_;
 		camPos_ = mouse;
-		camPos_.y += 2;
-		camPos_.z -= 15;
+		//camPos_.y += 2;
+		//camPos_.z -= 15;
 		pCamera_->SetPosition(camPos_, j);
 		pCamera_->SetTarget(pPlayer_[j]->GetPlayerPos().position_, j);
 	}
