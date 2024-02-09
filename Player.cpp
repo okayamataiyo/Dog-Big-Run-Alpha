@@ -8,6 +8,7 @@
 Player::Player(GameObject* _pParent)
     :GameObject(_pParent, "Player"),TimeCounter_(0), hModel_{ -1 }, camType_(0), playerNum_(0), jumpFlg_(false), State_(READY)
 {
+    velocity2_ = XMVectorSet(0.0f, 0, 0.0f, 0);
 }
 
 Player::~Player()
@@ -63,6 +64,7 @@ void Player::UpdatePlay()
 {
     PlayerMove();
     PlayerGravity();
+    PlayerWall();
     if (Input::IsKey(DIK_SPACE) && jumpFlg_ == false)
     {
         PlayerJump();
@@ -212,6 +214,64 @@ void Player::PlayerJump()
     jumpFlg_ = true;
     moveYPrev_ = powerY_;
     powerY_ = powerY_ + 0.2;
+}
+
+void Player::PlayerWall()
+{
+    XMVECTOR pos = XMLoadFloat3(&transform_.position_);
+    float len = Length(velocity2_);
+    len -= 0.001f;
+    if (len < 0.0f)
+    {
+        len = 0.0f;
+    }
+    velocity2_ = XMVector3Normalize(velocity2_) * len;
+    next_ = transform_.position_ + velocity2_;
+    if (next_.x >= 35.0f)
+    {
+        XMVECTOR vector_ = XMVectorSet(-1, 0, 0, 0);
+        vector_ = vector_ * -1;
+        ipVec_ = XMVector3Dot(velocity2_, vector_);
+        float ip = XMVectorGetX(ipVec_);
+        push_ = vector_ * ip;
+        th_ = velocity2_ - push_;
+        push_ *= -1;
+        velocity2_ = push_ + th_;
+    }
+    if (next_.x <= -35.0f)
+    {
+        XMVECTOR vector_ = XMVectorSet(1, 0, 0, 0);
+        vector_ = vector_ * -1;
+        ipVec_ = XMVector3Dot(velocity2_, vector_);
+        float ip = XMVectorGetX(ipVec_);
+        push_ = vector_ * ip;
+        th_ = velocity2_ - push_;
+        push_ *= -1;
+        velocity2_ = push_ + th_;
+    }
+    if (next_.z >= 20.0f)
+    {
+        XMVECTOR vector_ = XMVectorSet(0, 0, -1, 0);
+        vector_ = vector_ * -1;
+        ipVec_ = XMVector3Dot(velocity2_, vector_);
+        float ip = XMVectorGetX(ipVec_);
+        push_ = vector_ * ip;
+        th_ = velocity2_ - push_;
+        push_ *= -1;
+        velocity2_ = push_ + th_;
+    }
+    if (next_.z <= 20.0f)
+    {
+        XMVECTOR vector = XMVectorSet(0, 0, 1, 0);
+        vector = vector * -1;
+        ipVec_ = XMVector3Dot(velocity2_, vector);
+        float ip = XMVectorGetX(ipVec_);
+        push_ = vector * ip;
+        th_ = velocity2_ - push_;
+        push_ *= -1;
+        velocity2_ = push_ + th_;
+    }
+    transform_.position_ += velocity2_;
 }
 
 void Player::PlayerGravity()

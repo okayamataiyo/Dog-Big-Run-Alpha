@@ -60,6 +60,13 @@ public:
 	float mv;			//加速度
 	XMFLOAT3 velocity_;	//速度
 
+	//▼壁判定で使うメンバ変数
+	XMVECTOR velocity2_;
+	XMFLOAT3 next_;
+	XMVECTOR ipVec_;
+	XMVECTOR push_;
+	XMVECTOR th_;
+
 public:
 
 	/// <summary>
@@ -112,6 +119,11 @@ public:
 	/// プレイヤーのジャンプ関数
 	/// </summary>
 	void PlayerJump();
+
+	/// <summary>
+	/// プレイヤーの壁めり込み防止関数
+	/// </summary>
+	void PlayerWall();
 
 	/// <summary>
 	/// プレイヤーの重力関数
