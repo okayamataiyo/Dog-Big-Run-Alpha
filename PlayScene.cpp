@@ -13,13 +13,13 @@ PlayScene::PlayScene(GameObject* _pParent)
 void PlayScene::Initialize()
 {
 	Instantiate<Item>(this);
+	Instantiate<Stage>(this);
 	for (int i = 0u; i <= 1; i++)
 	{
 		pPlayer_[i] = Instantiate<Player>(this);
 	}
 	pPlayer_[0]->SetObjectName("PlayerFirst");
 	pPlayer_[1]->SetObjectName("PlayerSeconds");
-	Instantiate<Stage>(this);
 	pSky_ = Instantiate<Sky>(this);
 	pSky_->SetObjectName("SkyFirst");
 	pCamera_ = new Camera;
@@ -40,14 +40,16 @@ void PlayScene::Update()
 	for (int j = 0u; j <= 1; j++)
 	{
 		XMFLOAT3 mouse;
+		XMVECTOR rot;
 		//Input::SetMousePosition(800,600);
-		//mouse = Input::GetMouseMove();
-		/*camPos_.x += mouse.x;
-		camPos_.y += mouse.y;
-		camPos_.z += mouse.z;*/
-		camPos_ = pPlayer_[j]->GetPosition();
-		camPos_.y += 5;
-		camPos_.z += -10;
+		mouse = Input::GetMouseMove();
+		const float sensitivity = 50;
+		camPos_.x += mouse.x / sensitivity;
+		camPos_.y += mouse.y / sensitivity;
+		camPos_.z += mouse.z;
+		//camPos_ = pPlayer_[j]->GetPosition();
+		//camPos_.y += 5;
+		//camPos_.z += -10;
 		pCamera_->SetPosition(camPos_, j);
 		pCamera_->SetTarget(pPlayer_[j]->GetPosition(), j);
 	}

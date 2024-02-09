@@ -52,6 +52,7 @@ public:
 	float angle_;
 	//▼ジャンプで使うメンバ変数
 	bool  jumpFlg_;
+	int hStageModel_;
 	float rayGravityDist_;		//地面とプレイヤーの差分
 	float moveYTemp_;	//y座標をPrevに保存する
 	float moveYPrev_;	//y座標を保存しておく

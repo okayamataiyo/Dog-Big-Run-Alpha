@@ -26,6 +26,8 @@ void Player::Initialize()
         pCollision_ = new SphereCollider(XMFLOAT3(0.0, 0.0, 0.0), 1);
         AddCollider(pCollision_);
     }
+    Stage* pStage = (Stage*)FindObject("Stage");    //ステージオブジェクト
+    hStageModel_ = pStage->GetModelHandle();   //モデル番号を取得
 
 }
 
@@ -201,8 +203,6 @@ void Player::PlayerGravity()
 {
     RayCastData downData;
     RayCastData frontData;
-    Stage* pStage = (Stage*)FindObject("Stage");    //ステージオブジェクト
-    int hStageModel = pStage->GetModelHandle();   //モデル番号を取得
 
     if (jumpFlg_ == true)
     {
@@ -219,7 +219,7 @@ void Player::PlayerGravity()
     downData.start = transform_.position_;  //レイの発射位置
     downData.start.y = 0;
     downData.dir = XMFLOAT3(0, -1, 0);       //レイの方向
-    Model::RayCast(hStageModel, &downData);  //レイを発射
+    Model::RayCast(hStageModel_, &downData);  //レイを発射
     rayGravityDist_ = downData.dist;
 
     if (downData.hit == true)
@@ -235,6 +235,6 @@ void Player::PlayerGravity()
     frontData.start = transform_.position_;  //レイの発射位置
     frontData.start.z = 0;
     frontData.dir = XMFLOAT3(0, 0, 1);       //レイの方向
-    Model::RayCast(hStageModel, &frontData);  //レイを発射
+    Model::RayCast(hStageModel_, &frontData);  //レイを発射
     rayWallDist_ = frontData.dist;
 }
