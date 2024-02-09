@@ -4,8 +4,8 @@
 #include <DirectXMath.h>
 #include <d3dcompiler.h>
 #include <vector>
-#include "Engine/Texture.h"
-#include "Engine/Transform.h"
+#include "Texture.h"
+#include "Transform.h"
 
 using namespace DirectX;
 using std::vector;

@@ -1,6 +1,6 @@
 #include "Sprite.h"
-#include "Engine/Direct3D.h"
-#include "Global.h"
+#include "Direct3D.h"
+#include "../Global.h"
 
 Sprite::Sprite() :
 	pTexture_(nullptr)
