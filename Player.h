@@ -126,5 +126,7 @@ public:
 	/// プレイヤーの重力関数
 	/// </summary>
 	void PlayerGravity();
+
+	XMVECTOR GetVecPos() { return XMLoadFloat3(&transform_.position_); }
 };
 

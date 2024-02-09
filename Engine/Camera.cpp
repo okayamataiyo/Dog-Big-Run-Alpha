@@ -8,7 +8,7 @@ XMMATRIX projMatrix_;	//プロジェクション行列
 
 struct CAMBUFF
 {
-	XMFLOAT4 lightPosition;
+	XMFLOAT3 lightPos;
 	XMFLOAT4 eyePos[2];
 	XMFLOAT4 target[2];
 };
@@ -25,7 +25,7 @@ void Camera::Initialize()
 	}
 	//プロジェクション行列
 	projMatrix_ = XMMatrixPerspectiveFovLH(XM_PIDIV4, (FLOAT)800 / (FLOAT)600, 0.1f, 8000.0f);
-	lightSourcePosition_ = { 0,2,-1,0 };
+	lightPos_ = { 0,2,-1 };
 
 }
 
@@ -57,8 +57,8 @@ void Camera::IntConstantBuffer(int _type)
 	}
 
 	CAMBUFF cs;
-	cs.lightPosition = lightSourcePosition_;
-	XMStoreFloat4(&cs.eyePos[_type], GetEyePosition(_type));
+	cs.lightPos = lightPos_;
+	XMStoreFloat4(&cs.eyePos[_type], GetPosition(_type));
 	XMStoreFloat4(&cs.target[_type], GetTarget(_type));
 	Direct3D::pContext_->UpdateSubresource(pCB_, 0, NULL, &cs, 0, 0);
 	Direct3D::pContext_->VSSetConstantBuffers(1, 1, &pCB_);//頂点シェーダー
@@ -87,7 +87,7 @@ void Camera::SetTarget(XMFLOAT3 _target, int _type)
 	SetTarget(XMLoadFloat3(&_target), _type);
 }
 
-XMVECTOR Camera::GetEyePosition(int _type)
+XMVECTOR Camera::GetPosition(int _type)
 {
 	return position_[_type];
 }
