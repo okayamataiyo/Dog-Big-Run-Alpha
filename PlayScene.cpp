@@ -41,15 +41,15 @@ void PlayScene::Update()
 	{
 		XMFLOAT3 mouse;
 		//Input::SetMousePosition(800,600);
-		mouse = Input::GetMouseMove();
-		camPos_.x += mouse.x;
+		//mouse = Input::GetMouseMove();
+		/*camPos_.x += mouse.x;
 		camPos_.y += mouse.y;
-		camPos_.z += mouse.z;
-		//camPos_.x = pPlayer_[j]->GetPlayerPos().position_.x;
-		//camPos_.y = pPlayer_[j]->GetPlayerPos().position_.y;
-		//camPos_.z = pPlayer_[j]->GetPlayerPos().position_.z;
+		camPos_.z += mouse.z;*/
+		camPos_ = pPlayer_[j]->GetPosition();
+		camPos_.y += 5;
+		camPos_.z += -10;
 		pCamera_->SetPosition(camPos_, j);
-		pCamera_->SetTarget(pPlayer_[j]->GetPlayerPos().position_, j);
+		pCamera_->SetTarget(pPlayer_[j]->GetPosition(), j);
 	}
 
 }

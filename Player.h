@@ -52,7 +52,7 @@ public:
 	float angle_;
 	//▼ジャンプで使うメンバ変数
 	bool  jumpFlg_;
-	float rayDist_;		//地面とプレイヤーの差分
+	float rayGravityDist_;		//地面とプレイヤーの差分
 	float moveYTemp_;	//y座標をPrevに保存する
 	float moveYPrev_;	//y座標を保存しておく
 
@@ -61,11 +61,7 @@ public:
 	XMFLOAT3 velocity_;	//速度
 
 	//▼壁判定で使うメンバ変数
-	XMVECTOR velocity2_;
-	XMFLOAT3 next_;
-	XMVECTOR ipVec_;
-	XMVECTOR push_;
-	XMVECTOR th_;
+	float rayWallDist_;
 
 public:
 
@@ -129,7 +125,5 @@ public:
 	/// プレイヤーの重力関数
 	/// </summary>
 	void PlayerGravity();
-	Transform GetPlayerPos() { return transform_; }
-	//void SetTransform(XMFLOAT3 _position) { transform_.position_ = _position; }
 };
 

@@ -8,7 +8,6 @@
 Player::Player(GameObject* _pParent)
     :GameObject(_pParent, "Player"),TimeCounter_(0), hModel_{ -1 }, camType_(0), playerNum_(0), jumpFlg_(false), State_(READY)
 {
-    velocity2_ = XMVectorSet(0.0f, 0, 0.0f, 0);
 }
 
 Player::~Player()
@@ -154,29 +153,6 @@ void Player::PlayerMove()
             }
         }
     }
-    //▼プレイヤー右の人
-    if (Input::IsKey(DIK_UP))
-    {
-        velocity_.z += 0.005f;
-        GameSta_ = WALK;
-    }
-    if (Input::IsKey(DIK_DOWN))
-    {
-        velocity_.z -= 0.005f;
-        GameSta_ = WALK;
-    }
-
-    if (Input::IsKey(DIK_RIGHT))
-    {
-        velocity_.x += 0.005f;
-        GameSta_ = WALK;
-    }
-    if (Input::IsKey(DIK_LEFT))
-    {
-        velocity_.x -= 0.005f;
-        GameSta_ = WALK;
-    }
-    //▼プレイヤー左の人
     if (Input::IsKey(DIK_W))
     {
         velocity_.z += 0.005f;
@@ -218,65 +194,13 @@ void Player::PlayerJump()
 
 void Player::PlayerWall()
 {
-    XMVECTOR pos = XMLoadFloat3(&transform_.position_);
-    float len = Length(velocity2_);
-    len -= 0.001f;
-    if (len < 0.0f)
-    {
-        len = 0.0f;
-    }
-    velocity2_ = XMVector3Normalize(velocity2_) * len;
-    next_ = transform_.position_ + velocity2_;
-    if (next_.x >= 35.0f)
-    {
-        XMVECTOR vector_ = XMVectorSet(-1, 0, 0, 0);
-        vector_ = vector_ * -1;
-        ipVec_ = XMVector3Dot(velocity2_, vector_);
-        float ip = XMVectorGetX(ipVec_);
-        push_ = vector_ * ip;
-        th_ = velocity2_ - push_;
-        push_ *= -1;
-        velocity2_ = push_ + th_;
-    }
-    if (next_.x <= -35.0f)
-    {
-        XMVECTOR vector_ = XMVectorSet(1, 0, 0, 0);
-        vector_ = vector_ * -1;
-        ipVec_ = XMVector3Dot(velocity2_, vector_);
-        float ip = XMVectorGetX(ipVec_);
-        push_ = vector_ * ip;
-        th_ = velocity2_ - push_;
-        push_ *= -1;
-        velocity2_ = push_ + th_;
-    }
-    if (next_.z >= 20.0f)
-    {
-        XMVECTOR vector_ = XMVectorSet(0, 0, -1, 0);
-        vector_ = vector_ * -1;
-        ipVec_ = XMVector3Dot(velocity2_, vector_);
-        float ip = XMVectorGetX(ipVec_);
-        push_ = vector_ * ip;
-        th_ = velocity2_ - push_;
-        push_ *= -1;
-        velocity2_ = push_ + th_;
-    }
-    if (next_.z <= 20.0f)
-    {
-        XMVECTOR vector = XMVectorSet(0, 0, 1, 0);
-        vector = vector * -1;
-        ipVec_ = XMVector3Dot(velocity2_, vector);
-        float ip = XMVectorGetX(ipVec_);
-        push_ = vector * ip;
-        th_ = velocity2_ - push_;
-        push_ *= -1;
-        velocity2_ = push_ + th_;
-    }
-    transform_.position_ += velocity2_;
+    
 }
 
 void Player::PlayerGravity()
 {
-    RayCastData data;
+    RayCastData downData;
+    RayCastData frontData;
     Stage* pStage = (Stage*)FindObject("Stage");    //ステージオブジェクト
     int hStageModel = pStage->GetModelHandle();   //モデル番号を取得
 
@@ -285,25 +209,32 @@ void Player::PlayerGravity()
         moveYTemp_ = powerY_;
         powerY_ += (powerY_ - moveYPrev_) - 0.007;
         moveYPrev_ = moveYTemp_;
-        if (powerY_ <= -rayDist_)
+        if (powerY_ <= -rayGravityDist_)
         {
             jumpFlg_ = false;
         }
     }
 
-    //レイの処理
-    data.start = transform_.position_;  //レイの発射位置
-    data.start.y = 0;
-    data.dir = XMFLOAT3(0, -1, 0);       //レイの方向
-    Model::RayCast(hStageModel, &data);  //レイを発射
-    rayDist_ = data.dist;
+    //▼下の法線(重力再現)
+    downData.start = transform_.position_;  //レイの発射位置
+    downData.start.y = 0;
+    downData.dir = XMFLOAT3(0, -1, 0);       //レイの方向
+    Model::RayCast(hStageModel, &downData);  //レイを発射
+    rayGravityDist_ = downData.dist;
 
-    if (data.hit == true)
+    if (downData.hit == true)
     {
         if (jumpFlg_ == false)
         {
-            transform_.position_.y = -data.dist + 0.6;
-            powerY_ = -data.dist + 0.6;
+            transform_.position_.y = -downData.dist + 0.6;
+            powerY_ = -downData.dist + 0.6;
         }
     }
+
+    //▼前の法線(壁の当たり判定)
+    frontData.start = transform_.position_;  //レイの発射位置
+    frontData.start.z = 0;
+    frontData.dir = XMFLOAT3(0, 0, 1);       //レイの方向
+    Model::RayCast(hStageModel, &frontData);  //レイを発射
+    rayWallDist_ = frontData.dist;
 }
