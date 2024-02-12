@@ -15,7 +15,7 @@ private:
     Sky* pSky_;
     Camera* pCamera_;
 
-    XMFLOAT3 camPos_;
+    XMFLOAT3 camPos_[2];
 public:
     /// <summary>
     /// コンストラクタ
