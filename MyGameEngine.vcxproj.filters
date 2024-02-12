@@ -86,6 +86,9 @@
     <ClCompile Include="Engine\Sprite.cpp">
       <Filter>ソース ファイル\Engine</Filter>
     </ClCompile>
+    <ClCompile Include="Controller.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Camera.h">
@@ -154,6 +157,9 @@
     </ClInclude>
     <ClInclude Include="Engine\Sprite.h">
       <Filter>ソース ファイル\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Controller.h">
+      <Filter>ソース ファイル</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
