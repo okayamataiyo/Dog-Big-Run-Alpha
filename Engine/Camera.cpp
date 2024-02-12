@@ -8,7 +8,7 @@ XMMATRIX projMatrix_;	//プロジェクション行列
 
 struct CAMBUFF
 {
-	XMFLOAT3 lightPos;
+	XMFLOAT4 lightPos;
 	XMFLOAT4 eyePos[2];
 	XMFLOAT4 target[2];
 };
@@ -25,16 +25,27 @@ void Camera::Initialize()
 	}
 	//プロジェクション行列
 	projMatrix_ = XMMatrixPerspectiveFovLH(XM_PIDIV4, (FLOAT)800 / (FLOAT)600, 0.1f, 8000.0f);
-	lightPos_ = { 0,2,-1 };
+	lightPos_ = { 0,2,-1,0 };
 
 }
 
 //更新
-void Camera::Update(int _CamPos)
+void Camera::Update()
 {
-	//ビュー行列の作成
-	viewMatrix_ = XMMatrixLookAtLH(position_[_CamPos], target_[_CamPos], XMVectorSet(0, 1, 0, 0));
-	IntConstantBuffer(_CamPos);
+	for (int i = 0u; i <= 1; i++)
+	{
+		//ビュー行列の作成
+		viewMatrix_ = XMMatrixLookAtLH(position_[i], target_[i], XMVectorSet(0, 1, 0, 0));
+		IntConstantBuffer(i);
+	}
+}
+
+void Camera::Draw()
+{
+}
+
+void Camera::Release()
+{
 }
 
 void Camera::IntConstantBuffer(int _type)
