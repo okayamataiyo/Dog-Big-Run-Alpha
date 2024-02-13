@@ -202,4 +202,30 @@ namespace Input
 		float y = GetAnalogValue(controllerState_[_padID].Gamepad.sThumbLY, 32767, XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE);
 		return XMFLOAT3(x, y, 0);
 	}
+
+	XMFLOAT3 GetPadStrickR(int _padID)
+	{
+		float x = GetAnalogValue(controllerState_[_padID].Gamepad.sThumbRX, 32767, XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE);
+		float y = GetAnalogValue(controllerState_[_padID].Gamepad.sThumbRY, 32767, XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE);
+		return XMFLOAT3(x, y, 0);
+	}
+
+	float GetPadTrrigerL(int _padID)
+	{
+		return GetAnalogValue(controllerState_[_padID].Gamepad.bLeftTrigger, 255, XINPUT_GAMEPAD_TRIGGER_THRESHOLD);
+	}
+
+	float GetPadTrrigerR(int _padID)
+	{
+		return GetAnalogValue(controllerState_[_padID].Gamepad.bRightTrigger, 255, XINPUT_GAMEPAD_TRIGGER_THRESHOLD);
+	}
+
+	void SetPadVibration(int _l, int _r, int _padID)
+	{
+		XINPUT_VIBRATION vibration;
+		ZeroMemory(&vibration, sizeof(XINPUT_VIBRATION));
+		vibration.wLeftMotorSpeed = _l;
+		vibration.wRightMotorSpeed = _r;
+		XInputSetState(_padID, &vibration);
+	}
 }

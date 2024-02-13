@@ -93,7 +93,7 @@ void PlayScene::Update()
 		static float EasingY[2] = {};
 
 		float sigmaRotY = camVec_[i].y;// + EasingY[i]; +pPlayer_[i]->GetRotate().y;
-		float sigmaRotX = camVec_[i].x;// + EasingX[i]; +pPlayer_[i]->GetRotate().x;
+		float sigmaRotX = -camVec_[i].x;// + EasingX[i]; +pPlayer_[i]->GetRotate().x;
 		//vecLength[i] = camVec_[i].z;
 
 		//EasingY[j] = (pPlayer_[j]->GetRotate().y * 0.1) + (EasingY[j] * 0.9);
@@ -101,13 +101,13 @@ void PlayScene::Update()
 
 		if (sigmaRotX > 0*(3.14/180))
 		{
-			sigmaRotX = prevRotX[i];
-			RotationX[i] = 0;
+			sigmaRotX = 0;
+			camVec_[i].x -= RotationY[i] / sensitivity;
 		}
 		if (sigmaRotX < -88*(3.14/180))
 		{
-			sigmaRotX = prevRotX[i];
-			RotationX[i] = 0;
+			sigmaRotX = -87.9 * (3.14 / 180);
+			camVec_[i].x -= RotationY[i] / sensitivity;
 		}
 
 		prevRotX[i] = sigmaRotX;
