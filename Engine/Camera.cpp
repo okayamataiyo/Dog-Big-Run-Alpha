@@ -1,6 +1,5 @@
 #include "Camera.h"
 
-//変数
 XMVECTOR position_[2];	//カメラの位置（視点）
 XMVECTOR target_[2];	//見る位置（焦点）
 XMMATRIX viewMatrix_;	//ビュー行列

@@ -69,56 +69,55 @@ void PlayScene::Update()
 		//Input::SetMousePosition(800,600);
 		mouse = Input::GetMouseMove();
 		const float sensitivity = 50;
-		if (camVec_[j].y >= 88)
+		if (camVec_[j].x >= 88)
 		{
-			camVec_[j].y = 87;
+			camVec_[j].x = 87;
 		}
-		if (camVec_[j].y <= 0)
+		if (camVec_[j].x <= 0)
 		{
-			camVec_[j].y = 1;
+			camVec_[j].x = 1;
 		}
 		static float RotationX[2] = {};
 		static float RotationY[2] = {};
-		static float vecLength[2] = {10,10};
+		static float vecLength[2] = {};
+		static float prevLen[2] = {};
 
-		RotationX[j] = mouse.y;
-		RotationX[j] = mouse.y;
+		RotationY[j] = mouse.y;
+		RotationX[j] = mouse.x;
+		vecLength[j] += (mouse.z -prevLen[j]) / 10;
 
 		XMFLOAT3 rDir = { 0,0,1 };
-
 		XMVECTOR Dir = XMLoadFloat3(&rDir);
 
 		//Dir = Dir * (pPlayer_[j]->GetRotate().x + RotationX[j]) * (pPlayer_[j]->GetRotate().y + RotationY[j]);
 		//Dir = Dir + (vecLength * 2);
 		camVec_[j].y += RotationX[j] / sensitivity;
 		camVec_[j].x += RotationY[j] / sensitivity;
-		camVec_[j].z = vecLength[j] / 1000;
+		camVec_[j].z = vecLength[j]  + 10;
 
-		float sigmaRotX = camVec_[j].y + pPlayer_[j]->GetRotate().y;
-		float sigmaRotY = camVec_[j].x + pPlayer_[j]->GetRotate().x;
+		float sigmaRotY = camVec_[j].y + pPlayer_[j]->GetRotate().y;
+		float sigmaRotX = camVec_[j].x + pPlayer_[j]->GetRotate().x;
 		vecLength[j] = camVec_[j].z;
 
 		XMMATRIX mxRotX = XMMatrixRotationX(sigmaRotX);
 		XMMATRIX mxRotY = XMMatrixRotationY(sigmaRotY);
 
 		XMMATRIX rot = mxRotY * mxRotX;
+		XMFLOAT3 playerPos = pPlayer_[j]->GetPosition();
 		
 		Dir = XMVector3Transform(Dir, rot);
 		Dir = XMVector3Normalize(Dir);
 		Dir = Dir * vecLength[j];
+		Dir += XMLoadFloat3(&playerPos);
 		//camVec_ = pPlayer_[j]->GetPosition();
 		//camVec_.y += 5;
 		//camVec_.z += -10;
-		auto a = pPlayer_[j]->GetPosition();
+		//auto a = pPlayer_[j]->GetPosition();
 
 		pCamera_->SetPosition(Dir, j);
 		pCamera_->SetTarget(pPlayer_[j]->GetPosition(), j);
 
-	}
-
-	for (auto i = 0u; i <= 1; i++) {
-
-		//auto 
+		prevLen[j] = (mouse.z -prevLen[j]) / 2;
 	}
 }
 

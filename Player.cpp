@@ -53,7 +53,7 @@ void Player::Release()
 
 void Player::UpdateReady()
 {
-    PlayerGravity();
+    //PlayerGravity();
     ++TimeCounter_;
     if (TimeCounter_ >= 60)
     {
