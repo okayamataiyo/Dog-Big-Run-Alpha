@@ -124,8 +124,10 @@ void Player::PlayerMove()
     //transform_.position_.z += velocity_.z;
     transform_.position_.y = powerY_;
     vecMove_ = XMLoadFloat3(&velocity_);
-    vecMove_ = camera_.GetPosition(1);
+    XMVECTOR vecCam = -(camera_.GetPosition(0) - camera_.GetTarget(0));
+    vecCam = XMVector3Normalize(vecCam);
     vecMove_ = XMVector3Normalize(vecMove_);
+    vecMove_ = vecCam;
     vecMove_ *= 0.05f;
     //XMStoreFloat3(&velocity_[i], vecMove_[i]);
 
