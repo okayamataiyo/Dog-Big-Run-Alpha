@@ -26,12 +26,14 @@ void PlayScene::Initialize()
 	pSky_ = Instantiate<Sky>(this);
 	pSky_->SetObjectName("SkyFirst");
 	pCamera_ = new Camera;
-	XMFLOAT3 PlayerPos = { 3,0,0 };
+	XMFLOAT3 FPlayerPos = { 3,0,0 };
+	XMFLOAT3 SPlayerPos = { -3,0,0 };
 	XMFLOAT3 skyRot = { 0,150,90 };
 	XMFLOAT3 skyPos = { 0, -100, 0 };
 	pSky_->SetRotate(skyRot);
 	pSky_->SetPosition(skyPos);
-	pPlayer_[0]->SetPosition(PlayerPos);
+	pPlayer_[0]->SetPosition(FPlayerPos);
+	pPlayer_[1]->SetPosition(SPlayerPos);
 
 }
 
@@ -86,7 +88,7 @@ void PlayScene::Update()
 
 		XMVECTOR Dir = XMLoadFloat3(&rDir);
 
-		Dir = Dir * (pPlayer_[j]->GetRotate().x + RotationX[j]) * (pPlayer_[j]->GetRotate().y + RotationY[j]);
+		//Dir = Dir * (pPlayer_[j]->GetRotate().x + RotationX[j]) * (pPlayer_[j]->GetRotate().y + RotationY[j]);
 		//Dir = Dir + (vecLength * 2);
 		camVec_[j].y += RotationX[j] / sensitivity;
 		camVec_[j].x += RotationY[j] / sensitivity;
@@ -102,7 +104,6 @@ void PlayScene::Update()
 		XMMATRIX rot = mxRotY * mxRotX;
 		
 		Dir = XMVector3Transform(Dir, rot);
-
 		Dir = XMVector3Normalize(Dir);
 		Dir = Dir * vecLength[j];
 		//camVec_ = pPlayer_[j]->GetPosition();
@@ -117,7 +118,7 @@ void PlayScene::Update()
 
 	for (auto i = 0u; i <= 1; i++) {
 
-		auto 
+		//auto 
 	}
 }
 
