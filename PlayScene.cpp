@@ -76,16 +76,24 @@ void PlayScene::Update()
 		{
 			camPos_[j].y = 1;
 		}
-		camPos_[j].y += mouse.y / sensitivity;
-		camPos_[j].x += mouse.x / sensitivity;
-		camPos_[j].z += mouse.z / 1000;
+		float RotationX = mouse.x;
+		float RotationY = mouse.y;
+		float vecLength = mouse.z;
+		XMVECTOR Dir = { 0,0,1 };
+		Dir = Dir * (pPlayer_[j]->GetRotate().x + RotationX) * (pPlayer_[j]->GetRotate().y + RotationY);
+		//Dir = Dir + (vecLength * 2);
+		camPos_[j].y += RotationX / sensitivity;
+		camPos_[j].x += RotationY / sensitivity;
+		camPos_[j].z += vecLength / 1000;
 		XMVECTOR veccamPos_[2];
 		veccamPos_[j] = XMLoadFloat3(&camPos_[j]);
 		veccamPos_[j] = XMVector3TransformCoord(veccamPos_[j], mRotX[j] * mRotY[j]);
+		Dir = Dir * vecLength;
+		Dir = XMVector3Normalize(Dir);
 		//camPos_ = pPlayer_[j]->GetPosition();
 		//camPos_.y += 5;
 		//camPos_.z += -10;
-		pCamera_->SetPosition(vPos[j] + veccamPos_[j], j);
+		pCamera_->SetPosition(Dir, j);
 		pCamera_->SetTarget(pPlayer_[j]->GetPosition(), j);
 	}
 
