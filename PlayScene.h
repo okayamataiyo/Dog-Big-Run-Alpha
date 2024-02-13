@@ -1,8 +1,7 @@
 #pragma once
 //インクルード
 #include "Engine/GameObject.h"
-#include "Engine/Camera.h"
-#include "Player.h"
+#include "Controller.h"
 #include "Sky.h"
 
 /// <summary>
@@ -11,8 +10,7 @@
 class PlayScene : public GameObject
 {
 private:
-    //メンバ変数
-    Player* pPlayer_[2];
+    //メンバ
     Sky* pSky_;
 
 public:
@@ -26,6 +24,5 @@ public:
     void Update() override;
     void Draw() override;
     void Release() override;
-    Player GetPlayer(int _type) { return pPlayer_[_type]; }
 };
 

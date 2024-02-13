@@ -1,15 +1,15 @@
 #pragma once
 #include "Engine/GameObject.h"
+#include "Player.h"
 #include "Engine/Camera.h"
-#include "PlayScene.h"
 /// <summary>
 /// カメラのコントロールを管理するクラス
 /// </summary>
 class Controller : public GameObject
 {
 private:
+	Player* pPlayer_[2];
 	Camera* pCamera_;
-	PlayScene* pPlayScene_;
 	XMFLOAT3 camPos_[2];
 public:
 	Controller(GameObject* _pParent);
@@ -22,5 +22,7 @@ public:
 	void Draw() override;
 
 	void Release() override;
+
+	Player GetPlayer(int _type) { return pPlayer_[_type]; }
 };
 

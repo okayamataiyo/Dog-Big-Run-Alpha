@@ -17,23 +17,30 @@ void Controller::Initialize()
 		camPos_[i].x = 0;
 		camPos_[i].y = 5;
 		camPos_[i].z = -10;
+		pPlayer_[i] = Instantiate<Player>(this);
 	}
+	pPlayer_[0]->SetObjectName("PlayerFirst");
+	pPlayer_[1]->SetObjectName("PlayerSeconds");
+	XMFLOAT3 PlayerPos = { 3,0,0 };
+	pPlayer_[0]->SetPosition(PlayerPos);
 	pCamera_ = new Camera;
-	pPlayScene_ = new PlayScene;
 }
 
 void Controller::Update()
 {
+	//transform_.position_ = pPlayer_[1]->GetPosition();
+	transform_.rotate_.y += 0.1;
 	for (int j = 0u; j <= 1; j++)
 	{
+
 		XMMATRIX mRotY[2];
-		mRotY[j] = XMMatrixRotationY(XMConvertToRadians(pPlayScene_->GetPlayer(j).GetRotate().y));
+		mRotY[j] = XMMatrixRotationY(XMConvertToRadians(pPlayer_[j]->GetRotate().y));
 		XMMATRIX mRotX[2];
-		mRotX[j] = XMMatrixRotationX(XMConvertToRadians(pPlayScene_->GetPlayer(j).GetRotate().x));
+		mRotX[j] = XMMatrixRotationX(XMConvertToRadians(pPlayer_[j]->GetRotate().x));
 
 		XMVECTOR vPos[2];
-		vPos[j] = pPlayScene_->GetPlayer(j).GetVecPos();
-
+		vPos[j] = pPlayer_[j]->GetVecPos();
+		//vPos[j] = XMLoadFloat3(&transform_.position_);
 		XMVECTOR frontMove[2];
 		frontMove[j] = XMVectorSet(0, 0, 0.1f, 0);
 		frontMove[j] = XMVector3TransformCoord(frontMove[j], mRotY[j]);
@@ -50,7 +57,6 @@ void Controller::Update()
 		vMove3[j] = { 0.0f, 0.1f, 0.0f, 0.0f };          //c‚É0.1m
 		vMove3[j] = XMVector3TransformCoord(vMove3[j], mRotY[j]);
 		XMFLOAT3 mouse;
-		XMVECTOR rot;
 
 		//Input::SetMousePosition(800,600);
 		mouse = Input::GetMouseMove();
@@ -72,8 +78,9 @@ void Controller::Update()
 		//camPos_ = pPlayer_[j]->GetPosition();
 		//camPos_.y += 5;
 		//camPos_.z += -10;
-		pCamera_->SetPosition(vPos[j] + veccamPos_[j], j);
-		pCamera_->SetTarget(pPlayScene_->GetPlayer(j).GetPosition(), j);
+		pCamera_->SetPosition(vPos[1] + veccamPos_[1], 1);
+		pCamera_->SetTarget(pPlayer_[j]->GetPosition(), j);
+		//pCamera_->SetTarget(transform_.position_,0);
 	}
 }
 
