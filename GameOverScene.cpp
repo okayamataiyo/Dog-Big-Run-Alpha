@@ -18,10 +18,10 @@ void GameOverScene::Initialize()
 
 void GameOverScene::Update()
 {
-	camVec_ = pGameOverText_->GetPosition();
-	camVec_.y += 2;
-	camVec_.z -= 15;
-	pCamera_->SetPosition(camVec_, 0);
+	camPos_ = pGameOverText_->GetPosition();
+	camPos_.y += 2;
+	camPos_.z -= 15;
+	pCamera_->SetPosition(camPos_, 0);
 	pCamera_->SetTarget(pGameOverText_->GetPosition(), 0);
 	if (Input::IsKeyDown(DIK_S))
 	{

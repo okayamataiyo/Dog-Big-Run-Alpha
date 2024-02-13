@@ -7,7 +7,7 @@ class GameOverScene : public GameObject
 {
 	GameOverText* pGameOverText_;
 	Camera* pCamera_;
-	XMFLOAT3 camVec_;
+	XMFLOAT3 camPos_;
 public:
 	GameOverScene(GameObject* _pParent);
 	void Initialize() override;

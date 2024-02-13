@@ -39,85 +39,98 @@ void PlayScene::Initialize()
 
 void PlayScene::Update()
 {
-	for (int j = 0u; j <= 1; j++)
+	for (int i = 0u; i <= 1; i++)
 	{
 		XMMATRIX mRotY[2];
-		mRotY[j] = XMMatrixRotationY(XMConvertToRadians(pPlayer_[j]->GetRotate().y));
+		mRotY[i] = XMMatrixRotationY(XMConvertToRadians(pPlayer_[i]->GetRotate().y));
 		XMMATRIX mRotX[2];
-		mRotX[j] = XMMatrixRotationX(XMConvertToRadians(pPlayer_[j]->GetRotate().x));
+		mRotX[i] = XMMatrixRotationX(XMConvertToRadians(pPlayer_[i]->GetRotate().x));
 
 		XMVECTOR vPos[2];
-		vPos[j] = pPlayer_[j]->GetVecPos();
+		vPos[i] = pPlayer_[i]->GetVecPos();
 
 		XMVECTOR frontMove[2];
-		frontMove[j] = XMVectorSet(0, 0, 0.1f, 0);
-		frontMove[j] = XMVector3TransformCoord(frontMove[j], mRotY[j]);
+		frontMove[i] = XMVectorSet(0, 0, 0.1f, 0);
+		frontMove[i] = XMVector3TransformCoord(frontMove[i], mRotY[i]);
 		XMVECTOR rightMove[2];
-		rightMove[j] = XMVectorSet(0.1f, 0, 0, 0);
-		rightMove[j] = XMVector3TransformCoord(rightMove[j], mRotY[j]);
+		rightMove[i] = XMVectorSet(0.1f, 0, 0, 0);
+		rightMove[i] = XMVector3TransformCoord(rightMove[i], mRotY[i]);
 		XMVECTOR vMove1[2];
-		vMove1[j] = { 0.0f, 0.0f, 0.1f, 0.0f };
-		vMove1[j] = XMVector3TransformCoord(vMove1[j], mRotY[j]);
+		vMove1[i] = { 0.0f, 0.0f, 0.1f, 0.0f };
+		vMove1[i] = XMVector3TransformCoord(vMove1[i], mRotY[i]);
 		XMVECTOR vMove2[2];
-		vMove2[j] = { 0.1f, 0.0f, 0.0f, 0.0f };          //‰¡‚É0.1m
-		vMove2[j] = XMVector3TransformCoord(vMove2[j], mRotY[j]);
+		vMove2[i] = { 0.1f, 0.0f, 0.0f, 0.0f };          //‰¡‚É0.1m
+		vMove2[i] = XMVector3TransformCoord(vMove2[i], mRotY[i]);
 		XMVECTOR vMove3[2];
-		vMove3[j] = { 0.0f, 0.1f, 0.0f, 0.0f };          //c‚É0.1m
-		vMove3[j] = XMVector3TransformCoord(vMove3[j], mRotY[j]);
+		vMove3[i] = { 0.0f, 0.1f, 0.0f, 0.0f };          //c‚É0.1m
+		vMove3[i] = XMVector3TransformCoord(vMove3[i], mRotY[i]);
 		XMFLOAT3 mouse;
 
 		//Input::SetMousePosition(800,600);
 		mouse = Input::GetMouseMove();
-		const float sensitivity = 50;
-		if (camVec_[j].x >= 88)
-		{
-			camVec_[j].x = 87;
-		}
-		if (camVec_[j].x <= 0)
-		{
-			camVec_[j].x = 1;
-		}
+		const float sensitivity = 400;
+
 		static float RotationX[2] = {};
 		static float RotationY[2] = {};
 		static float vecLength[2] = {};
 		static float prevLen[2] = {};
+		static float prevRotX[2] = {};
 
-		RotationY[j] = mouse.y;
-		RotationX[j] = mouse.x;
-		vecLength[j] += (mouse.z -prevLen[j]) / 10;
+		RotationY[i] = mouse.y;
+		RotationX[i] = mouse.x;
+		vecLength[i] -= (mouse.z) / 50;
 
 		XMFLOAT3 rDir = { 0,0,1 };
 		XMVECTOR Dir = XMLoadFloat3(&rDir);
 
-		//Dir = Dir * (pPlayer_[j]->GetRotate().x + RotationX[j]) * (pPlayer_[j]->GetRotate().y + RotationY[j]);
+		//Dir = Dir * (pPlayer_[i]->GetRotate().x + RotationX[i]) * (pPlayer_[i]->GetRotate().y + RotationY[i]);
 		//Dir = Dir + (vecLength * 2);
-		camVec_[j].y += RotationX[j] / sensitivity;
-		camVec_[j].x += RotationY[j] / sensitivity;
-		camVec_[j].z = vecLength[j]  + 10;
+		camVec_[i].y += RotationX[i] / sensitivity;
+		camVec_[i].x += RotationY[i] / sensitivity;
+		//camVec_[i].z += vecLength[i]  + 10;
 
-		float sigmaRotY = camVec_[j].y + pPlayer_[j]->GetRotate().y;
-		float sigmaRotX = camVec_[j].x + pPlayer_[j]->GetRotate().x;
-		vecLength[j] = camVec_[j].z;
+		static float EasingX[2] = {};
+		static float EasingY[2] = {};
+
+		float sigmaRotY = camVec_[i].y;// + EasingY[i]; +pPlayer_[i]->GetRotate().y;
+		float sigmaRotX = camVec_[i].x;// + EasingX[i]; +pPlayer_[i]->GetRotate().x;
+		//vecLength[i] = camVec_[i].z;
+
+		//EasingY[j] = (pPlayer_[j]->GetRotate().y * 0.1) + (EasingY[j] * 0.9);
+		//EasingX[j] = (pPlayer_[j]->GetRotate().x * 0.1) + (EasingX[j] * 0.9);
+
+		if (sigmaRotX > 0*(3.14/180))
+		{
+			sigmaRotX = prevRotX[i];
+			RotationX[i] = 0;
+		}
+		if (sigmaRotX < -88*(3.14/180))
+		{
+			sigmaRotX = prevRotX[i];
+			RotationX[i] = 0;
+		}
+
+		prevRotX[i] = sigmaRotX;
 
 		XMMATRIX mxRotX = XMMatrixRotationX(sigmaRotX);
 		XMMATRIX mxRotY = XMMatrixRotationY(sigmaRotY);
 
-		XMMATRIX rot = mxRotY * mxRotX;
-		XMFLOAT3 playerPos = pPlayer_[j]->GetPosition();
+		XMMATRIX rot = mxRotX * mxRotY;
+		XMFLOAT3 playerPos = pPlayer_[i]->GetPosition();
 		
 		Dir = XMVector3Transform(Dir, rot);
 		Dir = XMVector3Normalize(Dir);
-		Dir = Dir * vecLength[j];
+		Dir = Dir * (vecLength[i] + 10);
 		Dir += XMLoadFloat3(&playerPos);
 		//camVec_ = pPlayer_[j]->GetPosition();
 		//camVec_.y += 5;
 		//camVec_.z += -10;
 		//auto a = pPlayer_[j]->GetPosition();
 
-		pCamera_->SetPosition(Dir, j);
-		pCamera_->SetTarget(pPlayer_[j]->GetPosition(), j);
+		pCamera_->SetPosition(Dir, i);
+		pCamera_->SetTarget(pPlayer_[i]->GetPosition(), i);
 
-		prevLen[j] = (mouse.z -prevLen[j]) / 2;
+		prevLen[i] = vecLength[i];
 	}
 }
 

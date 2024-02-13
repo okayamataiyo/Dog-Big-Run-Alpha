@@ -1,5 +1,5 @@
 #include "Input.h"
-#include "Direct3D.h"
+#include "../Global.h"
 
 namespace Input
 {
@@ -14,6 +14,10 @@ namespace Input
 	DIMOUSESTATE mouseState_;				//マウスの状態
 	DIMOUSESTATE prevMouseState_;			//前フレームのマウスの状態
 	POINT mousePosition_;				//マウスカーソルの位置
+	//▼コントローラー
+	const int MAX_PAD_NUM = 4;
+	XINPUT_STATE controllerState_[MAX_PAD_NUM];
+	XINPUT_STATE prevControllerState_[MAX_PAD_NUM];
 
 	void Initialize(HWND _hWnd)
 	{
@@ -44,12 +48,17 @@ namespace Input
 		pMouseDevice_->Acquire();
 		memcpy(&prevMouseState_, &mouseState_, sizeof(mouseState_));
 		pMouseDevice_->GetDeviceState(sizeof(mouseState_), &mouseState_);
-
+		//▼コントローラー
+		for (int i = 0; i < MAX_PAD_NUM; i++)
+		{
+			memcpy(&prevControllerState_[i], &controllerState_[i], sizeof(controllerState_[i]));
+			XInputGetState(i, &controllerState_[i]);
+		}
 	}
 
 	void Release()
 	{
-		SAFE_RELEASE(pDInput_);
+		SAFE_RELEASE(pMouseDevice_);
 		SAFE_RELEASE(pKeyDevice_);
 		SAFE_RELEASE(pDInput_);
 	}
@@ -126,5 +135,71 @@ namespace Input
 	{
 		mousePosition_.x = _x;
 		mousePosition_.y = _y;
+	}
+
+	//▼コントローラー
+	bool IsPadButton(int _buttonCode, int _padID)
+	{
+		if (controllerState_[_padID].Gamepad.wButtons & _buttonCode)
+		{
+			return true;
+		}
+		return false;
+	}
+
+	bool IsPadButtonDown(int _buttonCode, int _padID)
+	{
+		if (IsPadButton(_buttonCode, _padID) && !(prevControllerState_[_padID].Gamepad.wButtons & _buttonCode))
+		{
+			return true;
+		}
+		return false;
+	}
+
+	bool IsPadButtonUp(int  _buttonCode, int _padID)
+	{
+		if (!IsPadButton(_buttonCode, _padID) && prevControllerState_[_padID].Gamepad.wButtons & _buttonCode)
+		{
+			return true;
+		}
+		return false;
+	}
+
+	float GetAnalogValue(int _raw, int _max, int _deadZone)
+	{
+		float result = (float)_raw;
+
+		if (result > 0)
+		{
+			if (result < _deadZone)
+			{
+				result = 0;
+			}
+			else
+			{
+				result = (result - _deadZone) / (_max - _deadZone);
+			}
+		}
+
+		else
+		{
+			if (result > -_deadZone)
+			{
+				result = 0;
+			}
+			else
+			{
+				result = (result + _deadZone) / (_max - _deadZone);
+			}
+		}
+
+		return result;
+	}
+
+	XMFLOAT3 GetPadStickL(int _padID)
+	{
+		float x = GetAnalogValue(controllerState_[_padID].Gamepad.sThumbLX, 32767, XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE);
+		float y = GetAnalogValue(controllerState_[_padID].Gamepad.sThumbLY, 32767, XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE);
+		return XMFLOAT3(x, y, 0);
 	}
 }
