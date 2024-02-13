@@ -102,79 +102,88 @@ void Player::OnCollision(GameObject* _pTarget)
 
 void Player::PlayerMove()
 {
-    for (int i = 0u; i <= 1; i++)
+    XMMATRIX mRotY = XMMatrixRotationY(XMConvertToRadians(transform_.rotate_.y));
+    XMMATRIX mRotX = XMMatrixRotationX(XMConvertToRadians(transform_.rotate_.x));
+
+    XMVECTOR vecPos = XMLoadFloat3(&transform_.position_);
+    XMVECTOR vecMove = camera_.GetPosition(0);
+    vecMove = XMVector3TransformCoord(vecMove, mRotY);
+
+    if (jumpFlg_ == false)
+    {
+        velocity_.x *= 0.9f;    //X軸方向の慣性
+        velocity_.z *= 0.9f;    //Z軸方向の慣性
+    }
+    else
+    {
+        velocity_.x *= 0.97f;
+        velocity_.z *= 0.97f;
+    }
+
+    //transform_.position_.x += velocity_.x;
+    //transform_.position_.z += velocity_.z;
+    transform_.position_.y = powerY_;
+    vecMove_ = XMLoadFloat3(&velocity_);
+    vecMove_ = camera_.GetPosition(1);
+    vecMove_ = XMVector3Normalize(vecMove_);
+    vecMove_ *= 0.05f;
+    //XMStoreFloat3(&velocity_[i], vecMove_[i]);
+
+    //向き変更
+    vecLength_ = XMVector3Length(vecMove_);
+    length_ = XMVectorGetX(vecLength_);
+
+    if (length_ != 0)
+    {
+        //プレイヤーが入力キーに応じて、その向きに変える(左向きには出来ない)
+        vecFront_ = {0,0,1,0};
+        vecMove_ = XMVector3Normalize(vecMove_);
+
+        vecDot_ = XMVector3Dot(vecFront_, vecMove_);
+        dot_ = XMVectorGetX(vecDot_);
+        angle_ = acos(dot_);
+
+        //右向きにしか向けなかったものを左向きにする事ができる
+        vecCross_ = XMVector3Cross(vecFront_, vecMove_);
+        if (XMVectorGetY(vecCross_) < 0)
+        {
+            angle_ *= -1;
+        }
+
+        transform_.rotate_.y = XMConvertToDegrees(angle_);
+    }
+
+    if (Input::IsKey(DIK_LSHIFT))
     {
         if (jumpFlg_ == false)
         {
-            velocity_.x *= 0.9f;    //X軸方向の慣性
-            velocity_.z *= 0.9f;    //Z軸方向の慣性
-        }
-        else
-        {
-            velocity_.x *= 0.97f;
-            velocity_.z *= 0.97f;
-        }
-        transform_.position_.x += velocity_.x;
-        transform_.position_.z += velocity_.z;
-        transform_.position_.y = powerY_;
-        vecMove_ = XMLoadFloat3(&velocity_);
-        vecMove_ = XMVector3Normalize(vecMove_);
-        vecMove_ *= 0.05f;
-        //XMStoreFloat3(&velocity_[i], vecMove_[i]);
-
-        //向き変更
-        vecLength_ = XMVector3Length(vecMove_);
-        length_ = XMVectorGetX(vecLength_);
-
-        if (length_ != 0)
-        {
-            //プレイヤーが入力キーに応じて、その向きに変える(左向きには出来ない)
-            vecFront_ = {0,0,1,0};
-            vecMove_ = XMVector3Normalize(vecMove_);
-
-            vecDot_ = XMVector3Dot(vecFront_, vecMove_);
-            dot_ = XMVectorGetX(vecDot_);
-            angle_ = acos(dot_);
-
-            //右向きにしか向けなかったものを左向きにする事ができる
-            vecCross_ = XMVector3Cross(vecFront_, vecMove_);
-            if (XMVectorGetY(vecCross_) < 0)
-            {
-                angle_ *= -1;
-            }
-
-            transform_.rotate_.y = XMConvertToDegrees(angle_);
-        }
-
-        if (Input::IsKey(DIK_LSHIFT))
-        {
-            if (jumpFlg_ == false)
-            {
-                velocity_.x = velocity_.x * 1.1;
-                velocity_.z = velocity_.z * 1.1;
-                GameSta_ = RUN;
-            }
+            velocity_.x = velocity_.x * 1.1;
+            velocity_.z = velocity_.z * 1.1;
+            GameSta_ = RUN;
         }
     }
+
     if (Input::IsKey(DIK_W))
     {
-        velocity_.z += 0.005f;
+        //velocity_.z += 0.005f;
+        vecPos += vecMove;
+        XMStoreFloat3(&transform_.position_, vecPos);
         GameSta_ = WALK;
     }
     if (Input::IsKey(DIK_S))
     {
-        velocity_.z -= 0.005f;
+        //velocity_.z -= 0.005f;
         GameSta_ = WALK;
     }
 
     if (Input::IsKey(DIK_D))
     {
-        velocity_.x += 0.005f;
+        //velocity_.x += 0.005f;
         GameSta_ = WALK;
     }
     if (Input::IsKey(DIK_A))
     {
-        velocity_.x -= 0.005f;
+        //velocity_.x -= 0.005f;
         GameSta_ = WALK;
     }
 

@@ -45,31 +45,12 @@ void PlayScene::Update()
 		mRotY[i] = XMMatrixRotationY(XMConvertToRadians(pPlayer_[i]->GetRotate().y));
 		XMMATRIX mRotX[2];
 		mRotX[i] = XMMatrixRotationX(XMConvertToRadians(pPlayer_[i]->GetRotate().x));
-
 		XMVECTOR vPos[2];
 		vPos[i] = pPlayer_[i]->GetVecPos();
-
-		XMVECTOR frontMove[2];
-		frontMove[i] = XMVectorSet(0, 0, 0.1f, 0);
-		frontMove[i] = XMVector3TransformCoord(frontMove[i], mRotY[i]);
-		XMVECTOR rightMove[2];
-		rightMove[i] = XMVectorSet(0.1f, 0, 0, 0);
-		rightMove[i] = XMVector3TransformCoord(rightMove[i], mRotY[i]);
-		XMVECTOR vMove1[2];
-		vMove1[i] = { 0.0f, 0.0f, 0.1f, 0.0f };
-		vMove1[i] = XMVector3TransformCoord(vMove1[i], mRotY[i]);
-		XMVECTOR vMove2[2];
-		vMove2[i] = { 0.1f, 0.0f, 0.0f, 0.0f };          //â°Ç…0.1m
-		vMove2[i] = XMVector3TransformCoord(vMove2[i], mRotY[i]);
-		XMVECTOR vMove3[2];
-		vMove3[i] = { 0.0f, 0.1f, 0.0f, 0.0f };          //ècÇ…0.1m
-		vMove3[i] = XMVector3TransformCoord(vMove3[i], mRotY[i]);
 		XMFLOAT3 mouse;
-
-		//Input::SetMousePosition(800,600);
 		mouse = Input::GetMouseMove();
-		const float sensitivity = 400;
 
+		const float sensitivity = 400;
 		static float RotationX[2] = {};
 		static float RotationY[2] = {};
 		static float vecLength[2] = {};

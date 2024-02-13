@@ -1,8 +1,7 @@
 #pragma once
+//インクルード
 #include <d3d11.h>
 #include <DirectXMath.h>
-
-
 //リンカ
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "d3dcompiler.lib")

@@ -37,6 +37,7 @@ public:
 	float powerY_;
 
 	Transform transPlayer_;
+	Camera camera_;
 	SphereCollider* pCollision_;
 	//▼ゲームの演出で使うメンバ関数
 	int TimeCounter_;
