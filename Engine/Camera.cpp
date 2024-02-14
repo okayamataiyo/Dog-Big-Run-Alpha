@@ -29,14 +29,16 @@ void Camera::Initialize()
 }
 
 //更新
+void Camera::Update(int _type)
+{
+	//ビュー行列の作成
+	viewMatrix_ = XMMatrixLookAtLH(position_[_type], target_[_type], XMVectorSet(0, 1, 0, 0));
+	IntConstantBuffer(_type);
+
+}
+
 void Camera::Update()
 {
-	for (int i = 0u; i <= 1; i++)
-	{
-		//ビュー行列の作成
-		viewMatrix_ = XMMatrixLookAtLH(position_[i], target_[i], XMVectorSet(0, 1, 0, 0));
-		IntConstantBuffer(i);
-	}
 }
 
 void Camera::Draw()

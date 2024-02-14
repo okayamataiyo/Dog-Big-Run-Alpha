@@ -53,10 +53,16 @@ public:
 	float angle_;
 	//▼ジャンプで使うメンバ変数
 	bool  jumpFlg_;
-	int hStageModel_;
+	int hStageModel_[2];
 	float rayGravityDist_;		//地面とプレイヤーの差分
 	float moveYTemp_;	//y座標をPrevに保存する
 	float moveYPrev_;	//y座標を保存しておく
+
+	//▼すり抜け床で使うメンバ変数
+	int isFloor_;		//すり抜け床にレイを飛ばしているかどうか
+	int prevIsFloor_;	//1フレーム前にisFloorフラグがどうなっていたか
+	float rayUpDist_;	//上の物体とプレイヤーの差分
+	float rayDownDist_;	//下のすり抜けたい物体とプレイヤーの差分
 
 	//▼慣性で使うメンバ変数
 	float mv;			//加速度

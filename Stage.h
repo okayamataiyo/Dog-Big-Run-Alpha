@@ -7,7 +7,7 @@ using std::string;
 //Stageを管理するクラス
 class Stage : public GameObject
 {
-    int hModel_;    //モデル番号
+    int hModel_[2];    //モデル番号
 public:
     //コンストラクタ
     //引数:parent 親オブジェクト(SceneManager)
@@ -33,5 +33,5 @@ public:
     //戻り値:通れない=true/通れない=false
     //bool IsWall(int x, int z);
 
-    int GetModelHandle() { return hModel_; }
+    int GetModelHandle(int _type) { return hModel_[_type]; }
 };

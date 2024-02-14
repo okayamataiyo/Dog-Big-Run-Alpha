@@ -6,7 +6,7 @@
 #include "Stage.h"
 
 Player::Player(GameObject* _pParent)
-    :GameObject(_pParent, "Player"),TimeCounter_(0), hModel_{ -1 }, camType_(0), playerNum_(0), jumpFlg_(false), State_(READY)
+    :GameObject(_pParent, "Player"),TimeCounter_(0), hModel_{ -1 }, camType_(0), playerNum_(0), jumpFlg_(false), State_(READY),isFloor_(0)
 {
 }
 
@@ -25,9 +25,9 @@ void Player::Initialize()
     {
         pCollision_ = new SphereCollider(XMFLOAT3(0.0, 0.0, 0.0), 1);
         AddCollider(pCollision_);
+        Stage* pStage = (Stage*)FindObject("Stage");    //ステージオブジェクト
+        hStageModel_[i] = pStage->GetModelHandle(i);   //モデル番号を取得
     }
-    Stage* pStage = (Stage*)FindObject("Stage");    //ステージオブジェクト
-    hStageModel_ = pStage->GetModelHandle();   //モデル番号を取得
 
 }
 
@@ -64,13 +64,9 @@ void Player::UpdateReady()
 
 void Player::UpdatePlay()
 {
-    PlayerMove();
     PlayerGravity();
+    PlayerMove();
     PlayerWall();
-    if (Input::IsKey(DIK_SPACE) && jumpFlg_ == false)
-    {
-        PlayerJump();
-    }
 }
 
 void Player::UpdateGameOver()
@@ -138,7 +134,7 @@ void Player::PlayerMove()
     if (length_ != 0)
     {
         //プレイヤーが入力キーに応じて、その向きに変える(左向きには出来ない)
-        vecFront_ = {0,0,1,0};
+        vecFront_ = { 0,0,1,0 };
         vecMove_ = XMVector3Normalize(vecMove_);
 
         vecDot_ = XMVector3Dot(vecFront_, vecMove_);
@@ -165,37 +161,45 @@ void Player::PlayerMove()
         }
     }
 
-    if (Input::IsKey(DIK_W))
+    if (this->GetObjectName() == "PlayerSeconds")
     {
-        //velocity_.z += 0.005f;
-        vecPos += vecMove;
-        XMStoreFloat3(&transform_.position_, vecPos);
-        GameSta_ = WALK;
-    }
-    if (Input::IsKey(DIK_S))
-    {
-        //velocity_.z -= 0.005f;
-        GameSta_ = WALK;
-    }
+        if (Input::IsKey(DIK_W))
+        {
+            //velocity_.z += 0.005f;
+            vecPos += vecMove;
+            XMStoreFloat3(&transform_.position_, vecPos);
+            GameSta_ = WALK;
+        }
+        if (Input::IsKey(DIK_S))
+        {
+            velocity_.z -= 0.005f;
+            GameSta_ = WALK;
+        }
 
-    if (Input::IsKey(DIK_D))
-    {
-        //velocity_.x += 0.005f;
-        GameSta_ = WALK;
+        if (Input::IsKey(DIK_D))
+        {
+            //velocity_.x += 0.005f;
+            GameSta_ = WALK;
+        }
+        if (Input::IsKey(DIK_A))
+        {
+            //velocity_.x -= 0.005f;
+            GameSta_ = WALK;
+        }
+        if (Input::IsKey(DIK_SPACE) && jumpFlg_ == false)
+        {
+            PlayerJump();
+        }
     }
-    if (Input::IsKey(DIK_A))
+    if (this->GetObjectName() == "PlayerFirst")
     {
-        //velocity_.x -= 0.005f;
-        GameSta_ = WALK;
+        transform_.position_.x += Input::GetPadStickL().x / 2;
+        transform_.position_.z += Input::GetPadStickL().y / 2;
+        if (Input::IsPadButtonDown(XINPUT_GAMEPAD_A) && jumpFlg_ == false)
+        {
+            PlayerJump();
+        }
     }
-
-    if (Input::IsKey(DIK_C))
-    {
-        playerNum_ += 1;
-        playerNum_ = playerNum_ % 2;
-        GameSta_ = WALK;
-    }
-
 }
 
 void Player::PlayerJump()
@@ -203,7 +207,7 @@ void Player::PlayerJump()
     //ジャンプの処理
     jumpFlg_ = true;
     moveYPrev_ = powerY_;
-    powerY_ = powerY_ + 0.2;
+    powerY_ = powerY_ + 0.3;
 }
 
 void Player::PlayerWall()
@@ -213,30 +217,65 @@ void Player::PlayerWall()
 
 void Player::PlayerGravity()
 {
+    RayCastData upData;
+    RayCastData floorData;
     RayCastData downData;
     RayCastData frontData;
-
+    RayCastData neotenyData;
     if (jumpFlg_ == true)
     {
         moveYTemp_ = powerY_;
         powerY_ += (powerY_ - moveYPrev_) - 0.007;
         moveYPrev_ = moveYTemp_;
+        if (powerY_ <= -rayDownDist_)
+        {
+            jumpFlg_ = false;
+        }
         if (powerY_ <= -rayGravityDist_)
         {
             jumpFlg_ = false;
         }
     }
 
+    //▼上の法線(すり抜け床のため)
+    upData.start = transform_.position_;       //レイの発射位置
+    upData.dir = XMFLOAT3(0, 1, 0);            //レイの方向
+    Model::RayCast(hStageModel_[1], &upData);  //レイを発射
+    rayUpDist_ = upData.dist;
+
+    //▼下の法線(すり抜け床)
+    floorData.start = transform_.position_;    //レイの発射位置
+    floorData.start.y = 0;
+    floorData.dir = XMFLOAT3(0, -1, 0);        //レイの方向
+    if (upData.dist == 99999)
+    {
+        Model::RayCast(hStageModel_[1], &floorData);  //レイを発射
+    }
+    rayDownDist_ = floorData.dist;
+
+    if (floorData.hit == true)
+    {
+        if (jumpFlg_ == false)
+        {
+            transform_.position_.y = -floorData.dist + 0.6;
+            powerY_ = -floorData.dist + 0.6;
+            isFloor_ = 1;
+        }
+    }
+    else
+    {
+        isFloor_ = 0;
+    }
+
     //▼下の法線(重力再現)
     downData.start = transform_.position_;  //レイの発射位置
     downData.start.y = 0;
     downData.dir = XMFLOAT3(0, -1, 0);       //レイの方向
-    Model::RayCast(hStageModel_, &downData);  //レイを発射
+    Model::RayCast(hStageModel_[0], &downData);  //レイを発射
     rayGravityDist_ = downData.dist;
-
     if (downData.hit == true)
     {
-        if (jumpFlg_ == false)
+        if (jumpFlg_ == false && isFloor_ == 0)
         {
             transform_.position_.y = -downData.dist + 0.6;
             powerY_ = -downData.dist + 0.6;
@@ -245,8 +284,8 @@ void Player::PlayerGravity()
 
     //▼前の法線(壁の当たり判定)
     frontData.start = transform_.position_;  //レイの発射位置
-    frontData.start.z = 0;
     frontData.dir = XMFLOAT3(0, 0, 1);       //レイの方向
-    Model::RayCast(hStageModel_, &frontData);  //レイを発射
+    Model::RayCast(hStageModel_[0], &frontData);  //レイを発射
     rayWallDist_ = frontData.dist;
+    prevIsFloor_ = isFloor_;
 }

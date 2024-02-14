@@ -19,6 +19,8 @@ public:
 	void Initialize() override;
 
 	//更新（ビュー行列作成）
+	void Update(int _type);
+
 	void Update() override;
 
 	void Draw() override;
