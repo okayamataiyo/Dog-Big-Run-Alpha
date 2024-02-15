@@ -70,15 +70,9 @@ void PlayScene::Update()
 		camVec_[i].x += RotationY[i] / sensitivity;
 		//camVec_[i].z += vecLength[i]  + 10;
 
-		static float EasingX[2] = {};
-		static float EasingY[2] = {};
-
-		float sigmaRotY = camVec_[i].y;// + EasingY[i]; +pPlayer_[i]->GetRotate().y;
+		float sigmaRotY = camVec_[i].y;// +pPlayer_[i]->GetRotate().y;
 		float sigmaRotX = -camVec_[i].x;// + EasingX[i]; +pPlayer_[i]->GetRotate().x;
 		//vecLength[i] = camVec_[i].z;
-
-		//EasingY[j] = (pPlayer_[j]->GetRotate().y * 0.1) + (EasingY[j] * 0.9);
-		//EasingX[j] = (pPlayer_[j]->GetRotate().x * 0.1) + (EasingX[j] * 0.9);
 
 		if (sigmaRotX > 0*(3.14/180))
 		{

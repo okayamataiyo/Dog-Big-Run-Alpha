@@ -272,13 +272,19 @@ void Player::PlayerGravity()
     downData.dir = XMFLOAT3(0, -1, 0);       //レイの方向
     Model::RayCast(hStageModel_[0], &downData);  //レイを発射
     rayGravityDist_ = downData.dist;
-    if (-downData.dist <= transform_.position_.y + 0.1)
+    if (downData.dist - transform_.position_.y >= 0.7)
     {
         if (jumpFlg_ == false && isFloor_ == 0)
         {
             transform_.position_.y = -downData.dist + 0.6;
             powerY_ = -downData.dist + 0.6;
         }
+    }
+    else if(isFloor_ == 0)
+    {
+        moveYTemp_ = powerY_;
+        powerY_ += (powerY_ - moveYPrev_) - 0.007;
+        moveYPrev_ = moveYTemp_;
     }
 
     //▼前の法線(壁の当たり判定)
