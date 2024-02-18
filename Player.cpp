@@ -21,7 +21,7 @@ void Player::Initialize()
     hModel_ = Model::Load("Assets/Dog.fbx");
     assert(hModel_ >= 0);
     transform_.scale_ = { 0.5,0.5,0.5 };
-    powerY_ = transform_.position_.y;
+//    powerY_ = transform_.position_.y;
     for (int i = 0u; i <= 1; i++)
     {
         pCollision_ = new SphereCollider(XMFLOAT3(0.0, 0.0, 0.0), 1);
@@ -69,7 +69,7 @@ void Player::UpdatePlay()
     PlayerMove();
     ImGui::Text("moveYPrev_%f", moveYPrev_);
     ImGui::Text("moveYTemp_%f", moveYTemp_);
-    ImGui::Text("powerY_%f", powerY_);
+//    ImGui::Text("powerY_%f", powerY_);
     ImGui::Text("jumpFlg_%s", jumpFlg_ ? "true":"false");
     
     PlayerWall();
@@ -104,65 +104,65 @@ void Player::OnCollision(GameObject* _pTarget)
 
 void Player::PlayerMove()
 {
+    if (jumpFlg_ == false)
+    {
+//        velocity_.x *= 0.9f;    //X軸方向の慣性
+//        velocity_.z *= 0.9f;    //Z軸方向の慣性
+    }
+    else
+    {
+//        velocity_.x *= 0.97f;
+//        velocity_.z *= 0.97f;
+    }
+
+
     XMMATRIX mRotY = XMMatrixRotationY(XMConvertToRadians(transform_.rotate_.y));
     XMMATRIX mRotX = XMMatrixRotationX(XMConvertToRadians(transform_.rotate_.x));
 
     XMVECTOR vecPos = XMLoadFloat3(&transform_.position_);
-    XMVECTOR vecMove = camera_.GetPosition(0);
-    vecMove = XMVector3TransformCoord(vecMove, mRotY);
+    //XMVECTOR vecMove = camera_.GetPosition(0);
+    //vecMove = XMVector3TransformCoord(vecMove, mRotY);
 
-    if (jumpFlg_ == false)
-    {
-        velocity_.x *= 0.9f;    //X軸方向の慣性
-        velocity_.z *= 0.9f;    //Z軸方向の慣性
-    }
-    else
-    {
-        velocity_.x *= 0.97f;
-        velocity_.z *= 0.97f;
-    }
-
-    transform_.position_.x += velocity_.x;
-    transform_.position_.z += velocity_.z;
-    transform_.position_.y = powerY_;
+    //transform_.position_.x += velocity_.x;
+    //transform_.position_.z += velocity_.z;
+//    transform_.position_.y = powerY_;
     XMVECTOR vecCam = -(camera_.GetPosition(0) - camera_.GetTarget(0));
     vecCam = XMVector3Normalize(vecCam);
-    vecMove_ = XMLoadFloat3(&velocity_);
-    vecMove_ = XMVector3Normalize(vecMove_);
+    //vecMove_ = XMLoadFloat3(&velocity_);
+    //vecMove_ = XMVector3Normalize(vecMove_);
     vecMove_ = vecCam;
     vecMove_ *= 0.005f;
-    //XMStoreFloat3(&velocity_[i], vecMove_[i]);
 
     //向き変更
     vecLength_ = XMVector3Length(vecMove_);
-    length_ = XMVectorGetX(vecLength_);
+    //length_ = XMVectorGetX(vecLength_);
 
-    if (length_ != 0)
-    {
-        //プレイヤーが入力キーに応じて、その向きに変える(左向きには出来ない)
-        vecFront_ = { 0,0,1,0 };
-        vecMove_ = XMVector3Normalize(vecMove_);
+    //if (length_ != 0)
+    //{
+    //    //プレイヤーが入力キーに応じて、その向きに変える(左向きには出来ない)
+    //    vecFront_ = { 0,0,1,0 };
+    //    vecMove_ = XMVector3Normalize(vecMove_);
 
-        vecDot_ = XMVector3Dot(vecFront_, vecMove_);
-        dot_ = XMVectorGetX(vecDot_);
-        angle_ = acos(dot_);
+    //    vecDot_ = XMVector3Dot(vecFront_, vecMove_);
+    //    dot_ = XMVectorGetX(vecDot_);
+    //    angle_ = acos(dot_);
 
-        //右向きにしか向けなかったものを左向きにする事ができる
-        vecCross_ = XMVector3Cross(vecFront_, vecMove_);
-        if (XMVectorGetY(vecCross_) < 0)
-        {
-            angle_ *= -1;
-        }
+    //    //右向きにしか向けなかったものを左向きにする事ができる
+    //    vecCross_ = XMVector3Cross(vecFront_, vecMove_);
+    //    if (XMVectorGetY(vecCross_) < 0)
+    //    {
+    //        angle_ *= -1;
+    //    }
 
-        transform_.rotate_.y = XMConvertToDegrees(angle_);
-    }
+    //    transform_.rotate_.y = XMConvertToDegrees(angle_);
+    //}
 
     if (Input::IsKey(DIK_LSHIFT))
     {
         if (jumpFlg_ == false)
         {
-            velocity_.x = velocity_.x * 1.1;
-            velocity_.z = velocity_.z * 1.1;
+//            velocity_.x = velocity_.x * 1.1;
+//            velocity_.z = velocity_.z * 1.1;
             GameSta_ = RUN;
         }
     }
@@ -186,14 +186,14 @@ void Player::PlayerMove()
         {
             //XMMatrixRotationY = Y座標を中心に回転させる行列を作る関数
             //XMConvertToRadians = degree角をradian角に(ただ)変換する
-            XMMATRIX mRotationY = XMMatrixRotationY(XMConvertToRadians(transform_.rotate_.y + 90));
+            XMMATRIX mRotationY = XMMatrixRotationY(XMConvertToRadians(90));
             XMVECTOR vectorMove = XMLoadFloat3(&transform_.position_) + vecMove_;
             vectorMove = XMVector3Transform(vectorMove, mRotationY);
             XMStoreFloat3(&transform_.position_,vectorMove);
         }
         if (Input::IsKey(DIK_A))
         {
-            velocity_.x -= 0.005f;
+//            velocity_.x -= 0.005f;
         }
         if (Input::IsKey(DIK_SPACE) && jumpFlg_ == false)
         {
@@ -215,8 +215,8 @@ void Player::PlayerJump()
 {
     //ジャンプの処理
     jumpFlg_ = true;
-    moveYPrev_ = powerY_;
-    powerY_ = powerY_ + 0.3;
+    moveYPrev_ = transform_.position_.y;
+    transform_.position_.y = transform_.position_.y + 0.3;
 }
 
 void Player::PlayerWall()
@@ -232,15 +232,15 @@ void Player::PlayerGravity()
     RayCastData frontData;
     if (jumpFlg_ == true)
     {
-        //放物線に下がる力
-        moveYTemp_ = powerY_;
-        powerY_ += (powerY_ - moveYPrev_) - 0.007;
+        //放物線に下がる処理
+        moveYTemp_ = transform_.position_.y;
+        transform_.position_.y += (transform_.position_.y - moveYPrev_) - 0.007;
         moveYPrev_ = moveYTemp_;
-        if (powerY_ <= -rayDownDist_ + 0.6)
+        if (transform_.position_.y <= -rayDownDist_ + 0.6)
         {
             jumpFlg_ = false;
         }
-        if (powerY_ <= -rayGravityDist_ + 0.6)
+        if (transform_.position_.y <= -rayGravityDist_ + 0.6)
         {
             jumpFlg_ = false;
         }
@@ -266,7 +266,7 @@ void Player::PlayerGravity()
     {
         if (jumpFlg_ == false)
         {
-            powerY_ = -floorData.dist + 0.6;
+            transform_.position_.y = -floorData.dist + 0.6;
             isFloor_ = 1;
         }
     }
@@ -290,7 +290,7 @@ void Player::PlayerGravity()
         if (jumpFlg_ == false && isFloor_ == 0)
         {
             //地面に張り付き
-            powerY_ = -downData.dist + 0.6;
+            transform_.position_.y = -downData.dist + 0.6;
         }
     }
     else if(isFloor_ == 0)

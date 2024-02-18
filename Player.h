@@ -34,7 +34,7 @@ public:
 	int playerNum_;
 	int hModel_;	//ƒ‚ƒfƒ‹”Ô†
 	int camType_;
-	float powerY_;
+//	float powerY_;
 
 	Transform transPlayer_;
 	Camera camera_;
