@@ -144,6 +144,12 @@
     <ClCompile Include="Engine\Direct3D.cpp" />
     <ClCompile Include="Engine\Fbx.cpp" />
     <ClCompile Include="Engine\GameObject.cpp" />
+    <ClCompile Include="Engine\ImGui\imgui.cpp" />
+    <ClCompile Include="Engine\ImGui\imgui_draw.cpp" />
+    <ClCompile Include="Engine\ImGui\imgui_impl_dx11.cpp" />
+    <ClCompile Include="Engine\ImGui\imgui_impl_win32.cpp" />
+    <ClCompile Include="Engine\ImGui\imgui_tables.cpp" />
+    <ClCompile Include="Engine\ImGui\imgui_widgets.cpp" />
     <ClCompile Include="Engine\Input.cpp" />
     <ClCompile Include="Engine\Model.cpp" />
     <ClCompile Include="Engine\Rootjob.cpp" />
@@ -171,6 +177,14 @@
     <ClInclude Include="Engine\Direct3D.h" />
     <ClInclude Include="Engine\Fbx.h" />
     <ClInclude Include="Engine\GameObject.h" />
+    <ClInclude Include="Engine\ImGui\imconfig.h" />
+    <ClInclude Include="Engine\ImGui\imgui.h" />
+    <ClInclude Include="Engine\ImGui\imgui_impl_dx11.h" />
+    <ClInclude Include="Engine\ImGui\imgui_impl_win32.h" />
+    <ClInclude Include="Engine\ImGui\imgui_internal.h" />
+    <ClInclude Include="Engine\ImGui\imstb_rectpack.h" />
+    <ClInclude Include="Engine\ImGui\imstb_textedit.h" />
+    <ClInclude Include="Engine\ImGui\imstb_truetype.h" />
     <ClInclude Include="Engine\Input.h" />
     <ClInclude Include="Engine\Model.h" />
     <ClInclude Include="Engine\Rootjob.h" />

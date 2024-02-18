@@ -4,6 +4,7 @@
 #include "Engine/Model.h"
 #include "Engine/Direct3D.h"
 #include "Stage.h"
+#include "Engine/ImGui/imgui.h"
 
 Player::Player(GameObject* _pParent)
     :GameObject(_pParent, "Player"),TimeCounter_(0), hModel_{ -1 }, camType_(0), playerNum_(0), jumpFlg_(false), State_(READY),isFloor_(0)
@@ -66,6 +67,11 @@ void Player::UpdatePlay()
 {
     PlayerGravity();
     PlayerMove();
+    ImGui::Text("moveYPrev_%f", moveYPrev_);
+    ImGui::Text("moveYTemp_%f", moveYTemp_);
+    ImGui::Text("powerY_%f", powerY_);
+    ImGui::Text("jumpFlg_%s", jumpFlg_ ? "true":"false");
+    
     PlayerWall();
 }
 
@@ -119,12 +125,12 @@ void Player::PlayerMove()
     transform_.position_.x += velocity_.x;
     transform_.position_.z += velocity_.z;
     transform_.position_.y = powerY_;
-    vecMove_ = XMLoadFloat3(&velocity_);
     XMVECTOR vecCam = -(camera_.GetPosition(0) - camera_.GetTarget(0));
     vecCam = XMVector3Normalize(vecCam);
+    vecMove_ = XMLoadFloat3(&velocity_);
     vecMove_ = XMVector3Normalize(vecMove_);
     vecMove_ = vecCam;
-    vecMove_ *= 0.05f;
+    vecMove_ *= 0.005f;
     //XMStoreFloat3(&velocity_[i], vecMove_[i]);
 
     //向き変更
@@ -165,30 +171,33 @@ void Player::PlayerMove()
     {
         if (Input::IsKey(DIK_W))
         {
-            velocity_.z += 0.005f;
-            //vecPos += vecMove;
-            //XMStoreFloat3(&transform_.position_, vecPos);
-            GameSta_ = WALK;
+            XMVECTOR vectorMove = vecMove_ + XMLoadFloat3(&transform_.position_);
+            
+            XMStoreFloat3(&transform_.position_, vectorMove);
         }
         if (Input::IsKey(DIK_S))
         {
-            velocity_.z -= 0.005f;
-            GameSta_ = WALK;
+            XMVECTOR vectorMove = XMLoadFloat3(&transform_.position_) - vecMove_;
+
+            XMStoreFloat3(&transform_.position_, vectorMove);
         }
 
         if (Input::IsKey(DIK_D))
         {
-            velocity_.x += 0.005f;
-            GameSta_ = WALK;
+            //XMMatrixRotationY = Y座標を中心に回転させる行列を作る関数
+            //XMConvertToRadians = degree角をradian角に(ただ)変換する
+            XMMATRIX mRotationY = XMMatrixRotationY(XMConvertToRadians(transform_.rotate_.y + 90));
+            XMVECTOR vectorMove = XMLoadFloat3(&transform_.position_) + vecMove_;
+            vectorMove = XMVector3Transform(vectorMove, mRotationY);
+            XMStoreFloat3(&transform_.position_,vectorMove);
         }
         if (Input::IsKey(DIK_A))
         {
             velocity_.x -= 0.005f;
-            GameSta_ = WALK;
         }
         if (Input::IsKey(DIK_SPACE) && jumpFlg_ == false)
         {
-            PlayerJump();
+             PlayerJump();
         }
     }
     if (this->GetObjectName() == "PlayerFirst")
@@ -223,14 +232,15 @@ void Player::PlayerGravity()
     RayCastData frontData;
     if (jumpFlg_ == true)
     {
+        //放物線に下がる力
         moveYTemp_ = powerY_;
         powerY_ += (powerY_ - moveYPrev_) - 0.007;
         moveYPrev_ = moveYTemp_;
-        if (powerY_ <= -rayDownDist_)
+        if (powerY_ <= -rayDownDist_ + 0.6)
         {
             jumpFlg_ = false;
         }
-        if (powerY_ <= -rayGravityDist_)
+        if (powerY_ <= -rayGravityDist_ + 0.6)
         {
             jumpFlg_ = false;
         }
@@ -256,7 +266,6 @@ void Player::PlayerGravity()
     {
         if (jumpFlg_ == false)
         {
-            transform_.position_.y = -floorData.dist + 0.6;
             powerY_ = -floorData.dist + 0.6;
             isFloor_ = 1;
         }
@@ -272,24 +281,25 @@ void Player::PlayerGravity()
     downData.dir = XMFLOAT3(0, -1, 0);       //レイの方向
     Model::RayCast(hStageModel_[0], &downData);  //レイを発射
     rayGravityDist_ = downData.dist;
-    if (downData.dist - transform_.position_.y >= 0.7)
+    float playerFling = 0.7;
+    //プレイヤーが浮いていないとき
+    ImGui::Text("dist=%f",downData.dist);
+    if (downData.dist + transform_.position_.y <= playerFling)
     {
+        //ジャンプしてない＆すり抜け床の上にいない
         if (jumpFlg_ == false && isFloor_ == 0)
         {
-            transform_.position_.y = -downData.dist + 0.6;
+            //地面に張り付き
             powerY_ = -downData.dist + 0.6;
         }
     }
     else if(isFloor_ == 0)
     {
-        moveYTemp_ = powerY_;
-        powerY_ += (powerY_ - moveYPrev_) - 0.007;
-        moveYPrev_ = moveYTemp_;
+        jumpFlg_ = true;
     }
-
     //▼前の法線(壁の当たり判定)
-    frontData.start = transform_.position_;  //レイの発射位置
-    frontData.dir = XMFLOAT3(0, 0, 1);       //レイの方向
+    frontData.start = transform_.position_;       //レイの発射位置
+    frontData.dir = XMFLOAT3(0, 0, 1);            //レイの方向
     Model::RayCast(hStageModel_[0], &frontData);  //レイを発射
     rayWallDist_ = frontData.dist;
     prevIsFloor_ = isFloor_;

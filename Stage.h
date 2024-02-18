@@ -8,6 +8,8 @@ using std::string;
 class Stage : public GameObject
 {
     int hModel_[2];    //モデル番号
+
+    Transform FlyFloor;
 public:
     //コンストラクタ
     //引数:parent 親オブジェクト(SceneManager)

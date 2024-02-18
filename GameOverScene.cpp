@@ -23,7 +23,7 @@ void GameOverScene::Update()
 	camPos_.z -= 15;
 	pCamera_->SetPosition(camPos_, 0);
 	pCamera_->SetTarget(pGameOverText_->GetPosition(), 0);
-	if (Input::IsKeyDown(DIK_S))
+	if (Input::IsKeyDown(DIK_B))
 	{
 		Direct3D::SetIsChangeView(2);
 		SceneManager* pSceneManager = (SceneManager*)FindObject("SceneManager");

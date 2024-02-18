@@ -1,6 +1,10 @@
 //インクルード
 #include <Windows.h>
 #include <stdlib.h>
+#include "Engine/ImGui/imgui.h"
+#include "Engine/ImGui/imgui_impl_dx11.h"
+#include "Engine/ImGui/imgui_impl_win32.h"
+
 #include "Engine/Direct3D.h"
 #include "Engine/Camera.h"
 #include "Engine/Input.h"
@@ -83,6 +87,14 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
 		return hr;
 	}
 
+	ImGui::CreateContext();
+	ImGuiIO& io = ImGui::GetIO();
+	ImGuiStyle& style = ImGui::GetStyle();
+	style.ScaleAllSizes(3.0f); // すべてのサイズをスケーリング
+	ImGui::StyleColorsDark();
+	ImGui_ImplWin32_Init(hWnd);
+	ImGui_ImplDX11_Init(Direct3D::pDevice_, Direct3D::pContext_);
+
 	//カメラの初期化
 	pCamera->Initialize();
 
@@ -140,11 +152,15 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
 			//▼ゲームの処理
 			//入力の処理
 			Input::Update();
+			ImGui_ImplDX11_NewFrame();
+			ImGui_ImplWin32_NewFrame();
+			ImGui::NewFrame();
 			pRootjob->UpdateSub();
 
 			//▼描画
 
 			Direct3D::Update();
+
 			Direct3D::BeginDraw();
 			constexpr uint8_t SIZE_VP = 2;
 			for (auto i = 0u; i < SIZE_VP; i++) {
@@ -154,6 +170,8 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
 				pRootjob->DrawSub();	//ルートジョブから、すべてのオブジェクトのドローを呼ぶ
 
 			}
+			ImGui::Render();
+			ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 			Direct3D::EndDraw();
 
 
@@ -170,10 +188,15 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
 	SAFE_DELETE(pRootjob);
 
 	Input::Release();
+	ImGui_ImplDX11_Shutdown();
+	ImGui::DestroyContext();
 	Direct3D::Release();
 
 	return S_OK;
 }
+
+extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND _hWnd, UINT _msg, WPARAM _wParam, LPARAM _lParam);
+
 
 //ウィンドウプロシージャ（何かあった時によばれる関数）
 LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
@@ -188,5 +211,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		PostQuitMessage(0);  //プログラム終了
 		return 0;
 	}
+	if (ImGui_ImplWin32_WndProcHandler(hWnd, msg, wParam, lParam))
+		return true;
 	return DefWindowProc(hWnd, msg, wParam, lParam);
 }

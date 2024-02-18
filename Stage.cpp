@@ -25,6 +25,7 @@ void Stage::Initialize()
     transform_.position_.y = -5;
     transform_.rotate_.y = 90;
     transform_.scale_ = { 4,1,4 };
+    FlyFloor.position_ = { 3,0,3 };
 }
 
 void Stage::Update()
@@ -36,7 +37,8 @@ void Stage::Draw()
 {
     for (int i = 0u; i <= 1; i++)
     {
-        Model::SetTransform(hModel_[i], transform_);
+        Model::SetTransform(hModel_[0], transform_);
+        Model::SetTransform(hModel_[1], FlyFloor);
         //Å‰‚É3D‚Å•`‰æŒãA˜g‚Ã‚¯‚à•`‰æ
         for (int j = 3; j >= 1; j -= 2)
         {
