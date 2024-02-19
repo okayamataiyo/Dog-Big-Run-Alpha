@@ -6,18 +6,25 @@ struct ModelData {
 	Fbx* pfbx_;
 	//トランスフォーム
 	Transform transform_;
-	std::string filename_;	//ファイル名
+	string filename_;	//ファイル名
 };
 	//モデルのポインタをぶち込んでおくベクタ
-	std::vector<ModelData* >modelList;
+	vector<ModelData* >modelList;
 
 
-int Model::Load(std::string _fileName)
+int Model::Load(string _fileName)
 {
 	ModelData* pData;
 	pData = new ModelData;
-	pData->filename_ = _fileName;
-	pData->pfbx_ = nullptr;
+	bool isExist = false;
+	for (int i = 0; i < modelList.size(); i++)
+	{
+		if (modelList[i] != nullptr && modelList[i]->filename_ == _fileName)
+		{
+			pData->pFbx = modelList[i]->pFbx;
+			isExist = true;
+		}
+	}
 
 	//ファイルネームが同じだったら、読まん
 	for (auto& e : modelList) {
@@ -48,8 +55,13 @@ void Model::SetTransform(int _hModel, Transform _transform)
 void Model::Draw(int _hModel)
 {
 	//モデル番号は、modelListのインデックス
+	if (_hModel < 0 || _hModel >= modelList.size() || modelList[_hModel] == nullptr)
+	{
+		return;
+	}
+	modelList[_hModel]->nowFlame += modelList[_hModel]->
+
 	modelList[_hModel]->pfbx_->Draw(modelList[_hModel]->transform_);
-//	Transform& trf = modelList
 }
 
 void Model::Release()

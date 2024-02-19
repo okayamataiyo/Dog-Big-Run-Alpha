@@ -9,9 +9,11 @@
 
 using namespace DirectX;
 
+class Camera;
 class Fbx;
 struct RayCastData;
 
+extern Camera* pCamera;
 /// <summary>
 /// FBXの1つのパーツを扱うクラス
 /// </summary>

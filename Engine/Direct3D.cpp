@@ -12,8 +12,11 @@ namespace Direct3D
 	IDXGISwapChain* pSwapChain_				   = nullptr;	//スワップチェイン
 	ID3D11RenderTargetView* pRenderTargetView_ = nullptr;	//レンダーターゲットビュー
 
-	ID3D11Texture2D* pDepthStencil;							//深度ステンシル
-	ID3D11DepthStencilView* pDepthStencilView;				//深度ステンシルビュー
+	ID3D11Texture2D* pDepthStencil_;						//深度ステンシル
+	ID3D11DepthStencilView* pDepthStencilView_;				//深度ステンシルビュー
+	ID3D11DepthStencilState* pDepthStencilState_[BLEND_MAX];
+
+	ID3D11BlendState* pBlendState_[BLEND_MAX];				//ブレンドステート
 
 	ID3D11VertexShader* pVertexShader_		   = nullptr;	//頂点シェーダー
 	ID3D11PixelShader* pPixelShader_		   = nullptr;	//ピクセルシェーダー
@@ -129,12 +132,37 @@ HRESULT Direct3D::Initialize(int winW, int winH, HWND hWnd)
 	descDepth.BindFlags = D3D11_BIND_DEPTH_STENCIL;
 	descDepth.CPUAccessFlags = 0;
 	descDepth.MiscFlags = 0;
-	pDevice_->CreateTexture2D(&descDepth, NULL, &pDepthStencil);
-	pDevice_->CreateDepthStencilView(pDepthStencil, NULL, &pDepthStencilView);
+	pDevice_->CreateTexture2D(&descDepth, NULL, &pDepthStencil_);
+	pDevice_->CreateDepthStencilView(pDepthStencil_, NULL, &pDepthStencilView_);
+
+	//ブレンドステート
+	//通常
+	D3D11_BLEND_DESC BlendDesc;
+	ZeroMemory(&BlendDesc, sizeof(BlendDesc));
+	BlendDesc.AlphaToCoverageEnable = FALSE;
+	BlendDesc.IndependentBlendEnable = FALSE;
+	BlendDesc.RenderTarget[0].BlendEnable = TRUE;
+
+	BlendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
+	BlendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+
+	BlendDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+	BlendDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+	BlendDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+	BlendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+	BlendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+	pDevice_->CreateBlendState(&BlendDesc, &pBlendState_[BLEND_DEFAULT]);
+	float blendFactor[4] = { D3D11_BLEND_ZERO, D3D11_BLEND_ZERO, D3D11_BLEND_ZERO, D3D11_BLEND_ZERO };
+	pContext_->OMSetBlendState(pBlendState_[BLEND_DEFAULT], blendFactor, 0xffffffff);
+
+	//加算合成（重なるほど光って見える効果）
+	BlendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
+	BlendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_ONE;
+	pDevice_->CreateBlendState(&BlendDesc, &pBlendState_[BLEND_ADD]);
 
 	//データを画面に描画するための一通りの設定（パイプライン）
 	pContext_->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);		// データの入力種類を指定
-	pContext_->OMSetRenderTargets(1, &pRenderTargetView_, pDepthStencilView);    // 描画先を
+	pContext_->OMSetRenderTargets(1, &pRenderTargetView_, pDepthStencilView_);    // 描画先を
 
 	isDrawCollision_ = GetPrivateProfileInt("DEBUG", "ViewCollider", 0, ".\\Assets/setup.ini") != 0;
 	//シェーダー準備
@@ -543,6 +571,15 @@ void Direct3D::SetShader(SHADER_TYPE type)
 	pContext_->RSSetState(shaderBundle[type].pRasterizerState_);		//ラスタライザー
 }
 
+void Direct3D::SetBlendMode(BLEND_MODE _blendMode)
+{
+	float blendFactor[4] = { D3D11_BLEND_ZERO, D3D11_BLEND_ZERO, D3D11_BLEND_ZERO, D3D11_BLEND_ZERO };
+	pContext_->OMSetBlendState(pBlendState_[_blendMode], blendFactor, 0xffffffff);
+
+	//Zバッファへの書き込み
+	pContext_->OMSetDepthStencilState(pDepthStencilState_[_blendMode], 0);
+}
+
 void Direct3D::Update()
 {
 	//レンダリング結果を表示する範囲
@@ -591,7 +628,7 @@ void Direct3D::BeginDraw()
 	//画面をクリア
 	pContext_->ClearRenderTargetView(pRenderTargetView_, clearColor);
 	//深度バッファクリア
-	pContext_->ClearDepthStencilView(pDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
+	pContext_->ClearDepthStencilView(pDepthStencilView_, D3D11_CLEAR_DEPTH, 1.0f, 0);
 }
 
 //描画終了

@@ -24,7 +24,10 @@ enum SHADER_TYPE
 
 namespace Direct3D
 {
-
+	enum BLEND_MODE
+	{
+		BLEND_DEFAULT,BLEND_ADD,BLEND_MAX
+	};
 	extern ID3D11Device* pDevice_;		                //デバイス
 	extern ID3D11DeviceContext* pContext_;		        //デバイスコンテキスト
 	extern bool isDrawCollision_;						//コリジョンを表示するかフラッグ
@@ -47,6 +50,12 @@ namespace Direct3D
 	HRESULT InitShaderUNLIT();
 
 	void SetShader(SHADER_TYPE type);
+
+	/// <summary>
+	/// ブレンドモードの変更
+	/// </summary>
+	/// <param name="_blendMode">ブレンドの種類</param>
+	void SetBlendMode(BLEND_MODE _blendMode);
 
 	void Update();
 
