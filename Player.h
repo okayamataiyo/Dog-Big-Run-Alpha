@@ -33,8 +33,8 @@ public:
 
 	int playerNum_;
 	int hModel_;	//モデル番号
-	int camType_;
-	float posY_;
+	int camType_;	//画面分割の左右どっちのカメラか(右、左)
+	float posY_;	//プレイヤーのY座標に代入する値
 
 	Transform transPlayer_;
 	Camera camera_;
@@ -52,7 +52,7 @@ public:
 	float dot_;
 	float angle_;
 	//▼ジャンプで使うメンバ変数
-	bool  jumpFlg_;
+	bool  jumpFlg_;				//ジャンプしてるかしていないか
 	int hStageModel_[2];
 	float rayGravityDist_;		//地面とプレイヤーの差分
 	float moveYTemp_;	//y座標をPrevに保存する
@@ -69,7 +69,11 @@ public:
 	XMFLOAT3 velocity_;	//速度
 
 	//▼壁判定で使うメンバ変数
-	float rayWallDist_;
+	float rayFrontDist_;		//前壁の位置と自分の位置の差距離
+	float rayBackDist_;			//後ろ壁の位置と自分の位置の差距離
+	float rayLeftDist_;			//左壁の位置と自分の位置の差距離
+	float rayRightDist_;		//右壁の位置と自分の位置の差距離
+	XMFLOAT3 prevPosition_;	//1フレーム前の位置座標
 
 public:
 

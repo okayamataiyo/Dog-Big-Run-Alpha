@@ -22,6 +22,7 @@ void Player::Initialize()
     assert(hModel_ >= 0);
     transform_.scale_ = { 0.5,0.5,0.5 };
     posY_ = transform_.position_.y;
+    prevPosition_ = transform_.position_;
     for (int i = 0u; i <= 1; i++)
     {
         pCollision_ = new SphereCollider(XMFLOAT3(0.0, 0.0, 0.0), 1);
@@ -69,7 +70,12 @@ void Player::UpdatePlay()
     PlayerMove();
     ImGui::Text("moveYPrev_=%f", moveYPrev_);
     ImGui::Text("moveYTemp_=%f", moveYTemp_);
+    ImGui::Text("Transform_.position_.x=%f", transform_.position_.x);
     ImGui::Text("Transform_.position_.y=%f", transform_.position_.y);
+    ImGui::Text("Transform_.position_.z=%f", transform_.position_.z);
+    ImGui::Text("prevPosition_.x=%f", prevPosition_.x);
+    ImGui::Text("prevPosition_.y=%f", prevPosition_.y);
+    ImGui::Text("prevPosition_.z=%f", prevPosition_.z);
     ImGui::Text("posY_=%f", posY_);
     ImGui::Text("jumpFlg_=%s", jumpFlg_ ? "true":"false");
     ImGui::Text("angle_=%f", angle_);
@@ -188,22 +194,16 @@ void Player::PlayerMove()
         {
             //XMMatrixRotationY = Y座標を中心に回転させる行列を作る関数
             //XMConvertToRadians = degree角をradian角に(ただ)変換する
-            //XMMATRIX mRotationY = XMMatrixRotationY(XMConvertToRadians(-90));
-            XMVECTOR vectorMove = XMLoadFloat3(&transform_.position_) + vecMove_;
-            XMVECTOR rightDirection = XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f);
-            float moveDistance = 1.0f;
-            XMVECTOR moveVector = XMVectorScale(rightDirection, moveDistance);
-            vectorMove += moveVector;
+            XMMATRIX rotmat = XMMatrixRotationY(3.14 / 2);
+            XMVECTOR tempvec = XMVector3Transform(vecMove_,rotmat);
+            XMVECTOR vectorMove = XMLoadFloat3(&transform_.position_) + tempvec;
             XMStoreFloat3(&transform_.position_,vectorMove);
         }
         if (Input::IsKey(DIK_A))
         {
-            XMMATRIX mRotationY = XMMatrixRotationY(XMConvertToRadians(90));
-            XMVECTOR vectorMove = XMLoadFloat3(&transform_.position_) + vecMove_;
-            XMVECTOR rightDirection = XMVectorSet(-1.0f, 0.0f, 0.0f, 0.0f);
-            float moveDistance = 1.0f;
-            XMVECTOR moveVector = XMVectorScale(rightDirection, moveDistance);
-            vectorMove += moveVector;
+            XMMATRIX rotmat = XMMatrixRotationY(3.14 / 2);
+            XMVECTOR tempvec = XMVector3Transform(vecMove_, -rotmat);
+            XMVECTOR vectorMove = XMLoadFloat3(&transform_.position_) + tempvec;
             XMStoreFloat3(&transform_.position_, vectorMove);
         }
         if (Input::IsKey(DIK_SPACE) && jumpFlg_ == false)
@@ -237,10 +237,15 @@ void Player::PlayerWall()
 
 void Player::PlayerGravity()
 {
+    prevPosition_ = transform_.position_;
+    prevIsFloor_ = isFloor_;
     RayCastData upData;
-    RayCastData floorData;
+    RayCastData downFloorData;
     RayCastData downData;
     RayCastData frontData;
+    RayCastData backData;
+    RayCastData leftData;
+    RayCastData rightData;
     if (jumpFlg_ == true)
     {
         //放物線に下がる処理
@@ -264,20 +269,20 @@ void Player::PlayerGravity()
     rayUpDist_ = upData.dist;
 
     //▼下の法線(すり抜け床)
-    floorData.start = transform_.position_;    //レイの発射位置
-    floorData.start.y = 0;
-    floorData.dir = XMFLOAT3(0, -1, 0);        //レイの方向
+    downFloorData.start = transform_.position_;    //レイの発射位置
+    downFloorData.start.y = 0.0f;
+    downFloorData.dir = XMFLOAT3(0, -1, 0);        //レイの方向
     if (upData.dist == 99999)
     {
-        Model::RayCast(hStageModel_[1], &floorData);  //レイを発射
+        Model::RayCast(hStageModel_[1], &downFloorData);  //レイを発射
     }
-    rayDownDist_ = floorData.dist;
+    rayDownDist_ = downFloorData.dist;
 
-    if (floorData.hit == true)
+    if (downFloorData.hit == true)
     {
         if (jumpFlg_ == false)
         {
-            posY_ = -floorData.dist + 0.6;
+            posY_ = -downFloorData.dist + 0.6f;
             isFloor_ = 1;
         }
     }
@@ -294,8 +299,8 @@ void Player::PlayerGravity()
     rayGravityDist_ = downData.dist;
     float playerFling = 0.7;
     //プレイヤーが浮いていないとき
-    ImGui::Text("downdist=%f",downData.dist);
-    if (downData.dist + posY_ <= playerFling)
+    ImGui::Text("downdist=%f",rayGravityDist_);
+    if (rayGravityDist_ + posY_ <= playerFling)
     {
         //ジャンプしてない＆すり抜け床の上にいない
         if (jumpFlg_ == false && isFloor_ == 0)
@@ -312,13 +317,40 @@ void Player::PlayerGravity()
     frontData.start = transform_.position_;       //レイの発射位置
     frontData.dir = XMFLOAT3(0, 0, 1);            //レイの方向
     Model::RayCast(hStageModel_[0], &frontData);  //レイを発射
-    rayWallDist_ = frontData.dist;
-    ImGui::Text("frontdist=%f", rayWallDist_);
-    if (rayWallDist_ <= 0.1)
+    rayFrontDist_ = frontData.dist;
+    ImGui::Text("rayFrontDist_=%f", rayFrontDist_);
+    if (rayFrontDist_ <= 1.5f)
     {
-
+        transform_.position_.z = (float)((int)prevPosition_.z) - 0.1f;
     }
-
-
-    prevIsFloor_ = isFloor_;
+    //▼後ろの法線(壁の当たり判定)
+    backData.start = transform_.position_;       //レイの発射位置
+    backData.dir = XMFLOAT3(0, 0, -1);           //レイの方向
+    Model::RayCast(hStageModel_[0], &backData);  //レイを発射
+    rayBackDist_ = backData.dist;
+    ImGui::Text("rayBackDist_=%f", rayBackDist_);
+    if (rayBackDist_ <= 1.5f)
+    {
+        transform_.position_.z = (float)((int)prevPosition_.z) + 0.1f;
+    }
+    //▼左の法線(壁の当たり判定)
+    leftData.start = transform_.position_;       //レイの発射位置
+    leftData.dir = XMFLOAT3(-1, 0, 0);           //レイの方向
+    Model::RayCast(hStageModel_[0], &leftData);  //レイを発射
+    rayLeftDist_ = leftData.dist;
+    ImGui::Text("rayLeftDist_=%f", rayLeftDist_);
+    if (rayLeftDist_ <= 1.5f)
+    {
+        transform_.position_.x = (float)((int)prevPosition_.x) + 0.1f;
+    }
+    //▼右の法線(壁の当たり判定)
+    rightData.start = transform_.position_;       //レイの発射位置
+    rightData.dir = XMFLOAT3(1, 0, 0);           //レイの方向
+    Model::RayCast(hStageModel_[0], &rightData);  //レイを発射
+    rayRightDist_ = rightData.dist;
+    ImGui::Text("rayRightDist_=%f", rayRightDist_);
+    if (rayRightDist_ <= 1.5f)
+    {
+        transform_.position_.x = (float)((int)prevPosition_.x) - 0.1f;
+    }
 }
