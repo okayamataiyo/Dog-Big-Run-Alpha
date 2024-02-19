@@ -25,7 +25,7 @@ void Stage::Initialize()
     transform_.position_.y = -5;
     transform_.rotate_.y = 90;
     transform_.scale_ = { 4,1,4 };
-    FlyFloor.position_ = { 3,0,3 };
+    FlyFloor.position_ = { 2,0,2 };
 }
 
 void Stage::Update()
