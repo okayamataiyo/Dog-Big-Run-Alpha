@@ -104,6 +104,8 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
 	pRootjob = new Rootjob();
 	pRootjob->Initialize();
 
+	bool isPause = false;
+
 	//メッセージループ（何か起きるのを待つ）
 	MSG msg;
 	ZeroMemory(&msg, sizeof(msg));
@@ -146,22 +148,30 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
 
 			countFps++;
 
-
 			timeEndPeriod(1);
+
+			if (Input::IsKeyDown(DIK_P))
+			{
+				isPause = !isPause;
+			}
 
 			//▼ゲームの処理
 			//入力の処理
 			Input::Update();
-			ImGui_ImplDX11_NewFrame();
-			ImGui_ImplWin32_NewFrame();
-			ImGui::NewFrame();
-			pRootjob->UpdateSub();
 
-			//▼描画
+			if (!isPause)
+			{
+				ImGui_ImplDX11_NewFrame();
+				ImGui_ImplWin32_NewFrame();
+				ImGui::NewFrame();
+				pRootjob->UpdateSub();
 
-			Direct3D::Update();
+				//▼描画
 
-			Direct3D::BeginDraw();
+				Direct3D::Update();
+
+				Direct3D::BeginDraw();
+			}
 			constexpr uint8_t SIZE_VP = 2;
 			for (auto i = 0u; i < SIZE_VP; i++) {
 				Direct3D::SetViewPort(i);
@@ -174,13 +184,11 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
 			ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 			Direct3D::EndDraw();
 
-
 			if (Input::IsKeyUp(DIK_ESCAPE))
 			{
 				PostQuitMessage(0);
 			}
 		}
-
 	}
 
 	Model::Release();

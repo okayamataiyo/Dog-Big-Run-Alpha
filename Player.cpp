@@ -21,7 +21,7 @@ void Player::Initialize()
     hModel_ = Model::Load("Assets/Dog.fbx");
     assert(hModel_ >= 0);
     transform_.scale_ = { 0.5,0.5,0.5 };
-//    powerY_ = transform_.position_.y;
+    posY_ = transform_.position_.y;
     for (int i = 0u; i <= 1; i++)
     {
         pCollision_ = new SphereCollider(XMFLOAT3(0.0, 0.0, 0.0), 1);
@@ -67,11 +67,12 @@ void Player::UpdatePlay()
 {
     PlayerGravity();
     PlayerMove();
-    ImGui::Text("moveYPrev_%f", moveYPrev_);
-    ImGui::Text("moveYTemp_%f", moveYTemp_);
-//    ImGui::Text("powerY_%f", powerY_);
-    ImGui::Text("jumpFlg_%s", jumpFlg_ ? "true":"false");
-    
+    ImGui::Text("moveYPrev_=%f", moveYPrev_);
+    ImGui::Text("moveYTemp_=%f", moveYTemp_);
+    ImGui::Text("Transform_.position_.y=%f", transform_.position_.y);
+    ImGui::Text("posY_=%f", posY_);
+    ImGui::Text("jumpFlg_=%s", jumpFlg_ ? "true":"false");
+    ImGui::Text("angle_=%f", angle_);
     PlayerWall();
 }
 
@@ -125,7 +126,7 @@ void Player::PlayerMove()
 
     //transform_.position_.x += velocity_.x;
     //transform_.position_.z += velocity_.z;
-//    transform_.position_.y = powerY_;
+    transform_.position_.y = posY_;
     XMVECTOR vecCam = -(camera_.GetPosition(0) - camera_.GetTarget(0));
     vecCam = XMVector3Normalize(vecCam);
     //vecMove_ = XMLoadFloat3(&velocity_);
@@ -135,27 +136,28 @@ void Player::PlayerMove()
 
     //向き変更
     vecLength_ = XMVector3Length(vecMove_);
-    //length_ = XMVectorGetX(vecLength_);
+    length_ = XMVectorGetX(vecLength_);
 
-    //if (length_ != 0)
-    //{
-    //    //プレイヤーが入力キーに応じて、その向きに変える(左向きには出来ない)
-    //    vecFront_ = { 0,0,1,0 };
-    //    vecMove_ = XMVector3Normalize(vecMove_);
+    if (length_ != 0)
+    {
+        //プレイヤーが入力キーに応じて、その向きに変える(左向きには出来ない)
+        vecFront_ = { 0,0,1,0 };
+        vecMove_ = XMVector3Normalize(vecMove_);
 
-    //    vecDot_ = XMVector3Dot(vecFront_, vecMove_);
-    //    dot_ = XMVectorGetX(vecDot_);
-    //    angle_ = acos(dot_);
+        vecDot_ = XMVector3Dot(vecFront_, vecMove_);
+        dot_ = XMVectorGetX(vecDot_);
+        angle_ = acos(dot_);
 
-    //    //右向きにしか向けなかったものを左向きにする事ができる
-    //    vecCross_ = XMVector3Cross(vecFront_, vecMove_);
-    //    if (XMVectorGetY(vecCross_) < 0)
-    //    {
-    //        angle_ *= -1;
-    //    }
+        //右向きにしか向けなかったものを左向きにする事ができる
+        vecCross_ = XMVector3Cross(vecFront_, vecMove_);
+        if (XMVectorGetY(vecCross_) < 0)
+        {
+            angle_ *= -1;
+            
+        }
 
-    //    transform_.rotate_.y = XMConvertToDegrees(angle_);
-    //}
+        transform_.rotate_.y = XMConvertToDegrees(angle_);
+    }
 
     if (Input::IsKey(DIK_LSHIFT))
     {
@@ -186,14 +188,23 @@ void Player::PlayerMove()
         {
             //XMMatrixRotationY = Y座標を中心に回転させる行列を作る関数
             //XMConvertToRadians = degree角をradian角に(ただ)変換する
-            XMMATRIX mRotationY = XMMatrixRotationY(XMConvertToRadians(90));
+            //XMMATRIX mRotationY = XMMatrixRotationY(XMConvertToRadians(-90));
             XMVECTOR vectorMove = XMLoadFloat3(&transform_.position_) + vecMove_;
-            vectorMove = XMVector3Transform(vectorMove, mRotationY);
+            XMVECTOR rightDirection = XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f);
+            float moveDistance = 1.0f;
+            XMVECTOR moveVector = XMVectorScale(rightDirection, moveDistance);
+            vectorMove += moveVector;
             XMStoreFloat3(&transform_.position_,vectorMove);
         }
         if (Input::IsKey(DIK_A))
         {
-//            velocity_.x -= 0.005f;
+            XMMATRIX mRotationY = XMMatrixRotationY(XMConvertToRadians(90));
+            XMVECTOR vectorMove = XMLoadFloat3(&transform_.position_) + vecMove_;
+            XMVECTOR rightDirection = XMVectorSet(-1.0f, 0.0f, 0.0f, 0.0f);
+            float moveDistance = 1.0f;
+            XMVECTOR moveVector = XMVectorScale(rightDirection, moveDistance);
+            vectorMove += moveVector;
+            XMStoreFloat3(&transform_.position_, vectorMove);
         }
         if (Input::IsKey(DIK_SPACE) && jumpFlg_ == false)
         {
@@ -215,8 +226,8 @@ void Player::PlayerJump()
 {
     //ジャンプの処理
     jumpFlg_ = true;
-    moveYPrev_ = transform_.position_.y;
-    transform_.position_.y = transform_.position_.y + 0.3;
+    moveYPrev_ = posY_;
+    posY_ = posY_ + 0.3;
 }
 
 void Player::PlayerWall()
@@ -233,14 +244,14 @@ void Player::PlayerGravity()
     if (jumpFlg_ == true)
     {
         //放物線に下がる処理
-        moveYTemp_ = transform_.position_.y;
-        transform_.position_.y += (transform_.position_.y - moveYPrev_) - 0.007;
+        moveYTemp_ = posY_;
+        posY_ += (posY_ - moveYPrev_) - 0.007;
         moveYPrev_ = moveYTemp_;
-        if (transform_.position_.y <= -rayDownDist_ + 0.6)
+        if (posY_ <= -rayDownDist_ + 0.6)
         {
             jumpFlg_ = false;
         }
-        if (transform_.position_.y <= -rayGravityDist_ + 0.6)
+        if (posY_ <= -rayGravityDist_ + 0.6)
         {
             jumpFlg_ = false;
         }
@@ -266,7 +277,7 @@ void Player::PlayerGravity()
     {
         if (jumpFlg_ == false)
         {
-            transform_.position_.y = -floorData.dist + 0.6;
+            posY_ = -floorData.dist + 0.6;
             isFloor_ = 1;
         }
     }
@@ -283,14 +294,14 @@ void Player::PlayerGravity()
     rayGravityDist_ = downData.dist;
     float playerFling = 0.7;
     //プレイヤーが浮いていないとき
-    ImGui::Text("dist=%f",downData.dist);
-    if (downData.dist + transform_.position_.y <= playerFling)
+    ImGui::Text("downdist=%f",downData.dist);
+    if (downData.dist + posY_ <= playerFling)
     {
         //ジャンプしてない＆すり抜け床の上にいない
         if (jumpFlg_ == false && isFloor_ == 0)
         {
             //地面に張り付き
-            transform_.position_.y = -downData.dist + 0.6;
+            posY_ = -downData.dist + 0.6;
         }
     }
     else if(isFloor_ == 0)
@@ -302,5 +313,12 @@ void Player::PlayerGravity()
     frontData.dir = XMFLOAT3(0, 0, 1);            //レイの方向
     Model::RayCast(hStageModel_[0], &frontData);  //レイを発射
     rayWallDist_ = frontData.dist;
+    ImGui::Text("frontdist=%f", rayWallDist_);
+    if (rayWallDist_ <= 0.1)
+    {
+
+    }
+
+
     prevIsFloor_ = isFloor_;
 }
