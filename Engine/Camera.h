@@ -35,6 +35,7 @@ public:
 	void SetTarget(XMVECTOR _target,int _type);
 	void SetTarget(XMFLOAT3 _target,int _type);
 	XMVECTOR GetPosition(int _type);
+	XMFLOAT3 GetPositionFl(int _type);
 	XMVECTOR GetTarget(int _type);
 	XMFLOAT4 GetLightPos() { return(lightPos_); }
 	XMMATRIX GetViewMatrix();											//ƒrƒ…[s—ñ‚ğæ“¾

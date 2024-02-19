@@ -104,6 +104,14 @@ XMVECTOR Camera::GetPosition(int _type)
 	return position_[_type];
 }
 
+XMFLOAT3 Camera::GetPositionFl(int _type)
+{
+	XMVECTOR positionVector = position_[_type];
+	XMFLOAT3 position;
+	XMStoreFloat3(&position, positionVector);
+	return position;
+}
+
 XMVECTOR Camera::GetTarget(int _type)
 {
 	return target_[_type];

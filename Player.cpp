@@ -177,6 +177,11 @@ void Player::PlayerMove()
 
     if (this->GetObjectName() == "PlayerSeconds")
     {
+        if (Input::IsKeyDown(DIK_0))
+        {
+            transform_.position_ = { 0.0f,0.0f,0.0f };
+            posY_ = 0.0f;
+        }
         if (Input::IsKey(DIK_W))
         {
             XMVECTOR vectorMove = vecMove_ + XMLoadFloat3(&transform_.position_);

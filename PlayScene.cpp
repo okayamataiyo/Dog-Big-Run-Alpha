@@ -1,5 +1,6 @@
 #include "Engine/Input.h"
 #include "Engine/SceneManager.h"
+#include "Engine/FbxParts.h"
 #include "PlayScene.h"
 #include "Stage.h"
 #include "Item.h"
@@ -12,6 +13,7 @@ PlayScene::PlayScene(GameObject* _pParent)
 
 void PlayScene::Initialize()
 {
+	FbxParts fbxParts(pCamera_);
 	Instantiate<Item>(this);
 	Instantiate<Stage>(this);
 	for (int i = 0u; i <= 1; i++)
