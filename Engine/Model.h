@@ -10,35 +10,41 @@
 /// </summary>
 namespace Model
 {
+	/// <summary>
+	/// モデル情報
+	/// </summary>
 	struct ModelData
 	{
-		string fileName;
+		string fileName_;
 
-		Fbx* pFbx;
+		Fbx* pFbx_;
 
-		Transform transform;
+		Transform transform_;
 
-		float nowFrame, animSpeed;
-		int startFrame, endFrame;
+		float nowFrame_, animSpeed_;
+		int startFrame_, endFrame_;
 
-		ModelData() :pFbx(nullptr), nowFrame(0), startFrame(0), endFrame(0), animSpeed(0)
+		ModelData() :pFbx_(nullptr), nowFrame_(0), startFrame_(0), endFrame_(0), animSpeed_(0)
 		{
 
 		}
 
 		void SetAnimFrame(int _start, int _end, float _speed)
 		{
-			nowFrame = (float)_start;
-			startFrame = _start;
-			endFrame = _end;
-			animSpeed = _speed;
+			nowFrame_ = (float)_start;
+			startFrame_ = _start;
+			endFrame_ = _end;
+			animSpeed_ = _speed;
 		}
 	};
-
+	void Initialize();
 	int Load(std::string _fileName);
 	void SetTransform(int _hModel, Transform _transform);
 	void Draw(int _hModel);
-	void Release();
+	void Release(int _hModel);
+	void AllRelease();
+
+
 
 	/// <summary>
 	/// レイキャスト(レイを飛ばして当たり判定)
