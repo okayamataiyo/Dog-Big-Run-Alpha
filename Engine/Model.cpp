@@ -1,5 +1,6 @@
 #include "Model.h"
 #include "Direct3D.h"
+#include "../Global.h"
 
 namespace Model
 {

@@ -31,7 +31,7 @@ void Sky::Draw()
 	Model::SetTransform(hModel_, transform_);
 	for (int i = 0; i <= 1; i++)
 	{
-		Direct3D::SetShader(static_cast<SHADER_TYPE>(i));
+		Direct3D::SetShader(static_cast<Direct3D::SHADER_TYPE>(i));
 		Model::Draw(hModel_);
 	}
 }

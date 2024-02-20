@@ -1,4 +1,5 @@
 #include "GameObject.h"
+#include "../Global.h"
 
 GameObject::GameObject()
 	:GameObject(nullptr, "")
@@ -308,10 +309,10 @@ void GameObject::Collision(GameObject* _pTarget)
 
 void GameObject::CollisionDraw()
 {
-	Direct3D::SetShader(SHADER_UNLIT);
+	Direct3D::SetShader(Direct3D::SHADER_UNLIT);
 	for (auto i = this->colliderList_.begin(); i != this->colliderList_.end(); i++)
 	{
 		(*i)->Draw(GetWorldPosition());
 	}
-	Direct3D::SetShader(SHADER_3D);
+	Direct3D::SetShader(Direct3D::SHADER_3D);
 }

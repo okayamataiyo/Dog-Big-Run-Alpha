@@ -11,6 +11,7 @@
 #include "Engine/Rootjob.h"
 #include "Engine/Model.h"
 #include "Player.h"
+#include "Global.h"
 
 //ƒŠƒ“ƒJ
 #pragma comment(lib, "winmm.lib")
@@ -191,7 +192,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
 		}
 	}
 
-	Model::Release();
+	Model::AllRelease();
 	pRootjob->ReleaseSub();
 	SAFE_DELETE(pRootjob);
 

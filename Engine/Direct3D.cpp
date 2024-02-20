@@ -3,12 +3,11 @@
 #include <vector>
 #include "Direct3D.h"
 #include "Camera.h"
+#include "../Global.h"
 
 //変数
 namespace Direct3D
 {
-	ID3D11Device* pDevice_					   = nullptr;	//デバイス
-	ID3D11DeviceContext* pContext_			   = nullptr;	//デバイスコンテキスト
 	IDXGISwapChain* pSwapChain_				   = nullptr;	//スワップチェイン
 	ID3D11RenderTargetView* pRenderTargetView_ = nullptr;	//レンダーターゲットビュー
 
@@ -33,6 +32,8 @@ namespace Direct3D
 
 	bool isDrawCollision_ = true;							//コリジョンを表示するか
 	int isChangeView_ = 0;
+	ID3D11Device* pDevice_ = nullptr;
+	ID3D11DeviceContext* pContext_ = nullptr;
 	float vPSize_[2] = { 2,2 };
 	float vPMove_[2] = { 0,0 };
 	float prevVP_ = 0;

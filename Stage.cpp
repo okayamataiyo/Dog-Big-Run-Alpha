@@ -42,7 +42,7 @@ void Stage::Draw()
         //Å‰‚É3D‚Å•`‰æŒãA˜g‚Ã‚¯‚à•`‰æ
         for (int j = 3; j >= 1; j -= 2)
         {
-            Direct3D::SetShader(static_cast<SHADER_TYPE>(j));
+            Direct3D::SetShader(static_cast<Direct3D::SHADER_TYPE>(j));
             Model::Draw(hModel_[i]);
         }
     }

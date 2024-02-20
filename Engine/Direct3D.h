@@ -6,24 +6,26 @@
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "d3dcompiler.lib")
 
-#define SAFE_DELETE(p) if(p != nullptr){ delete p; p = nullptr;}
-#define SAFE_RELEASE(p) if(p != nullptr){ p->Release(); p = nullptr;}
-
 using namespace DirectX;
 
-
-enum SHADER_TYPE
-{
-	SHADER_2D,
-	SHADER_3D,
-	SHADER_TOON,
-	SHADER_TOONOUTLINE,
-	SHADER_UNLIT,
-	SHADER_MAX,
-};
-
+/// <summary>
+/// âÊñ ÇÃï`âÊÇ…ä÷Ç∑ÇÈèàóù
+/// </summary>
 namespace Direct3D
 {
+	extern ID3D11Device* pDevice_;
+	extern ID3D11DeviceContext* pContext_;
+
+	enum SHADER_TYPE
+	{
+		SHADER_2D,
+		SHADER_3D,
+		SHADER_TOON,
+		SHADER_TOONOUTLINE,
+		SHADER_UNLIT,
+		SHADER_MAX,
+	};
+
 	enum BLEND_MODE
 	{
 		BLEND_DEFAULT,BLEND_ADD,BLEND_MAX
