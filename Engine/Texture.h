@@ -2,6 +2,7 @@
 //インクルード
 #include<d3d11.h>
 #include<DirectXMath.h>
+#include<DirectXTex.h>
 #include<d3dcompiler.h>
 #include<wincodec.h>
 #include<string>
@@ -25,7 +26,7 @@ class Texture
 {
 	ID3D11SamplerState* pSampler_;
 	ID3D11ShaderResourceView* pSRV_;
-	XMFLOAT3 imgSize_;
+	XMFLOAT2 imgSize_;
 public:
 	Texture();
 	~Texture();
@@ -33,6 +34,6 @@ public:
 	void Release();
 	ID3D11SamplerState* GetSampler() { return pSampler_; }	//サンプラーの取得
 	ID3D11ShaderResourceView* GetSRV() { return pSRV_; }	//シェーダーリソースビューの取得
-	XMFLOAT3 GetSize() { return imgSize_; }					//画像サイズの取得
+	XMFLOAT2 GetSize() { return imgSize_; }					//画像サイズの取得
 };
 

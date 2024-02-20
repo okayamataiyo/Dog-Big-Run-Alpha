@@ -46,7 +46,7 @@ public:
 
 	void Release();
 
-	XMFLOAT3 GetTextureSize() { return pTexture_->GetSize(); }
+	XMFLOAT2 GetTextureSize() { return pTexture_->GetSize(); }
 
 private:
 	virtual void InitVertexData();
