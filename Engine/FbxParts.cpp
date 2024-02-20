@@ -410,7 +410,7 @@ void FbxParts::Draw(Transform& _transform)
 		memcpy_s(pdata.pData, pdata.RowPitch, (void*)(&cb), sizeof(cb));		// リソースへ値を送る
 
 		//テクスチャをシェーダーに設定
-		if (cb.isTexture)
+		if (pMaterial_[i].pTexture)
 		{
 			ID3D11SamplerState* pSampler = pMaterial_[i].pTexture->GetSampler();
 			Direct3D::pContext_->PSSetSamplers(0, 1, &pSampler);
